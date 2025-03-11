@@ -4,17 +4,17 @@
 A plataforma deve transmitir profissionalismo, confiabilidade e clareza na apresentação dos dados, mantendo uma interface moderna e intuitiva que facilite a navegação e interpretação das informações por tomadores de decisão.
 
 ## Paleta de Cores
-### Cores Principais
-Azul escuro (#0D3B66): Transmite confiabilidade e estabilidade, ideal para o header e elementos de navegação
-Verde (#28965A): Representa crescimento e prosperidade, para indicadores positivos
-Vermelho (#D64045): Indica declínio, para métricas negativas
-Amarelo (#F9C846): Sinaliza estagnação ou alerta
+### Cores Neutras (Fundo e Base do Site)
+Branco (#FFFFFF): Áreas de conteúdo principal
+Cinza claro (#E6E8E6): Backgrounds e separadores
+Cinza médio (#7D8491): Informações secundárias
+Cinza escuro (#333333): Textos principais
 
-### Cores Neutras
-Cinza escuro (#333333): Para textos principais
-Cinza médio (#7D8491): Para informações secundárias
-Cinza claro (#E6E8E6): Para backgrounds e separadores
-Branco (#FFFFFF): Para áreas de conteúdo principal
+### Cores Específicas para Mapas e Gráficos de Calor
+Verde (#28965A): Desempenho positivo
+Amarelo (#F9C846): Alerta ou neutro
+Laranja (#F57C00): Transição intermediária
+Vermelho (#D64045): Desempenho negativo
 
 ## Tipografia
 
@@ -90,3 +90,5 @@ Simplicidade: Foco nos dados mais relevantes
 Consistência: Padrões visuais recorrentes em toda a interface
 Acessibilidade: Contraste adequado e suporte a leitores de tela
 Hierarquia clara: Orientação visual sobre a importância relativa dos dados
+
+<!-- ![Moodboard](caminho/para/imagem.png) -->
