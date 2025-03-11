@@ -90,5 +90,3 @@ Simplicidade: Foco nos dados mais relevantes
 Consistência: Padrões visuais recorrentes em toda a interface
 Acessibilidade: Contraste adequado e suporte a leitores de tela
 Hierarquia clara: Orientação visual sobre a importância relativa dos dados
-
-![Moodboard](MoodBoard/exsite.png)
