@@ -1,4 +1,4 @@
-# 📍 Tipos de Commits
+# 📍 Padrão de Commits
 🔹 feat: Adição de uma nova funcionalidade
 ➡️ feat: implementa gráfico de calor no mapa interativo
 
