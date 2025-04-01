@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Header from './components/header'
 import Footer from './components/footer'
+import AppRoutes from './routes/appRoutes';
 
 function App() {
   const [example] = useState<string>('teste use state');
@@ -10,7 +11,7 @@ function App() {
             <Header/>
             <main className='flex-grow container mx-auto p-4'>
                 <p>{example}</p>
-                {/* <AppRoutes/> */}
+                <AppRoutes/>
             </main>
             <Footer/>
         </div>

@@ -34,19 +34,24 @@ O design da plataforma será desenvolvido no **Figma**, garantindo uma experiên
 ## 📦 Como Executar o Projeto  
 1. Clone o repositório:
 ```bash
-git clone https://github.com/seu-usuario/seu-repositorio.git
-cd seu-repositorio
+git clone https://github.com/Titus-System/3Semestre-ADS-Frontend.git
+cd 3Semestre-ADS-Frontend
+cd frontend
 ```
-2. Instale as dependências:
+2. Configure as variáveis de ambiente
+Crie um arquivo chamado `.env` na pasta `frontend` e insira a seguinte linha no arquivo:
+```
+BACKEND_SERVER=http://localhost:5000
+```
 
-
+3. Instale as dependências:
 ```bash
 npm install
-npm start
+npm run dev
 ```
-3. Inicie o servidor de desenvolvimento:
+4. Inicie o servidor de desenvolvimento:
 ```bash
-npm start 
+npm run dev
 ```
 
 ## 📊 Estrutura do Banco de Dados
