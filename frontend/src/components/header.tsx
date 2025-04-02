@@ -20,6 +20,9 @@ export default function Header() {
               <li>
                 <a href="/analise_comparacoes" className="hover:underline">Análise e Comparações</a>
               </li>
+              <li>
+                <a href="/buscaNCM" className="hover:underline">Busca por NCM</a>
+              </li>
             </ul>
           </nav>
         </div>
