@@ -4,7 +4,7 @@ import Footer from './components/footer'
 import AppRoutes from './routes/appRoutes';
 
 function App() {
-  const [example] = useState<string>('teste use state');
+  const [example] = useState<string>('');
   return (
     <>
         <div className="flex flex-col min-h-screen">
