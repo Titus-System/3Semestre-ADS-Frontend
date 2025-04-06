@@ -3,6 +3,7 @@ import HomePage from "../pages/homePage";
 import ConsultaDetalhamento from "../pages/consultaDetalhamento";
 import AnaliseComparacoes from "../pages/analiseComparacoes";
 import BuscarNCM from "../pages/buscaNCM";
+import ComparacaoEstados from "../pages/comparacaoEstados";
 
 export default function AppRoutes(){
 
@@ -13,6 +14,7 @@ export default function AppRoutes(){
                 <Route path="/consulta_detalhamento" element={<ConsultaDetalhamento/>} />
                 <Route path="/analise_comparacoes" element={<AnaliseComparacoes/>} />
                 <Route path="/buscaNCM" element={<BuscarNCM/>} />
+                <Route path="/comparacaoEstados" element={<ComparacaoEstados/>}/>
                 {/* <Route path="/dashboard" element={<DashboardPage/>} /> */}
             </Routes>
         </BrowserRouter>

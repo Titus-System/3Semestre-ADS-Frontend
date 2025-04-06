@@ -12,9 +12,11 @@ export default function AnaliseComparacoes (){
                 <button className="w-full max-w-2xl rounded-full px-10 py-4 bg-[#0A0A37] text-white hover:bg-[#11114E] text-xl font-semibold">
                     Comparação Global de Valor Agregado
                 </button>
+                <a href="/comparacaoEstados">
                 <button className="w-full max-w-2xl rounded-full px-10 py-4 bg-[#0A0A37] text-white hover:bg-[#11114E] text-xl font-semibold">
                     Comparação de Estados
                 </button>
+                </a>
                 <button className="w-full max-w-2xl rounded-full px-10 py-4 bg-[#0A0A37] text-white hover:bg-[#11114E] text-xl font-semibold">
                     Previsão de Tendências
                 </button>
