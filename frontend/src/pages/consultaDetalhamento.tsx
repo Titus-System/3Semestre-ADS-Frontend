@@ -18,10 +18,7 @@ export default function ConsultaDetalhamento (){
                         Busca por NCM
                     </button>
                     </a>
-
                 </div>
-                
-
             </div>
         </div>
     );
