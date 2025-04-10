@@ -9,21 +9,26 @@ export default function AnaliseComparacoes (){
             </div>
 
             <div className="flex flex-col items-center gap-6 mt-20 mb-[1000px]">
-                <button className="w-full max-w-2xl rounded-full px-10 py-4 bg-[#0A0A37] text-white hover:bg-[#11114E] text-xl font-semibold">
+
+            <a href="/paginaHanking">
+                <button className="w-full max-w-xl h-14 rounded-full px-10 py-3 bg-[#0A0A37] text-white hover:bg-[#11114E] text-lg font-semibold">
                     Comparação Global de Valor Agregado
                 </button>
-                <a href="/comparacaoEstados">
-                <button className="w-full max-w-2xl rounded-full px-10 py-4 bg-[#0A0A37] text-white hover:bg-[#11114E] text-xl font-semibold">
+            </a>
+
+            <a href="/comparacaoEstados">
+                <button className="w-full max-w-xl h-14 rounded-full px-10 py-3 bg-[#0A0A37] text-white hover:bg-[#11114E] text-lg font-semibold">
                     Comparação de Estados
                 </button>
-                </a>
-                <button className="w-full max-w-2xl rounded-full px-10 py-4 bg-[#0A0A37] text-white hover:bg-[#11114E] text-xl font-semibold">
+            </a>
+
+            <a href="/previsao">
+                <button className="w-full max-w-xl h-14 rounded-full px-10 py-3 bg-[#0A0A37] text-white hover:bg-[#11114E] text-lg font-semibold">
                     Previsão de Tendências
                 </button>
-            </div>
-                    
-          
-            
+            </a>
+
+        </div>            
         </div>
     </div>
     );
