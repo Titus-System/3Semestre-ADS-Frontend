@@ -14,11 +14,14 @@ export default function ConsultaDetalhamento (){
                         Análise por estado
                     </button>
                     <a href="/buscaNCM">
-                    <button className="w-full max-w-2xl rounded-full px-10 py-4 bg-[#0A0A37] text-white hover:bg-[#11114E] text-xl font-semibold">
-                        Busca por NCM
-                    </button>
+                        <button className="w-full max-w-2xl rounded-full px-10 py-4 bg-[#0A0A37] text-white hover:bg-[#11114E] text-xl font-semibold">
+                            Busca por NCM
+                        </button>
                     </a>
+
                 </div>
+                
+
             </div>
         </div>
     );
