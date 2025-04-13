@@ -16,7 +16,7 @@ export default function AnaliseComparacoes (){
                 </button>
             </a>
 
-            <a href="/comparacaoEstados">
+            <a href="/comparacaoEstado">
                 <button className="w-full max-w-xl h-14 rounded-full px-10 py-3 bg-[#0A0A37] text-white hover:bg-[#11114E] text-lg font-semibold">
                     Comparação de Estados
                 </button>

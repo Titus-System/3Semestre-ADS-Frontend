@@ -7,6 +7,8 @@ import ComparacaoEstados from "../pages/comparacaoEstado";
 import PaginaHanking from "../pages/paginaTendencia";
 import Previsao from "../pages/previsao";
 import ComparacaoValorAgregado from "../pages/comparacaoValorAgregado";
+import ComparacaoEstado from "../pages/comparacaoEstado";
+
 
 export default function AppRoutes(){
 
@@ -17,7 +19,7 @@ export default function AppRoutes(){
                 <Route path="/consulta_detalhamento" element={<ConsultaDetalhamento/>} />
                 <Route path="/analise_comparacoes" element={<AnaliseComparacoes/>} />
                 <Route path="/buscaNCM" element={<BuscarNCM/>} />
-                <Route path="/comparacaoEstado" element={<ComparacaoEstados/>} />
+                <Route path="/ComparacaoEstado" element={<ComparacaoEstado/>} />
                 {/* <Route path="/dashboard" element={<DashboardPage/>} /> */}
                 <Route path="/paginaHanking" element={<PaginaHanking/>} />
                 <Route path="/previsao" element={<Previsao/>} />
