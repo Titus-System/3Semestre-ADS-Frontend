@@ -12,11 +12,11 @@ interface PesquisaMercadoriaProps {
     placeholder?: string;
 }
 
-export default function PesquisaMercadoria({ label, onChange, placeholder = "Digite o nome da mercadoria" }: PesquisaMercadoriaProps) {
+export default function PesquisaMercadoria({ label, onChange, placeholder = "Digite o nome ou código NCM" }: PesquisaMercadoriaProps) {
     const [suggestions, setSuggestions] = useState<Mercadoria[]>([]);
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedMercadoria, setSelectedMercadoria] = useState<number | null>(null);
+    const [selectedMercadoria, setSelectedMercadoria] = useState<Mercadoria | null>(null);
     const [inputValue, setInputValue] = useState("");
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -30,7 +30,14 @@ export default function PesquisaMercadoria({ label, onChange, placeholder = "Dig
                 return;
             }
 
-            if (selectedMercadoria && inputValue === selectedMercadoria.toString()) {
+            if (selectedMercadoria && inputValue === selectedMercadoria.descricao) {
+                return;
+            }
+
+            // Se o input for um número, não fazemos busca por nome
+            if (!isNaN(Number(inputValue))) {
+                setSuggestions([]);
+                setIsOpen(false);
                 return;
             }
 
@@ -76,7 +83,7 @@ export default function PesquisaMercadoria({ label, onChange, placeholder = "Dig
             return;
         }
         console.log("Mercadoria válida, atualizando estados...");
-        setSelectedMercadoria(mercadoria.id_ncm);
+        setSelectedMercadoria(mercadoria);
         setInputValue(mercadoria.descricao);
         onChange(mercadoria.id_ncm.toString());
         setSuggestions([]);
@@ -94,9 +101,18 @@ export default function PesquisaMercadoria({ label, onChange, placeholder = "Dig
             setSelectedMercadoria(null);
             onChange("");
             setIsOpen(false);
+            return;
+        }
+
+        // Se o input for um número, atualiza diretamente o NCM
+        if (!isNaN(Number(newValue))) {
+            setSelectedMercadoria(null);
+            onChange(newValue);
+            setIsOpen(false);
+            return;
         }
         
-        if (selectedMercadoria && newValue !== selectedMercadoria.toString()) {
+        if (selectedMercadoria && newValue !== selectedMercadoria.descricao) {
             console.log("Input diferente da mercadoria selecionada, limpando seleção");
             setSelectedMercadoria(null);
             onChange("");
@@ -150,7 +166,7 @@ export default function PesquisaMercadoria({ label, onChange, placeholder = "Dig
                     placeholder={placeholder}
                     className="bg-white text-gray-900 text-md font-medium p-3 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 h-16 w-full"
                     onFocus={() => {
-                        if (inputValue.length >= 2 && !selectedMercadoria) {
+                        if (inputValue.length >= 2 && !selectedMercadoria && isNaN(Number(inputValue))) {
                             setIsOpen(true);
                         }
                     }}
@@ -166,7 +182,7 @@ export default function PesquisaMercadoria({ label, onChange, placeholder = "Dig
                             <div
                                 key={mercadoria.id_ncm}
                                 className={`px-4 py-2 hover:bg-gray-100 cursor-pointer transition-colors duration-200 ${
-                                    selectedMercadoria?.toString() === mercadoria.id_ncm.toString() ? "bg-gray-100" : ""
+                                    selectedMercadoria?.id_ncm === mercadoria.id_ncm ? "bg-gray-100" : ""
                                 } ${
                                     index === highlightedIndex ? "bg-gray-200" : ""
                                 }`}
