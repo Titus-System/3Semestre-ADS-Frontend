@@ -8,6 +8,7 @@ import PaginaHanking from "../pages/paginaTendencia";
 import Previsao from "../pages/previsao";
 import ComparacaoValorAgregado from "../pages/comparacaoValorAgregado";
 import ComparacaoEstado from "../pages/comparacaoEstado";
+import ConsultaEstado from "../pages/consultaEstado";
 
 
 export default function AppRoutes(){
@@ -24,6 +25,7 @@ export default function AppRoutes(){
                 <Route path="/paginaHanking" element={<PaginaHanking/>} />
                 <Route path="/previsao" element={<Previsao/>} />
                 <Route path="/valor_agregado" element={<ComparacaoValorAgregado/>} />
+                <Route path="/consulta_estado" element={<ConsultaEstado/>} />
                 
             </Routes>
         </BrowserRouter>
