@@ -30,7 +30,7 @@ export async function busca_transacoes_por_ncm(
         appendListParams('vias', vias);
         appendListParams('urfs', urfs);
 
-        // realiza a requisição
+        console.log(url.toString());
         const response = await fetch(url.toString(), {
             method: 'GET',
             headers: {
@@ -41,7 +41,7 @@ export async function busca_transacoes_por_ncm(
         const data = await response.json();
 
         if (response.status === 200) {
-            let res = data.resposta;
+            const res = data.resposta;
             console.log("Dados recebidos:", res);
             return res;
         } else {
@@ -56,16 +56,40 @@ export async function busca_transacoes_por_ncm(
 }
 
 
-export async function busca_ncm_por_descricao(descricao: string): Promise<any> {
+export async function buscarRankingNcm(
+    tipo: string,
+    qtd: number,
+    paises?: number[],
+    estados?: number[],
+    anos?: number[],
+    meses?: number[],
+    vias?: number[],
+    urfs?: number[],
+    crit?:  "valor_fob"|"kg_liquido"|"valor_agregado"|"registros",
+    cresc?: 0 | 1
+
+) {
     try {
+        const baseUrl = import.meta.env.VITE_BACKEND_URL;
+        const url = new URL(`${baseUrl}/busca_ncm_ranking`);
+        url.searchParams.append('tipo', tipo);
+        url.searchParams.append('qtd', qtd.toString());
 
-        const url = new URL('http://localhost:5000/pesquisa_ncm_por_nome');
-        
-        // Adiciona parâmetros obrigatórios
-        url.searchParams.append('nome', descricao);
+        if (crit) url.searchParams.append('crit', crit);
+        if (cresc !== undefined) url.searchParams.append('cresc', cresc.toString());
+
+        const appendListParams = (paramName: string, values?: number[]) => {
+            values?.forEach(value => url.searchParams.append(paramName, value.toString()));
+        };
+        appendListParams('paises', paises);
+        appendListParams('estados', estados);
+        appendListParams('anos', anos);
+        appendListParams('meses', meses);
+        appendListParams('vias', vias);
+        appendListParams('urfs', urfs);
 
         const response = await fetch(url.toString(), {
-            method: 'GET',
+            method: "GET",
             headers: {
                 "Accept": "application/json"
             }
@@ -73,12 +97,89 @@ export async function busca_ncm_por_descricao(descricao: string): Promise<any> {
 
         const data = await response.json();
 
-        if (response.status === 200) {
-            let res = data.resposta;
-            console.log("Dados recebidos:", res);
-            return res;
+        if (response.status == 200) {
+            console.log(data.resposta);
+            return data.resposta;
         } else {
-            throw new Error(data.error || 'Erro desconhecido');
+            throw new Error(data.error || "Erro desconhecido");
+        }
+    } catch (error) {
+        console.error("Erro ao acessar servidor:", error);
+        alert(error instanceof Error ? error.message : 'Erro desconhecido');
+        throw error;
+    }
+}
+
+export async function buscarNcmHist(
+    tipo:"exp" | "imp",
+    ncm: number[],
+    anos: number[],
+    meses: number[],
+    paises: number[],
+    estados: number[],
+    vias: number[],
+    urfs: number[]
+) {
+    try {
+            const baseUrl = import.meta.env.VITE_BACKEND_URL;
+            const url = new URL(`${baseUrl}/busca_ncm_hist`);
+            url.searchParams.append('tipo', tipo);
+        
+            const appendListParams = (paramName: string, values?: number[]) => {
+                values?.forEach(value => url.searchParams.append(paramName, value.toString()));
+            };
+            appendListParams('ncm', ncm);
+            appendListParams('paises', paises);
+            appendListParams('estados', estados);
+            appendListParams('anos', anos);
+            appendListParams('meses', meses);
+            appendListParams('vias', vias);
+            appendListParams('urfs', urfs);
+        
+            const response = await fetch (url.toString(), {
+                method:"GET",
+                headers:{
+                    "Accept": "application/json"
+                }
+            });
+        
+            const data = await response.json();
+        
+            if (data.status == 200){
+                console.log(data.resposta);
+                return data.resposta;
+            }else {
+                throw new Error(data.error || "Erro desconhecido")
+            }
+    } catch (error) {
+        console.error("Erro ao acessar servidor:", error);
+        alert(error instanceof Error ? error.message : 'Erro desconhecido');
+        throw error;
+    }
+}
+
+export async function buscaNcmPorNome(nome: string) {
+    try {
+        const baseUrl = import.meta.env.VITE_BACKEND_URL;
+        const url = new URL(`${baseUrl}/pesquisa_ncm_por_nome`);
+        url.searchParams.append('nome', nome);
+
+        console.log(url.toString());
+
+        const response = await fetch(url.toString(), {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
+        const data = await response.json();
+        console.log("Resposta recebida:", data);
+
+        if (Array.isArray(data.resposta)) {
+            return data.resposta;
+        } else {
+            throw new Error(data.error || "Erro desconhecido no formato da resposta");
         }
 
     } catch (error) {
@@ -87,4 +188,3 @@ export async function busca_ncm_por_descricao(descricao: string): Promise<any> {
         throw error;
     }
 }
-
