@@ -27,11 +27,10 @@ function getCorPorMovimento(estado: string): string {
   if (!found) return "#ccc";
   const saldo = found.exportacao - found.importacao;
 
-  if (saldo > 200) return "#007F5F";
-  if (saldo > 100) return "#2B9348";
-  if (saldo > 0) return "#80B918";
-  if (saldo > -100) return "#F9C846";
-  if (saldo > -200) return "#F9844A";
+  if (saldo > 200) return "#28965A";
+  if (saldo > 0) return "#F9C846";
+  if (saldo > -50) return "#F57C00";
+  if (saldo > -200) return "#D64045";
   return "#D64045";
 }
 
@@ -50,10 +49,12 @@ export default function ConsultaEstado() {
   };
 
   const anoMaisProximo = selectedPeriods.length > 0
-    ? selectedPeriods.reduce((prev, curr) =>
+  ? selectedPeriods.some((ano) => ano >= 2023)
+    ? 2022
+    : selectedPeriods.reduce((prev, curr) =>
         Math.abs(curr - 2022) < Math.abs(prev - 2022) ? curr : prev
       )
-    : 2022;
+  : 2022;
 
   // Dados fictícios para o gráfico de setores econômicos
   const dadosSetores = [
@@ -117,6 +118,28 @@ export default function ConsultaEstado() {
             }}
           />
         </MapContainer>
+        <div className="absolute bottom-4 right-4 bg-white/10 text-white text-sm p-4 rounded-lg shadow-md backdrop-blur border border-white/20 w-72 z-[1000]">
+          <h4 className="font-semibold mb-2">Legenda - Saldo Comercial</h4>
+          <ul className="space-y-1">
+            <li className="flex items-center space-x-2">
+              <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#28965A" }}></span>
+              <span>Desempenho positivo</span>
+            </li>
+            <li className="flex items-center space-x-2">
+              <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#F9C846" }}></span>
+              <span>Neutro</span>
+            </li>
+            <li className="flex items-center space-x-2">
+              <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#F57C00" }}></span>
+              <span>Alerta</span>
+            </li>
+            <li className="flex items-center space-x-2">
+              <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#D64045" }}></span>
+              <span>Desempenho negativo</span>
+            </li>
+          </ul>
+    </div>
+
       </div>
 
       {estadoSelecionado && (
@@ -138,7 +161,7 @@ export default function ConsultaEstado() {
                   return (
                     <p>
                       <span className="font-semibold">PIB:</span>{" "}
-                      {valorPib || "Sem dados para o ano selecionado"}
+                      {valorPib}
                     </p>
                   );
                 })()}
