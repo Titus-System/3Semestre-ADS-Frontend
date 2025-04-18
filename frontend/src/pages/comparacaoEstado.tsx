@@ -104,7 +104,7 @@ export default function ComparacaoEstados() {
                     </div>
 
                     {/* Botões para telas maiores */}
-                    <div className="hidden md:flex bg-white text-gray-900 font-bold p-3 border border-gray-300 rounded-full shadow-md flex-wrap justify-center w-full gap-10">
+                    <div className="hidden md:flex bg-white text-gray-900 font-bold p-3 border border-gray-300 rounded-full shadow-md justify-center w-full gap-3">
                         {transportModes.map((mode) => {
                             const isSelected = selectedModes.includes(mode.codigo);
                             return (
@@ -147,13 +147,13 @@ export default function ComparacaoEstados() {
                     </div>
 
                     {/* Botões para telas maiores */}
-                    <div className="hidden md:flex bg-white text-gray-900 font-bold p-3 border border-gray-300 rounded-full shadow-md flex-wrap justify-center w-full gap-4">
+                    <div className="hidden md:flex bg-white text-gray-900 font-bold p-3 border border-gray-300 rounded-full shadow-md flex-wrap justify-center w-full gap-3">
                         {analysisPeriod.map((period) => {
                             const isSelected = selectedPeriods.includes(period.id);
                             return (
                                 <button
                                     key={period.id}
-                                    className={`px-3 py-2 rounded-full transition-all duration-200 ${
+                                    className={`px-1 py-2 rounded-full transition-all duration-200 ${
                                         isSelected
                                             ? "bg-gray-900 text-white border-2 border-white"
                                             : "text-gray-700 hover:bg-gray-200"
