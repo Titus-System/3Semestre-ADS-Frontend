@@ -6,9 +6,9 @@ export default function Header() {
 
     return (
         <header className="bg-[#0A0A37] text-white p-4">
-            <div className="container mx-auto flex justify-between items-center">
+            <div className="container mx-auto flex justify-between items-center gap-3"> {/* Adicionado gap */}
                 {/* Logo e Título */}
-                <div className="flex items-center gap-x-2 sm:gap-x-4">
+                <div className="flex items-center gap-x-2 sm:gap-x-4 flex-shrink-0">
                     <img
                         src={logosemfundo}
                         alt="Logo"
@@ -20,7 +20,7 @@ export default function Header() {
                 </div>
 
                 {/* Navegação */}
-                <nav className={`${isOpen ? "block" : "hidden"} sm:flex`}>
+                <nav className={`${isOpen ? "block" : "hidden"} sm:flex flex-grow justify-end`}>
                     <ul className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6">
                         <li>
                             <a href="/" className="hover:underline text-sm sm:text-base">
@@ -55,5 +55,6 @@ export default function Header() {
                 </button>
             </div>
         </header>
+
     );
 }
