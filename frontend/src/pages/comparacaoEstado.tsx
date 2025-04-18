@@ -167,6 +167,13 @@ export default function ComparacaoEstados() {
                     </div>
                 </div>
             </div>
+
+            <div className="flex flex-col space-y-4 w-full mt-8">
+                    <button className="bg-gray-900 text-white text-sm sm:text-md font-bold p-2 sm:p-3 rounded-full shadow-md hover:bg-[#11114E] w-[200px] sm:w-1/4 mx-auto">
+                        Gerar Gráfico
+                    </button>
+            </div>
+
         </div>
     );
 }
