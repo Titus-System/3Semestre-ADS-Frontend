@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, KeyboardEvent } from "react";
-import { buscaPaisPorNome } from "../services/paisService";
+import { buscaEstadoPorNome } from "../services/estadoService";
 
 interface Estado {
     id_estado: number;
     nome: string;
+    sigla: string;
 }
 
 interface PesquisaEstadoProps {
@@ -36,7 +37,7 @@ export default function PesquisaEstado({ label, onChange, placeholder = "Digite 
 
             setIsLoading(true);
             try {
-                const resultados = await buscaPaisPorNome(inputValue);
+                const resultados = await buscaEstadoPorNome(inputValue);
                 console.log("Resultados da busca:", resultados);
                 setSuggestions(resultados);
                 if (resultados.length > 0) {
