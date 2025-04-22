@@ -4,8 +4,8 @@ export default function ConsultaDetalhamento (){
             <div className="flex flex-col items-center gap-6 mt-16">
 
                 <div className="text-center">
-                    <h1 className="text-4xl font-bold text-black mt-6 mb-4">Consulta e Detalhamento</h1>
-                    <p className="text-lg text-black mt-20">Escolha o recurso que deseja utilizar</p>
+                    <h1 className="text-4xl font-bold text-white mt-6 mb-4">Consulta e Detalhamento</h1>
+                    <p className="text-lg text-white mt-20">Escolha o recurso que deseja utilizar</p>
                 </div>
 
                 

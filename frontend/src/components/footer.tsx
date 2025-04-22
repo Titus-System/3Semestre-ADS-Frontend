@@ -1,6 +1,6 @@
 export default function Footer(){
     return (
-        <footer className="bg-[#0A0A37] p-4 mt-20">
+        <footer className="bg-[#0A0A37] p-4 mt-20 ">
           
           <div className="w-full pl-8">
             <h1 className="text-3xl font-bold text-[#7D8491] text-left">InsightFlow</h1>
