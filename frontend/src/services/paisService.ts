@@ -29,9 +29,9 @@ export async function buscaPaisPorNome(nome:string){
 
 
 export async function buscarRankingPaises(
-    tipo: string,
-    ncm: number[],
+    tipo: "exp"|"imp",
     qtd: number,
+    ncm?: number[],
     paises?: number[],
     estados?: number[],
     anos?: number[],
@@ -41,7 +41,7 @@ export async function buscarRankingPaises(
 ){
     try {
         const base_url = import.meta.env.VITE_BACKEND_URL;
-        const url = new URL(`${base_url}/ranking_paises`);
+        const url = new URL(`${base_url}/ranking_pais`);
         url.searchParams.append('tipo', tipo);
         url.searchParams.append('qtd', qtd.toString());
         if (crit) {
@@ -58,7 +58,7 @@ export async function buscarRankingPaises(
         appendListParams('estados', estados);
         appendListParams('anos', anos);
         appendListParams('meses', meses);
-
+        console.log(url.toString())
         const response = await fetch (url.toString(),{
             method:"GET",
             headers: {
@@ -96,7 +96,6 @@ export async function buscarHistoricoPais(
         const base_url = import.meta.env.VITE_BACKEND_URL;
         const url = new URL(`${base_url}/busca_pais_hist`);
         url.searchParams.append('tipo', tipo);
-
         const appendListParams = (paramName: string, values?: number[]) => {
             values?.forEach(value => url.searchParams.append(paramName, value.toString()));
         };
@@ -107,7 +106,8 @@ export async function buscarHistoricoPais(
         appendListParams('meses', meses);
         appendListParams('via', via);
         appendListParams('urfs', urfs);
-
+        
+        console.log(url.toString())
         const response = await fetch (url.toString(),{
             method:"GET",
             headers: {
@@ -123,6 +123,49 @@ export async function buscarHistoricoPais(
         } else{
             throw new Error (data.error || "Erro desconhecido")
         }
+    } catch (error) {
+        console.error("Erro ao acessar servidor:", error);
+        alert(error instanceof Error ? error.message : 'Erro desconhecido');
+        throw error;
+    }
+}
+
+
+export async function buscaPaisExpImpInfo(
+    paises: number[],
+    ncm?: number[],
+    estados?: number[],
+    anos?: number[],
+    meses?: number[]
+){
+    try {
+        const base_url = import.meta.env.VITE_BACKEND_URL;
+        const url = new URL(`${base_url}/busca_pais_exp_imp_info`);
+        const appendListParams = (paramName: string, values?: number[]) => {
+            values?.forEach(value => url.searchParams.append(paramName, value.toString()));
+        };
+        appendListParams('ncm', ncm);
+        appendListParams('paises', paises);
+        appendListParams('estados', estados);
+        appendListParams('anos', anos);
+        appendListParams('meses', meses);
+
+        const response = await fetch (url.toString(),{
+            method:"GET",
+            headers: {
+                "Accept" : "application/json"
+            } 
+        });
+        console.log(url.toString())
+        const data = await response.json();
+
+        if (response.status == 200) {
+            console.log(data.resposta);
+            return data.resposta
+        } else{
+            throw new Error (data.error || "Erro desconhecido")
+        }
+
     } catch (error) {
         console.error("Erro ao acessar servidor:", error);
         alert(error instanceof Error ? error.message : 'Erro desconhecido');
