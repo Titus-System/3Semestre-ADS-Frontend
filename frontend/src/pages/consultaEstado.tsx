@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MapContainer, GeoJSON, TileLayer } from "react-leaflet";
 import { BarChart, Bar, XAxis, YAxis, Tooltip as ChartTooltip, ResponsiveContainer } from "recharts";
 import type { FeatureCollection } from "geojson";
@@ -7,7 +7,10 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import geoData from "../assets/br_states.json";
 import estadoInfo from "../assets/info_estados.json";
+import codigosEstados from "../assets/codigos_estados.json"
 import SelecionaPeriodo from "../components/selecionaPeriodo";
+import { buscaVlFobSetores } from "../services/shService";
+import "../index.css"
 
 // Extrai nomes dos estados
 const estados = (geoData as FeatureCollection).features.map(
@@ -37,6 +40,7 @@ function getCorPorMovimento(estado: string): string {
 export default function ConsultaEstado() {
   const [estadoSelecionado, setEstadoSelecionado] = useState<string | null>(null);
   const [selectedPeriods, setSelectedPeriods] = useState<number[]>([]);
+  const [dadosSetores, setDadosSetores] = useState<{ setor: string; exportacao: number; importacao: number }[]>([]);
 
   const dadosFiltrados = estadoSelecionado
     ? dados.filter((d) => d.estado === estadoSelecionado)
@@ -56,33 +60,99 @@ export default function ConsultaEstado() {
       )
   : 2022;
 
-  // Dados fictícios para o gráfico de setores econômicos
-  const dadosSetores = [
-    { setor: "Agronegócio", exportacao: 200, importacao: 50 },
-    { setor: "Indústria", exportacao: 150, importacao: 100 },
-    { setor: "Mineração", exportacao: 300, importacao: 80 },
-    { setor: "Setor Florestal", exportacao: 120, importacao: 40 },
-    { setor: "Tecnologia", exportacao: 180, importacao: 90 },
-    { setor: "Bens de consumo", exportacao: 160, importacao: 110 },
-  ];
+  useEffect(() => {
+    const carregarDadosSetores = async () => {
+      console.log("⏳ Iniciando carregamento de dados dos setores...");
+  
+      if (!estadoSelecionado) {
+        console.warn("⚠️ Nenhum estado selecionado. Interrompendo fetch.");
+        return;
+      }
+  
+      const codigos = codigosEstados[estadoSelecionado as keyof typeof codigosEstados];
+      if (!codigos || codigos.length === 0) {
+        console.error("❌ Código do estado não encontrado para:", estadoSelecionado);
+        return;
+      }
+  
+      const [codigoEstado] = codigos;
+      console.log("✅ Código do estado selecionado:", codigoEstado);
+  
+      const anos =
+        selectedPeriods.length > 0
+          ? selectedPeriods.map(Number)
+          : Array.from({ length: 2024 - 2014 + 1 }, (_, i) => 2014 + i);
+  
+      console.log("📅 Anos usados na chamada:", anos);
+  
+      try {
+        console.log("📡 Chamando função buscaVlFobSetores...");
+        const dados = await buscaVlFobSetores(anos, [codigoEstado], undefined);
+        console.log("📥 Resposta da função buscaVlFobSetores:", dados);
+  
+        if (!dados || Object.keys(dados).length === 0) {
+          console.warn("⚠️ Resposta vazia ou inválida da API.");
+        }
+  
+        const dadosConvertidos = Object.entries(dados).map(([setor, valores]) => {
+          const v = valores as {
+            total_valor_fob_exp: string | number;
+            total_valor_fob_imp: string | number;
+          };
+  
+          return {
+            setor,
+            exportacao: parseFloat(String(v.total_valor_fob_exp)),
+            importacao: parseFloat(String(v.total_valor_fob_imp)),
+          };
+        });
+  
+        console.log("📊 Dados convertidos para o gráfico:", dadosConvertidos);
+        setDadosSetores(dadosConvertidos);
+      } catch (erro) {
+        console.error("❌ Erro ao buscar dados dos setores:", erro);
+        setDadosSetores([]);
+      }
+    };
+  
+    carregarDadosSetores();
+  }, [estadoSelecionado, selectedPeriods]);
+  
+  
+  
 
   return (
-    <div className="p-8">
-      <h2 className="text-white mb-4 text-xl font-semibold">
-        Mapa Interativo - Exportações e Importações
+    <div className="p-8 mt-10">
+      <h2 className="text-white mb-4 text-4xl font-bold text-center">
+        Consulta por Estado
       </h2>
-    <div className="w-screen mx-auto justify-center">
-      <div className="flex justify-center flex-col space-y-4 h-auto w-full max-w-5xl mt-6">
+    <div className="w-full flex flex-col justify-center mt-11">
+      <div className="w-full max-w-5xl mx-auto">
         <SelecionaPeriodo onPeriodosSelecionados={handlePeriodosSelecionados} />
       </div>
+      <br />
 
-      <div className="relative" style={{ height: "500px", width: "100%" }}>
-        <MapContainer
-          key={estadoSelecionado || "mapa"}
-          center={[-14.235, -51.9253]}
-          zoom={4}
-          style={{ height: "100%", width: "100%", backgroundColor: "transparent" }}
-        >
+      <div
+  className="relative w-full mb-28 sm:mb-44 map-wrapper"
+  style={{ height: "500px" }}  // fallback importante para evitar sumiço
+>
+  <MapContainer
+    key={estadoSelecionado || "mapa"}
+    center={[-14.235, -51.9253]}
+    zoom={4}
+    scrollWheelZoom={false}
+    dragging={false}
+    zoomControl={false}
+    doubleClickZoom={false}
+    boxZoom={false}
+    keyboard={false}
+    style={{
+      height: "100%",
+      width: "100%",
+      backgroundColor: "transparent"
+    }}
+    className="h-full"
+  >
           <TileLayer
             url="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAkcBT2Od3Y4AAAAASUVORK5CYII="
             attribution=""
@@ -117,38 +187,48 @@ export default function ConsultaEstado() {
               layer.bindTooltip(nome, { sticky: true });
             }}
           />
-        </MapContainer>
-        <div className="absolute bottom-4 right-4 bg-white/10 text-white text-sm p-4 rounded-lg shadow-md backdrop-blur border border-white/20 w-72 z-[1000]">
-          <h4 className="font-semibold mb-2">Legenda - Saldo Comercial</h4>
-          <ul className="space-y-1">
-            <li className="flex items-center space-x-2">
-              <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#28965A" }}></span>
-              <span>Desempenho positivo</span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#F9C846" }}></span>
-              <span>Neutro</span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#F57C00" }}></span>
-              <span>Alerta</span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#D64045" }}></span>
-              <span>Desempenho negativo</span>
-            </li>
-          </ul>
-    </div>
 
+        </MapContainer>
+        <div className="relative 
+                lg:absolute lg:bottom-[-10px] lg:left-2 lg:w-fit 
+                xl:left-2 xl:w-fit 
+                2xl:w-fit 
+                bg-white/10 text-white text-sm p-4 rounded-lg shadow-md 
+                backdrop-blur border border-white/20 
+                z-[1000] mt-4 lg:mt-0">
+  <h4 className="font-semibold mb-2">Legenda - Saldo Comercial</h4>
+  <ul className="flex flex-col gap-2 lg:flex-col">
+    <li className="flex items-center space-x-2">
+      <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#28965A" }}></span>
+      <span>Desempenho positivo</span>
+    </li>
+    <li className="flex items-center space-x-2">
+      <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#F9C846" }}></span>
+      <span>Neutro</span>
+    </li>
+    <li className="flex items-center space-x-2">
+      <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#F57C00" }}></span>
+      <span>Alerta</span>
+    </li>
+    <li className="flex items-center space-x-2">
+      <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#D64045" }}></span>
+      <span>Desempenho negativo</span>
+    </li>
+  </ul>
+</div>
       </div>
 
       {estadoSelecionado && (
         <>
+        <div className="flex flex-wrap justify-center w-full mx-auto px-2 mt-24 relative top-6">
           {/* Bloco com duas caixas lado a lado */}
-          <div className="flex flex-wrap flex-row gap-6">
+          <div className="flex flex-wrap justify-center w-full mx-auto px-4 gap-6">
             {/* Caixa de informações do estado */}
             {info && (
-              <div className="bg-white/10 border border-white/20 backdrop-blur rounded-lg p-4 text-white space-y-2 shadow-lg w-full md:w-5/12">
+              <div className="bg-white/10 border border-white/20 backdrop-blur rounded-lg p-4 text-white space-y-2 shadow-lg 
+              w-full md:w-5/12 mx-auto
+              text-base lg:text-sm sm:text-xs
+            ">            
                 <h3 className="text-xl font-bold">{info.estado}</h3>
                 <p><span className="font-semibold">Capital:</span> {info.capital}</p>
                 <p><span className="font-semibold">Área Territorial:</span> {info.area}</p>
@@ -169,7 +249,11 @@ export default function ConsultaEstado() {
             )}
 
             {/* Nova caixa de informações adicional */}
-            <div className="bg-white/10 border border-white/20 backdrop-blur rounded-lg p-4 text-white space-y-2 shadow-lg w-full md:w-5/12">
+            <div className="bg-white/10 border border-white/20 backdrop-blur rounded-lg p-4 text-white space-y-2 shadow-lg 
+            w-full md:w-5/12 mx-auto
+            text-base lg:text-sm sm:text-xs
+          ">
+
               <h3 className="text-xl font-bold">Economia e Comércio</h3>
               <p>Produtos mais exportados: Automóveis, açúcar, café e equipamentos.</p>
               <p>Produtos mais importados: Eletrônicos, insumos farmacêuticos, petróleo.</p>
@@ -178,16 +262,16 @@ export default function ConsultaEstado() {
             </div>
           </div>
 
-        <div className="flex flex-wrap content-center w-screen mx-auto">
+        <div className="flex flex-wrap justify-center w-full mx-auto px-4">
           {/* Gráfico de barras - Setores Econômicos */}
           <div className="md:w-5/12 mx-auto">
             <h3 className="text-white mt-6 mb-4 text-lg font-medium">
               Exportações vs Importações por Setor: {estadoSelecionado}
             </h3>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={dadosSetores}>
+              <BarChart data={dadosSetores} >
                 <XAxis dataKey="setor" stroke="#ffffff" tick={{ fontSize: 10.5, fill: "#ffffff" }} interval={0} />
-                <YAxis stroke="#ffffff" tick={{ fill: "#ffffff" }}/>
+                <YAxis stroke="#ffffff" tick={{ fill: "#ffffff" }} domain={[0, 'dataMax']} allowDataOverflow={true}/>
                 <ChartTooltip />
                 <Bar dataKey="exportacao" fill="#66bb6a" name="Exportações" />
                 <Bar dataKey="importacao" fill="#42a5f5" name="Importações" />
@@ -210,6 +294,7 @@ export default function ConsultaEstado() {
               </BarChart>
             </ResponsiveContainer>
           </div>
+        </div>
         </div>
         </>
       )}
