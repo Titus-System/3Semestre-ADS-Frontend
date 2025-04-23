@@ -71,9 +71,10 @@ export async function buscarRankingNcm(
 ) {
     try {
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
-        const url = new URL(`${baseUrl}/busca_ncm_ranking`);
+        const url = new URL(`http://localhost:5000/ranking_ncm`);
         url.searchParams.append('tipo', tipo);
         url.searchParams.append('qtd', qtd.toString());
+        // console.log("🔗 URL da requisição:", url.toString());
 
         if (crit) url.searchParams.append('crit', crit);
         if (cresc !== undefined) url.searchParams.append('cresc', cresc.toString());

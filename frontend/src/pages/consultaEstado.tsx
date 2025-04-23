@@ -10,6 +10,9 @@ import estadoInfo from "../assets/info_estados.json";
 import codigosEstados from "../assets/codigos_estados.json"
 import SelecionaPeriodo from "../components/selecionaPeriodo";
 import { buscaVlFobSetores } from "../services/shService";
+import { buscarRankingNcm } from "../services/ncmService";
+import { buscarRankingPaises } from "../services/paisService";
+import { buscaBalancaComercial } from "../services/balancaComercialService";
 import "../index.css"
 
 // Extrai nomes dos estados
@@ -42,9 +45,14 @@ export default function ConsultaEstado() {
   const [selectedPeriods, setSelectedPeriods] = useState<number[]>([]);
   const [dadosSetores, setDadosSetores] = useState<{ setor: string; exportacao: number; importacao: number }[]>([]);
 
-  const dadosFiltrados = estadoSelecionado
-    ? dados.filter((d) => d.estado === estadoSelecionado)
-    : [];
+  const [exportados, setExportados] = useState<string[]>([]);
+  const [importados, setImportados] = useState<string[]>([]);
+  const [exportadores, setExportadores] = useState<string[]>([]);
+  const [importadores, setImportadores] = useState<string[]>([]);
+
+  const [dadosFiltrados, setDadosFiltrados] = useState<
+  { estado: string; exportacao: number; importacao: number }[]
+>([]);
 
   const info = estadoInfo.find((e) => e.estado === estadoSelecionado);
 
@@ -118,6 +126,105 @@ export default function ConsultaEstado() {
     carregarDadosSetores();
   }, [estadoSelecionado, selectedPeriods]);
   
+  useEffect(() => {
+    const buscarDadosComercio = async () => {
+      if (!estadoSelecionado) return;
+  
+      const estadoCod = codigosEstados[estadoSelecionado as keyof typeof codigosEstados]?.[0];
+      if (!estadoCod) return;
+  
+      const anos = selectedPeriods.length > 0
+        ? selectedPeriods.map(Number)
+        : Array.from({ length: 2024 - 2014 + 1 }, (_, i) => 2014 + i);
+  
+      try {
+        // 🔹 Produtos exportados
+        console.log("🔍 Buscando produtos exportados para:", estadoCod, anos);
+        const exp = await buscarRankingNcm("exp", 4, undefined, [estadoCod], anos);
+        console.log("📦 Produtos exportados:", exp);
+  
+        // 🔹 Produtos importados
+        console.log("🔍 Buscando produtos importados para:", estadoCod, anos);
+        const imp = await buscarRankingNcm("imp", 4, undefined, [estadoCod], anos);
+        console.log("📦 Produtos importados:", imp);
+  
+        setExportados(
+          exp && exp.length > 0
+            ? exp.map((item: any) => item.produto_descricao)
+            : ["Nenhum dado disponível"]
+        );
+  
+        setImportados(
+          imp && imp.length > 0
+            ? imp.map((item: any) => item.produto_descricao)
+            : ["Nenhum dado disponível"]
+        );
+  
+      const paisesImp = await buscarRankingPaises("exp", 4, undefined, undefined, [estadoCod], anos, undefined);
+      const paisesExp = await buscarRankingPaises("imp", 4, undefined, undefined, [estadoCod], anos, undefined);
+
+      setExportadores(
+        paisesExp?.length > 0 ? paisesExp.map((item: any) => item.nome_pais) : ["Nenhum dado disponível"]
+      );
+      setImportadores(
+        paisesImp?.length > 0 ? paisesImp.map((item: any) => item.nome_pais) : ["Nenhum dado disponível"]
+      );
+
+      } catch (erro) {
+        console.error("❌ Erro ao buscar rankings:", erro);
+        setExportados(["Erro ao buscar produtos exportados"]);
+        setImportados(["Erro ao buscar produtos importados"]);
+        setExportadores(["Erro ao buscar exportadores"]);
+        setImportadores(["Erro ao buscar importadores"]);
+      }
+    };
+  
+    buscarDadosComercio();
+  }, [estadoSelecionado, selectedPeriods]);
+  
+  useEffect(() => {
+    const buscarDadosBalancaComercial = async () => {
+      if (!estadoSelecionado) return;
+  
+      const estadoCod = codigosEstados[estadoSelecionado as keyof typeof codigosEstados]?.[0];
+      if (!estadoCod) return;
+  
+      const anos = selectedPeriods.length > 0
+        ? selectedPeriods.map(Number)
+        : Array.from({ length: 2024 - 2014 + 1 }, (_, i) => 2014 + i); // Todos os anos de 2014 a 2024
+  
+      try {
+        const resposta = await buscaBalancaComercial(anos, [estadoCod]);
+  
+        if (resposta && Array.isArray(resposta) && resposta.length > 0) {
+          // Somar os totais ao longo dos anos selecionados
+          let totalExportado = 0;
+          let totalImportado = 0;
+  
+          resposta.forEach((item) => {
+            totalExportado += parseFloat(item.total_exportado || '0');
+            totalImportado += parseFloat(item.total_importado || '0');
+          });
+  
+          setDadosFiltrados([
+            {
+              estado: estadoSelecionado,
+              exportacao: totalExportado,
+              importacao: totalImportado
+            }
+          ]);
+        } else {
+          setDadosFiltrados([]);
+        }
+  
+      } catch (erro) {
+        console.error("❌ Erro ao buscar dados da balança comercial:", erro);
+        setDadosFiltrados([]);
+      }
+    };
+  
+    buscarDadosBalancaComercial();
+  }, [estadoSelecionado, selectedPeriods]);
   
   
 
@@ -255,10 +362,38 @@ export default function ConsultaEstado() {
           ">
 
               <h3 className="text-xl font-bold">Economia e Comércio</h3>
-              <p>Produtos mais exportados: Automóveis, açúcar, café e equipamentos.</p>
-              <p>Produtos mais importados: Eletrônicos, insumos farmacêuticos, petróleo.</p>
-              <p>Exportadores: China, EUA, Argentina, Alemanha, Holanda.</p>
-              <p>Importadores: China, EUA, Alemanha, Índia.</p>
+              <div>
+                  <p className="font-semibold">Produtos mais exportados:</p>
+                  <ul>
+                  {exportados.map((produto, index) => (
+                    <li key={index}>{produto}</li>
+                  ))}
+                </ul>
+              </div>
+                <div>
+                  <p className="font-semibold">Produtos mais importados:</p>
+                  <ul>
+                  {importados.map((produto, index) => (
+                    <li key={index}>{produto}</li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+              <p>Exportadores:</p>
+              <ul className="list-disc list-inside">
+                {exportadores.map((pais, idx) => (
+                  <li key={idx}>{pais}</li>
+                ))}
+              </ul>
+              </div>
+              <div>
+              <p>Importadores:</p>
+              <ul className="list-disc list-inside">
+                {importadores.map((pais, idx) => (
+                  <li key={idx}>{pais}</li>
+                ))}
+              </ul>
+              </div>
             </div>
           </div>
 

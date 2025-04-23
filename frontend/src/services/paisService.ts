@@ -41,9 +41,10 @@ export async function buscarRankingPaises(
 ){
     try {
         const base_url = import.meta.env.VITE_BACKEND_URL;
-        const url = new URL(`${base_url}/ranking_pais`);
+        const url = new URL(`http://localhost:5000/ranking_pais`);
         url.searchParams.append('tipo', tipo);
         url.searchParams.append('qtd', qtd.toString());
+        // console.log("🔗 URL da requisição (país):", url.toString());
         if (crit) {
             url.searchParams.append('crit', crit );
         }
