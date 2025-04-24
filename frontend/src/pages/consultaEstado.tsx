@@ -13,6 +13,7 @@ import { buscaVlFobSetores } from "../services/shService";
 import { buscarRankingNcm } from "../services/ncmService";
 import { buscarRankingPaises } from "../services/paisService";
 import { buscaBalancaComercial } from "../services/balancaComercialService";
+import { buscarRankingEstados } from "../services/estadoService";
 import "../index.css"
 
 // Extrai nomes dos estados
@@ -20,25 +21,19 @@ const estados = (geoData as FeatureCollection).features.map(
   (feature) => feature.properties?.Estado || "Desconhecido"
 );
 
-// Gera dados fictícios
-const dados = estados.map((estado) => ({
-  estado,
-  exportacao: Math.floor(Math.random() * 1000),
-  importacao: Math.floor(Math.random() * 800),
-}));
-
 // Cor por saldo comercial
-function getCorPorMovimento(estado: string): string {
-  const found = dados.find((d) => d.estado === estado);
-  if (!found) return "#ccc";
-  const saldo = found.exportacao - found.importacao;
+// function getCorPorMovimento(estado: string): string => {
+//   const dado = dadosEstadoMapa.find((d) => d.estado === estado);
+//   const found = dados.find((d) => d.estado === estado);
+//   if (!found) return "#ccc";
+//   const saldo = found.exportacao - found.importacao;
 
-  if (saldo > 200) return "#28965A";
-  if (saldo > 0) return "#F9C846";
-  if (saldo > -50) return "#F57C00";
-  if (saldo > -200) return "#D64045";
-  return "#D64045";
-}
+//   if (saldo > 200) return "#28965A";
+//   if (saldo > 0) return "#F9C846";
+//   if (saldo > -50) return "#F57C00";
+//   if (saldo > -200) return "#D64045";
+//   return "#D64045";
+// }
 
 export default function ConsultaEstado() {
   const [estadoSelecionado, setEstadoSelecionado] = useState<string | null>(null);
@@ -52,6 +47,10 @@ export default function ConsultaEstado() {
 
   const [dadosFiltrados, setDadosFiltrados] = useState<
   { estado: string; exportacao: number; importacao: number }[]
+>([]);
+
+const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
+{ estado: string; total_fob: number[] }[]
 >([]);
 
   const info = estadoInfo.find((e) => e.estado === estadoSelecionado);
@@ -69,11 +68,104 @@ export default function ConsultaEstado() {
   : 2022;
 
   useEffect(() => {
+    const carregarRankingEstados = async () => {
+      const anos = selectedPeriods.length > 0
+        ? selectedPeriods.map(Number)
+        : Array.from({ length: 2024 - 2014 + 1 }, (_, i) => 2014 + i);
+  
+      try {
+        const respostaApi = await buscarRankingEstados(
+          ["exp", "imp"],
+          27,
+          anos,
+          undefined,
+          undefined,
+          undefined,
+          "valor_fob",
+          0
+        );
+
+        console.log("🔎 Resultado bruto da função buscarRankingEstados:", respostaApi);
+  
+        // ✅ CORREÇÃO AQUI: extrair 'resposta' da resposta da API
+        const resposta = respostaApi;
+  
+        // console.log("📦 Resposta completa da API:", respostaApi);
+        // console.log("📦 Conteúdo de respostaApi.resposta:", resposta);
+  
+        if (!resposta || resposta.length === 0) {
+          console.warn("⚠️ Resposta vazia da função buscarRankingEstados.");
+          return;
+        }
+  
+        const mapaEstados: Record<string, number[]> = {};
+  
+        resposta.forEach((tipoComercial: any) => {
+          tipoComercial.dados.forEach((item: any) => {
+            const estado = item.nome_estado;
+            const valor = parseFloat(item.total_valor_fob);
+            if (!isNaN(valor)) {
+              if (!mapaEstados[estado]) mapaEstados[estado] = [];
+              mapaEstados[estado].push(valor);
+            } else {
+              console.warn(`⚠️ Valor inválido para ${estado}:`, item.total_valor_fob);
+            }
+          });
+        });
+  
+        const dadosConvertidos = Object.entries(mapaEstados).map(([estado, total_fob]) => ({
+          estado,
+          total_fob,
+        }));
+  
+        setDadosEstadoMapa(dadosConvertidos);
+  
+      } catch (erro) {
+        console.error("❌ Erro ao buscar ranking de estados:", erro);
+      }
+    };
+  
+    carregarRankingEstados();
+  }, [selectedPeriods]);
+  
+  
+
+  const getCorPorMovimento = (estado: string): string => {
+    const dado = dadosEstadoMapa.find((d) => d.estado === estado);
+    if (!dado) return "#f0f0f0"; // cor neutra se não houver dado
+
+    const exp = dado.total_fob[0]
+    const imp = dado.total_fob[1]
+    const intensidade = exp/imp
+    // const total = dado.total_fob;
+    // const max = Math.max(...dadosEstadoMapa.map((d) => d.total_fob)) || 1;
+  
+    // Novo cálculo com logaritmo para suavizar diferenças grandes
+    // console.log(`🔍 ${estado}: total = ${total}, max = ${max}`);
+    // const intensidade = Math.log(total + 1) / Math.log(max + 1);
+
+
+    console.log(`Cálculo da intensidade para ${estado}:`, intensidade);  
+  
+    if (intensidade > 1.1) return "#28965A"; // desempenho positivo
+    if (intensidade >= 0.9 && intensidade <= 1.1) return "#F9C846";  // neutro
+    if (intensidade >= 0.6) return "#F57C00"; // alerta
+    if (!dado) {
+      console.warn(`🔍 Estado não encontrado nos dados: ${estado}`);
+      return "#f0f0f0";
+    }
+    
+    else return "#D64045";                          // desempenho negativo
+
+  };  
+  
+  
+  useEffect(() => {
     const carregarDadosSetores = async () => {
-      console.log("⏳ Iniciando carregamento de dados dos setores...");
+      // console.log("⏳ Iniciando carregamento de dados dos setores...");
   
       if (!estadoSelecionado) {
-        console.warn("⚠️ Nenhum estado selecionado. Interrompendo fetch.");
+        // console.warn("⚠️ Nenhum estado selecionado. Interrompendo fetch.");
         return;
       }
   
@@ -84,19 +176,19 @@ export default function ConsultaEstado() {
       }
   
       const [codigoEstado] = codigos;
-      console.log("✅ Código do estado selecionado:", codigoEstado);
+      // console.log("✅ Código do estado selecionado:", codigoEstado);
   
       const anos =
         selectedPeriods.length > 0
           ? selectedPeriods.map(Number)
           : Array.from({ length: 2024 - 2014 + 1 }, (_, i) => 2014 + i);
   
-      console.log("📅 Anos usados na chamada:", anos);
+      // console.log("📅 Anos usados na chamada:", anos);
   
       try {
-        console.log("📡 Chamando função buscaVlFobSetores...");
+        // console.log("📡 Chamando função buscaVlFobSetores...");
         const dados = await buscaVlFobSetores(anos, [codigoEstado], undefined);
-        console.log("📥 Resposta da função buscaVlFobSetores:", dados);
+        // console.log("📥 Resposta da função buscaVlFobSetores:", dados);
   
         if (!dados || Object.keys(dados).length === 0) {
           console.warn("⚠️ Resposta vazia ou inválida da API.");
@@ -115,7 +207,7 @@ export default function ConsultaEstado() {
           };
         });
   
-        console.log("📊 Dados convertidos para o gráfico:", dadosConvertidos);
+        // console.log("📊 Dados convertidos para o gráfico:", dadosConvertidos);
         setDadosSetores(dadosConvertidos);
       } catch (erro) {
         console.error("❌ Erro ao buscar dados dos setores:", erro);
@@ -139,14 +231,14 @@ export default function ConsultaEstado() {
   
       try {
         // 🔹 Produtos exportados
-        console.log("🔍 Buscando produtos exportados para:", estadoCod, anos);
+        // console.log("🔍 Buscando produtos exportados para:", estadoCod, anos);
         const exp = await buscarRankingNcm("exp", 4, undefined, [estadoCod], anos);
-        console.log("📦 Produtos exportados:", exp);
+        // console.log("📦 Produtos exportados:", exp);
   
         // 🔹 Produtos importados
-        console.log("🔍 Buscando produtos importados para:", estadoCod, anos);
+        // console.log("🔍 Buscando produtos importados para:", estadoCod, anos);
         const imp = await buscarRankingNcm("imp", 4, undefined, [estadoCod], anos);
-        console.log("📦 Produtos importados:", imp);
+        // console.log("📦 Produtos importados:", imp);
   
         setExportados(
           exp && exp.length > 0
@@ -244,7 +336,6 @@ export default function ConsultaEstado() {
   style={{ height: "500px" }}  // fallback importante para evitar sumiço
 >
   <MapContainer
-    key={estadoSelecionado || "mapa"}
     center={[-14.235, -51.9253]}
     zoom={4}
     scrollWheelZoom={false}
@@ -276,7 +367,7 @@ export default function ConsultaEstado() {
               };
             }}
             onEachFeature={(feature, layer: Layer) => {
-              const nome = feature.properties?.Estado;
+              const nome = feature?.properties?.Estado;
               if (!nome) return;
 
               layer.on({
@@ -303,7 +394,7 @@ export default function ConsultaEstado() {
                 bg-white/10 text-white text-sm p-4 rounded-lg shadow-md 
                 backdrop-blur border border-white/20 
                 z-[1000] mt-4 lg:mt-0">
-  <h4 className="font-semibold mb-2">Legenda - Saldo Comercial</h4>
+  <h4 className="font-semibold mb-2">Legenda - Desempenho Comercial</h4>
   <ul className="flex flex-col gap-2 lg:flex-col">
     <li className="flex items-center space-x-2">
       <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#28965A" }}></span>
@@ -344,14 +435,27 @@ export default function ConsultaEstado() {
                 {(() => {
                   const anoKey = anoMaisProximo.toString() as keyof typeof info.pib;
                   const valorPib = info.pib[anoKey];
-
+                  const dados = dadosFiltrados.find((e) => e.estado === estadoSelecionado);
+                  const exp = dados?.exportacao
+                  const imp = dados?.importacao
                   return (
-                    <p>
-                      <span className="font-semibold">PIB:</span>{" "}
-                      {valorPib}
-                    </p>
+                    <div>
+                      <p>
+                        <span className="font-semibold">PIB:</span>{" "}
+                        {valorPib}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Exportação: $</span>{" "}
+                        {exp}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Importação: $</span>{" "}
+                        {imp}
+                      </p>
+                  </div>
                   );
                 })()}
+
               </div>
             )}
 

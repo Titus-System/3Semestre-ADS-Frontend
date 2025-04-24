@@ -7,7 +7,6 @@ export async function buscaBalancaComercial(
     try {
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         const url = new URL(`http://localhost:5000/busca_balanca_comercial`);
-        console.log("🔗 URL da requisição balança comercial:", url.toString());
         const appendListParams = (paramName: string, values?: number[]) => {
             values?.forEach(value => url.searchParams.append(paramName, value.toString()));
         };

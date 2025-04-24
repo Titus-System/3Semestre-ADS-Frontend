@@ -28,9 +28,8 @@ export async function buscaEstadoPorNome(nome:string){
     }
 }
 
-
 export async function buscarRankingEstados(
-    tipo: string,
+    tipo: string[],
     qtd: number,
     anos?: number[],
     meses?: number[],
@@ -41,22 +40,22 @@ export async function buscarRankingEstados(
 ){
     try {
         const base_url = "http://localhost:5000";
-        const url = new URL(`${base_url}/ranking_estados`);
-        url.searchParams.append('tipo', tipo);
+        const url = new URL(`${base_url}/ranking_estado`);
         url.searchParams.append('qtd', qtd.toString());
         if (crit) {
             url.searchParams.append('crit', crit);
         }
         url.searchParams.append('cresc', cresc.toString());
         
-        const appendListParams = (paramName: string, values?: number[]) => {
+        const appendListParams = (paramName: string, values?: number[]|string[]) => {
             values?.forEach(value => url.searchParams.append(paramName, value.toString()));
         };
+        appendListParams('tipo', tipo);
         appendListParams('ncm', ncm);
         appendListParams('paises', paises);
         appendListParams('anos', anos);
         appendListParams('meses', meses);
-
+        console.log("🔗 URL da requisição:", url.toString());
         const response = await fetch (url.toString(),{
             method:"GET",
             headers: {
