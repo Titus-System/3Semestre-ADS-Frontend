@@ -170,7 +170,7 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
     const imp = dado.total_fob[1]
     const intensidade = exp/imp
 
-    console.log(`Cálculo da intensidade para ${estado}:`, intensidade);  
+    //console.log(`Cálculo da intensidade para ${estado}:`, intensidade);  
   
     if (intensidade > 1.1) return "#28965A"; // desempenho positivo
     if (intensidade >= 0.9 && intensidade <= 1.1) return "#F9C846";  // neutro
