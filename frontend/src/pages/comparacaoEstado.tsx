@@ -1,7 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaShip, FaPlane, FaGlobe, FaBox, FaTrain, FaRoad, FaWater, FaBroadcastTower } from "react-icons/fa";
 import { IoBoat } from "react-icons/io5";
 import { GiPipes } from "react-icons/gi";
+import { BarChart, Bar, XAxis, YAxis, Tooltip as ChartTooltip, ResponsiveContainer } from "recharts";
+import geoData from "../assets/br_states.json";
+import type { FeatureCollection } from "geojson";
+import codigos_consulta from "../assets/codigos_consulta.json"
+import { busca_top_estados } from "../services/estadoService";
+
+import "../index.css"
+
+
+const Categorias = () => {
+    const [categorias, setCategorias] = useState(Object.keys(codigos_consulta));
+}
+// Extrai nomes dos estados
+const estados = (geoData as FeatureCollection).features.map(
+    (feature) => feature.properties?.Estado || "Desconhecido"
+);
 
 export default function ComparacaoEstados() {
     const transportModes = [
@@ -21,6 +37,7 @@ export default function ComparacaoEstados() {
     const [selectedPeriods, setSelectedPeriods] = useState<number[]>([]);
     const [mercadoria, setMercadoria] = useState("");
     const [tipoProcesso, setTipoProcesso] = useState<"exp" | "imp" | null>(null);
+    const [graficoData, setGraficoData] = useState<any[]>([]); // Adiciona o estado para os dados do gráfico
 
     const toggleModeSelection = (id: number) => {
         setSelectedModes((prev) =>
@@ -38,6 +55,71 @@ export default function ComparacaoEstados() {
         id: 2014 + i,
         label: `${2014 + i}`,
     }));
+
+    const handleTipoProcessoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setTipoProcesso(event.target.value as "exp" | "imp");
+    };
+
+    const anoMaisProximo = selectedPeriods.length > 0
+        ? selectedPeriods.some((ano) => ano >= 2023)
+            ? 2022
+            : selectedPeriods.reduce((prev, curr) =>
+                Math.abs(curr - 2022) < Math.abs(prev - 2022) ? curr : prev
+            )
+        : 2022;
+
+    useEffect(() => {
+        const busca_top_estado = async () => {
+            const anosSelecionados = selectedPeriods.length > 0
+                ? selectedPeriods.map(Number)
+                : Array.from({ length: 2024 - 2014 + 1 }, (_, i) => 2014 + i);
+
+            const ncmDigitado = mercadoria.trim();
+            const viasSelecionadas = selectedModes.length > 0 ? selectedModes : undefined;
+            const tipoSelecionado =  tipoProcesso || "exp"; // fallback se não selecionado
+
+            try {
+                const respostaApi = await busca_top_estados(
+                    tipoSelecionado, // Tipos de processo
+                    27, // Quantidade de estados
+                    anosSelecionados, // Anos selecionados
+                    undefined, // Meses não utilizados
+                    ncmDigitado ? [Number(ncmDigitado)] : undefined, // NCM digitado
+                    undefined, // Países não utilizados
+                    viasSelecionadas, // Vias selecionadas
+                    undefined, // URFs não utilizados
+                    undefined, // Municípios não utilizados
+                    0 // Crescente
+                );
+
+                console.log("🔎 Resultado da função buscarRankingEstados:", respostaApi);
+
+                if (!respostaApi || respostaApi.length === 0) {
+                    console.warn("⚠️ Resposta vazia da função buscarRankingEstados.");
+                    return;
+                }
+
+                // Processando os dados da resposta para o gráfico de comparação
+                const dadosGrafico = respostaApi.map((item) => ({
+                    estado: item.estado,
+                    valor: item.valor_fob, // Substitua por outro campo, se necessário
+                    tipo: item.tipo, // Inclui o tipo de transação para comparação (exp/imp)
+                    ncm: item.ncm, // Se necessário para filtrar ou comparar mais detalhadamente
+                }));
+
+                // Atualiza o estado com os dados para renderizar no gráfico
+                setGraficoData(dadosGrafico);
+
+            } catch (erro) {
+                console.error("❌ Erro ao buscar ranking de estados:", erro);
+            }
+        };
+
+        // Executa a busca apenas se tipoProcesso e mercadoria estiverem definidos
+        if (tipoProcesso && mercadoria.trim()) {
+            busca_top_estado();
+        }
+    }, [selectedPeriods, selectedModes, tipoProcesso, mercadoria]); // Dependências
 
     return (
         <div className="flex flex-col items-center min-h-screen bg-[#656586] p-4 sm:p-6">
@@ -62,21 +144,19 @@ export default function ComparacaoEstados() {
                         <div className="inline-flex rounded-md shadow-sm">
                             <button
                                 onClick={() => setTipoProcesso("exp")}
-                                className={`p-3 border border-gray-300 rounded-l-full w-1/2 h-16 font-bold ${
-                                    tipoProcesso === "exp"
-                                        ? "bg-gray-900 text-white"
-                                        : "bg-white text-gray-900 hover:bg-gray-300"
-                                }`}
+                                className={`p-3 border border-gray-300 rounded-l-full w-1/2 h-16 font-bold ${tipoProcesso === "exp"
+                                    ? "bg-gray-900 text-white"
+                                    : "bg-white text-gray-900 hover:bg-gray-300"
+                                    }`}
                             >
                                 Exportação
                             </button>
                             <button
                                 onClick={() => setTipoProcesso("imp")}
-                                className={`p-3 border border-gray-300 border-l-0 rounded-r-full w-1/2 h-16 font-bold ${
-                                    tipoProcesso === "imp"
-                                        ? "bg-gray-900 text-white"
-                                        : "bg-white text-gray-900 hover:bg-gray-300"
-                                }`}
+                                className={`p-3 border border-gray-300 border-l-0 rounded-r-full w-1/2 h-16 font-bold ${tipoProcesso === "imp"
+                                    ? "bg-gray-900 text-white"
+                                    : "bg-white text-gray-900 hover:bg-gray-300"
+                                    }`}
                             >
                                 Importação
                             </button>
@@ -110,11 +190,10 @@ export default function ComparacaoEstados() {
                             return (
                                 <button
                                     key={mode.codigo}
-                                    className={`relative group p-3 rounded-full text-xl transition-all duration-200 ${
-                                        isSelected
-                                            ? "bg-gray-900 text-white border-2 border-white"
-                                            : "text-gray-700 hover:bg-gray-200"
-                                    }`}
+                                    className={`relative group p-3 rounded-full text-xl transition-all duration-200 ${isSelected
+                                        ? "bg-gray-900 text-white border-2 border-white"
+                                        : "text-gray-700 hover:bg-gray-200"
+                                        }`}
                                     onClick={() => toggleModeSelection(mode.codigo)}
                                 >
                                     {mode.icon}
@@ -153,11 +232,10 @@ export default function ComparacaoEstados() {
                             return (
                                 <button
                                     key={period.id}
-                                    className={`px-1 py-2 rounded-full transition-all duration-200 ${
-                                        isSelected
-                                            ? "bg-gray-900 text-white border-2 border-white"
-                                            : "text-gray-700 hover:bg-gray-200"
-                                    }`}
+                                    className={`px-1 py-2 rounded-full transition-all duration-200 ${isSelected
+                                        ? "bg-gray-900 text-white border-2 border-white"
+                                        : "text-gray-700 hover:bg-gray-200"
+                                        }`}
                                     onClick={() => togglePeriodSelection(period.id)}
                                 >
                                     {period.label}
@@ -169,9 +247,27 @@ export default function ComparacaoEstados() {
             </div>
 
             <div className="flex flex-col space-y-4 w-full mt-8">
-                    <button className="bg-gray-900 text-white text-sm sm:text-md font-bold p-2 sm:p-3 rounded-full shadow-md hover:bg-[#11114E] w-[200px] sm:w-1/4 mx-auto">
-                        Gerar Gráfico
-                    </button>
+                <button className="bg-gray-900 text-white text-sm sm:text-md font-bold p-2 sm:p-3 rounded-full shadow-md hover:bg-[#11114E] w-[200px] sm:w-1/4 mx-auto">
+                    Gerar Gráfico
+                </button>
+            </div>
+
+             
+
+            {/* Gráfico de comparação */}
+            <div className="mt-8 w-full max-w-5xl mx-auto">
+                {graficoData.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={400}>
+                        <BarChart data={graficoData}>
+                            <XAxis dataKey="estado" />
+                            <YAxis />
+                            <ChartTooltip />
+                            <Bar dataKey="valor" fill="#8884d8" />
+                        </BarChart>
+                    </ResponsiveContainer>
+                ) : (
+                    <p className="text-white text-center text-lg">Nenhum dado disponível para o gráfico.</p>
+                )}
             </div>
 
         </div>
