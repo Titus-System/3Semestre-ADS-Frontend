@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { FaSpinner } from 'react-icons/fa';
-import { MapContainer, GeoJSON, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, GeoJSON, TileLayer } from "react-leaflet";
 import { BarChart, Bar, XAxis, YAxis, Tooltip as ChartTooltip, ResponsiveContainer } from "recharts";
 import type { FeatureCollection } from "geojson";
 import type { Layer, LeafletMouseEvent } from "leaflet";
@@ -21,20 +21,6 @@ import "../index.css"
 const estados = (geoData as FeatureCollection).features.map(
   (feature) => feature.properties?.Estado || "Desconhecido"
 );
-
-// Cor por saldo comercial
-// function getCorPorMovimento(estado: string): string => {
-//   const dado = dadosEstadoMapa.find((d) => d.estado === estado);
-//   const found = dados.find((d) => d.estado === estado);
-//   if (!found) return "#ccc";
-//   const saldo = found.exportacao - found.importacao;
-
-//   if (saldo > 200) return "#28965A";
-//   if (saldo > 0) return "#F9C846";
-//   if (saldo > -50) return "#F57C00";
-//   if (saldo > -200) return "#D64045";
-//   return "#D64045";
-// }
 
 export default function ConsultaEstado() {
   const [loading, setLoading] = useState(true);
@@ -65,18 +51,6 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
   const handlePeriodosSelecionados = (periodos: number[]) => {
     setSelectedPeriods(periodos);
   };
-
-  // const RedimensionarMapa = () => {
-  //   const map = useMap();
-  
-  //   useEffect(() => {
-  //     setTimeout(() => {
-  //       map.invalidateSize();
-  //     }, 100); // pequeno delay para garantir que o DOM aplicou o novo tamanho
-  //   }, [map]);
-  
-  //   return null;
-  // };
 
   const { isSmallScreen, isSmallerScreen } = useScreenSize();
 
@@ -145,7 +119,6 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
 
         console.log("🔎 Resultado bruto da função buscarRankingEstados:", respostaApi);
   
-        // ✅ CORREÇÃO AQUI: extrair 'resposta' da resposta da API
         const resposta = respostaApi;
   
         // console.log("📦 Resposta completa da API:", respostaApi);
@@ -188,8 +161,6 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
   
     carregarRankingEstados();
   }, [selectedPeriods]);
-  
-  
 
   const getCorPorMovimento = (estado: string): string => {
     const dado = dadosEstadoMapa.find((d) => d.estado === estado);
@@ -198,13 +169,6 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
     const exp = dado.total_fob[0]
     const imp = dado.total_fob[1]
     const intensidade = exp/imp
-    // const total = dado.total_fob;
-    // const max = Math.max(...dadosEstadoMapa.map((d) => d.total_fob)) || 1;
-  
-    // Novo cálculo com logaritmo para suavizar diferenças grandes
-    // console.log(`🔍 ${estado}: total = ${total}, max = ${max}`);
-    // const intensidade = Math.log(total + 1) / Math.log(max + 1);
-
 
     console.log(`Cálculo da intensidade para ${estado}:`, intensidade);  
   
@@ -291,12 +255,12 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
         : [];
   
       try {
-        // 🔹 Produtos exportados
+        // Produtos exportados
         // console.log("🔍 Buscando produtos exportados para:", estadoCod, anos);
         const exp = await buscarRankingNcm("exp", 4, undefined, [estadoCod], anos);
         // console.log("📦 Produtos exportados:", exp);
   
-        // 🔹 Produtos importados
+        // Produtos importados
         // console.log("🔍 Buscando produtos importados para:", estadoCod, anos);
         const imp = await buscarRankingNcm("imp", 4, undefined, [estadoCod], anos);
         // console.log("📦 Produtos importados:", imp);
@@ -344,7 +308,7 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
   
       const anos = selectedPeriods.length > 0
         ? selectedPeriods.map(Number)
-        : []; // Todos os anos de 2014 a 2024
+        : []; 
   
       try {
         const resposta = await buscaBalancaComercial(anos, [estadoCod]);
@@ -394,7 +358,7 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
 
       <div
   className="relative w-full mb-28 sm:mb-44 map-wrapper"
-  style={{ height: "500px" }}  // fallback importante para evitar sumiço
+  style={{ height: "500px" }} 
 >{loading ? ( // Verifica o estado de carregamento
             <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center z-[999] bg-transparent flex flex-col">
               <FaSpinner className="animate-spin text-blue-500 text-5xl" /> {/* Ícone de carregamento */}
@@ -416,7 +380,6 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
     }}
     className="h-full"
   >
-    {/* <RedimensionarMapa /> */}
           <TileLayer
             url="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAkcBT2Od3Y4AAAAASUVORK5CYII="
             attribution=""
@@ -461,7 +424,7 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
                 backdrop-blur border border-white/20 
                 z-[1000] mt-4 lg:mt-0">
   <h4 className="font-semibold">Legenda - Balança Comercial</h4>
-  <p className="mb-3 opacity-75">Cálculo: exportações/importações</p>
+  <p className="mb-3 opacity-75">Cálculo: exportações / importações</p>
   <ul className="flex flex-col gap-2 lg:flex-col">
     <li className="flex items-center space-x-2">
       <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#28965A" }}></span>
