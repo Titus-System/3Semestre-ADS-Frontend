@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import { MapContainer, GeoJSON, TileLayer } from "react-leaflet";
+import { useState, useEffect, useRef } from "react";
+import { FaSpinner } from 'react-icons/fa';
+import { MapContainer, GeoJSON, TileLayer, useMap } from "react-leaflet";
 import { BarChart, Bar, XAxis, YAxis, Tooltip as ChartTooltip, ResponsiveContainer } from "recharts";
 import type { FeatureCollection } from "geojson";
 import type { Layer, LeafletMouseEvent } from "leaflet";
@@ -36,6 +37,12 @@ const estados = (geoData as FeatureCollection).features.map(
 // }
 
 export default function ConsultaEstado() {
+  const [loading, setLoading] = useState(true);
+
+  const formatNumber = (num: number) => {
+    return new Intl.NumberFormat('pt-BR').format(num);
+  };
+
   const [estadoSelecionado, setEstadoSelecionado] = useState<string | null>(null);
   const [selectedPeriods, setSelectedPeriods] = useState<number[]>([]);
   const [dadosSetores, setDadosSetores] = useState<{ setor: string; exportacao: number; importacao: number }[]>([]);
@@ -59,6 +66,49 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
     setSelectedPeriods(periodos);
   };
 
+  // const RedimensionarMapa = () => {
+  //   const map = useMap();
+  
+  //   useEffect(() => {
+  //     setTimeout(() => {
+  //       map.invalidateSize();
+  //     }, 100); // pequeno delay para garantir que o DOM aplicou o novo tamanho
+  //   }, [map]);
+  
+  //   return null;
+  // };
+
+  const { isSmallScreen, isSmallerScreen } = useScreenSize();
+
+  function useScreenSize() {
+    const [isSmallScreen, setIsSmallScreen] = useState(false);
+    const [isSmallerScreen, setIsSmallerScreen] = useState(false);
+  
+    useEffect(() => {
+      const handleResize = () => {
+        const width = window.innerWidth;
+  
+        if (width <= 628) {
+          setIsSmallerScreen(true);
+          setIsSmallScreen(false);
+        } else if (width <= 768) {
+          setIsSmallerScreen(false);
+          setIsSmallScreen(true);
+        } else {
+          setIsSmallerScreen(false);
+          setIsSmallScreen(false);
+        }
+      };
+  
+      window.addEventListener("resize", handleResize);
+      handleResize(); // run once on mount
+  
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+  
+    return { isSmallScreen, isSmallerScreen };
+  }
+
   const anoMaisProximo = selectedPeriods.length > 0
   ? selectedPeriods.some((ano) => ano >= 2023)
     ? 2022
@@ -67,13 +117,21 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
       )
   : 2022;
 
+  const formatarNumeroEixoY = (valor: number) => {
+    if (valor >= 1_000_000_000) return (valor / 1_000_000_000).toFixed(1) + 'B';
+    if (valor >= 1_000_000) return (valor / 1_000_000).toFixed(1) + 'M';
+    if (valor >= 1_000) return (valor / 1_000).toFixed(1) + 'K';
+    return valor.toString();
+  };
+
   useEffect(() => {
     const carregarRankingEstados = async () => {
       const anos = selectedPeriods.length > 0
         ? selectedPeriods.map(Number)
-        : Array.from({ length: 2024 - 2014 + 1 }, (_, i) => 2014 + i);
+        : [];
   
       try {
+        setLoading(true);
         const respostaApi = await buscarRankingEstados(
           ["exp", "imp"],
           27,
@@ -95,6 +153,7 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
   
         if (!resposta || resposta.length === 0) {
           console.warn("⚠️ Resposta vazia da função buscarRankingEstados.");
+          setLoading(false);
           return;
         }
   
@@ -119,9 +178,11 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
         }));
   
         setDadosEstadoMapa(dadosConvertidos);
+        setLoading(false);
   
       } catch (erro) {
         console.error("❌ Erro ao buscar ranking de estados:", erro);
+        setLoading(false);
       }
     };
   
@@ -181,7 +242,7 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
       const anos =
         selectedPeriods.length > 0
           ? selectedPeriods.map(Number)
-          : Array.from({ length: 2024 - 2014 + 1 }, (_, i) => 2014 + i);
+          : [];
   
       // console.log("📅 Anos usados na chamada:", anos);
   
@@ -227,7 +288,7 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
   
       const anos = selectedPeriods.length > 0
         ? selectedPeriods.map(Number)
-        : Array.from({ length: 2024 - 2014 + 1 }, (_, i) => 2014 + i);
+        : [];
   
       try {
         // 🔹 Produtos exportados
@@ -283,7 +344,7 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
   
       const anos = selectedPeriods.length > 0
         ? selectedPeriods.map(Number)
-        : Array.from({ length: 2024 - 2014 + 1 }, (_, i) => 2014 + i); // Todos os anos de 2014 a 2024
+        : []; // Todos os anos de 2014 a 2024
   
       try {
         const resposta = await buscaBalancaComercial(anos, [estadoCod]);
@@ -334,7 +395,12 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
       <div
   className="relative w-full mb-28 sm:mb-44 map-wrapper"
   style={{ height: "500px" }}  // fallback importante para evitar sumiço
->
+>{loading ? ( // Verifica o estado de carregamento
+            <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center z-[999] bg-transparent flex flex-col">
+              <FaSpinner className="animate-spin text-blue-500 text-5xl" /> {/* Ícone de carregamento */}
+              <p className="mt-3">Carregando cores para o mapa...</p>
+            </div>
+          ) : null}
   <MapContainer
     center={[-14.235, -51.9253]}
     zoom={4}
@@ -346,11 +412,11 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
     keyboard={false}
     style={{
       height: "100%",
-      width: "100%",
       backgroundColor: "transparent"
     }}
     className="h-full"
   >
+    {/* <RedimensionarMapa /> */}
           <TileLayer
             url="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAkcBT2Od3Y4AAAAASUVORK5CYII="
             attribution=""
@@ -394,7 +460,8 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
                 bg-white/10 text-white text-sm p-4 rounded-lg shadow-md 
                 backdrop-blur border border-white/20 
                 z-[1000] mt-4 lg:mt-0">
-  <h4 className="font-semibold mb-2">Legenda - Desempenho Comercial</h4>
+  <h4 className="font-semibold">Legenda - Balança Comercial</h4>
+  <p className="mb-3 opacity-75">Cálculo: exportações/importações</p>
   <ul className="flex flex-col gap-2 lg:flex-col">
     <li className="flex items-center space-x-2">
       <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#28965A" }}></span>
@@ -423,13 +490,14 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
           <div className="flex flex-wrap justify-center w-full mx-auto px-4 gap-6">
             {/* Caixa de informações do estado */}
             {info && (
-              <div className="bg-white/10 border border-white/20 backdrop-blur rounded-lg p-4 text-white space-y-2 shadow-lg 
-              w-full md:w-5/12 mx-auto
-              text-base lg:text-sm sm:text-xs
+              <div className="bg-white/10 border border-white/20 backdrop-blur rounded-lg p-4 text-white space-y-3 shadow-lg 
+                  w-full sm:w-full md:w-full lg:w-full xl:w-5/12 2xl:w-5/12 md:w-5/12 
+                  mx-auto
+                  text-base
             ">            
                 <h3 className="text-xl font-bold">{info.estado}</h3>
-                <p><span className="font-semibold">Capital:</span> {info.capital}</p>
-                <p><span className="font-semibold">Área Territorial:</span> {info.area}</p>
+                <p><span className="font-bold">Capital:</span> {info.capital}</p>
+                <p><span className="font-bold">Área Territorial:</span> {info.area}</p>
 
                 {/* Cálculo seguro do PIB por ano mais próximo */}
                 {(() => {
@@ -440,18 +508,16 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
                   const imp = dados?.importacao
                   return (
                     <div>
-                      <p>
-                        <span className="font-semibold">PIB:</span>{" "}
+                      <p className="mb-2">
+                        <span className="font-bold">PIB:</span>{" "}
                         {valorPib}
                       </p>
-                      <p>
-                        <span className="font-semibold">Exportação: $</span>{" "}
-                        {exp}
-                      </p>
-                      <p>
-                        <span className="font-semibold">Importação: $</span>{" "}
-                        {imp}
-                      </p>
+                      <ul className="list-disc pl-5">
+                        <li><span className="font-medium">Exportação: $</span>{" "}
+                        {exp ? formatNumber(exp) : 'N/A'}</li>
+                        <li><span className="font-medium">Importação: $</span>{" "}
+                        {imp ? formatNumber(imp) : 'N/A'}</li>
+                      </ul>
                   </div>
                   );
                 })()}
@@ -461,56 +527,37 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
 
             {/* Nova caixa de informações adicional */}
             <div className="bg-white/10 border border-white/20 backdrop-blur rounded-lg p-4 text-white space-y-2 shadow-lg 
-            w-full md:w-5/12 mx-auto
-            text-base lg:text-sm sm:text-xs
+            w-full sm:w-full md:w-full lg:w-full xl:w-5/12 2xl:w-5/12 mx-auto
+            text-base
           ">
 
               <h3 className="text-xl font-bold">Economia e Comércio</h3>
               <div>
-                  <p className="font-semibold">Produtos mais exportados:</p>
-                  <ul>
-                  {exportados.map((produto, index) => (
-                    <li key={index}>{produto}</li>
-                  ))}
-                </ul>
-              </div>
-                <div>
-                  <p className="font-semibold">Produtos mais importados:</p>
-                  <ul>
-                  {importados.map((produto, index) => (
-                    <li key={index}>{produto}</li>
-                  ))}
-                </ul>
+                  <p><strong>Produtos mais exportados:</strong> {exportados.join(", ")}</p>
               </div>
               <div>
-              <p>Exportadores:</p>
-              <ul className="list-disc list-inside">
-                {exportadores.map((pais, idx) => (
-                  <li key={idx}>{pais}</li>
-                ))}
-              </ul>
+                <p><strong>Produtos mais importados:</strong> {importados.join(", ")}</p>
               </div>
               <div>
-              <p>Importadores:</p>
-              <ul className="list-disc list-inside">
-                {importadores.map((pais, idx) => (
-                  <li key={idx}>{pais}</li>
-                ))}
-              </ul>
+                <p><strong>Exportadores:</strong> {exportadores.join(", ")}</p>
+              </div>
+              <div>
+              <p><strong>Importadores:</strong> {importadores.join(", ")}</p>
               </div>
             </div>
           </div>
 
-        <div className="flex flex-wrap justify-center w-full mx-auto px-4">
+        <div className="flex flex-wrap justify-center items-center w-full mx-auto px-4">
           {/* Gráfico de barras - Setores Econômicos */}
-          <div className="md:w-5/12 mx-auto">
+          <div className="md:w-full lg:w-8/12 xl:w-2/4 2xl:w-2/4 mx-auto">
             <h3 className="text-white mt-6 mb-4 text-lg font-medium">
               Exportações vs Importações por Setor: {estadoSelecionado}
             </h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={dadosSetores} >
-                <XAxis dataKey="setor" stroke="#ffffff" tick={{ fontSize: 10.5, fill: "#ffffff" }} interval={0} />
-                <YAxis stroke="#ffffff" tick={{ fill: "#ffffff" }} domain={[0, 'dataMax']} allowDataOverflow={true}/>
+                <XAxis dataKey="setor" stroke="#ffffff" tick={{fontSize: isSmallerScreen ? 0 : isSmallScreen ? 8 : 10, fill: "#ffffff"}} interval={0} />
+                <YAxis stroke="#ffffff" tick={{ fill: "#ffffff"}} domain={[0, 'dataMax']} allowDataOverflow={true} tickFormatter={formatarNumeroEixoY} minTickGap={15}  interval="preserveStartEnd"/>
+                
                 <ChartTooltip />
                 <Bar dataKey="exportacao" fill="#66bb6a" name="Exportações" />
                 <Bar dataKey="importacao" fill="#42a5f5" name="Importações" />
@@ -519,14 +566,14 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
           </div>
 
           {/* Gráfico de barras - Exportações vs Importações */}
-          <div className="md:w-5/12 mx-auto">
+          <div className="md:w-full lg:w-3/12 xl:w-3/12 2xl:w-3/12 mx-auto">
             <h3 className="text-white mt-6 mb-4 text-lg font-medium">
               Exportações vs Importações: {estadoSelecionado}
             </h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={dadosFiltrados}>
                 <XAxis dataKey="estado" stroke="#ffffff" />
-                <YAxis stroke="#ffffff" />
+                <YAxis stroke="#ffffff" tickFormatter={formatarNumeroEixoY}/>
                 <ChartTooltip />
                 <Bar dataKey="exportacao" fill="#66bb6a" name="Exportações" />
                 <Bar dataKey="importacao" fill="#42a5f5" name="Importações" />
