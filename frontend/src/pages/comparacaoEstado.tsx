@@ -100,13 +100,9 @@ export default function ComparacaoEstados() {
                 }
 
                 // Processando os dados da resposta para o gráfico de comparação
-                const dadosGrafico = respostaApi.map((item) => ({
-                    estado: item.estado,
-                    valor: item.valor_fob, // Substitua por outro campo, se necessário
-                    tipo: item.tipo, // Inclui o tipo de transação para comparação (exp/imp)
-                    ncm: item.ncm, // Se necessário para filtrar ou comparar mais detalhadamente
-                }));
+                const dadosGrafico = respostaApi[0].dados
 
+                console.log("grafico data:", dadosGrafico)
                 // Atualiza o estado com os dados para renderizar no gráfico
                 setGraficoData(dadosGrafico);
 
@@ -259,10 +255,10 @@ export default function ComparacaoEstados() {
                 {graficoData.length > 0 ? (
                     <ResponsiveContainer width="100%" height={400}>
                         <BarChart data={graficoData}>
-                            <XAxis dataKey="estado" />
+                            <XAxis dataKey="sigla_estado" />
                             <YAxis />
                             <ChartTooltip />
-                            <Bar dataKey="valor" fill="#8884d8" />
+                            <Bar dataKey="total_valor_fob" fill="#8884d8" />
                         </BarChart>
                     </ResponsiveContainer>
                 ) : (
