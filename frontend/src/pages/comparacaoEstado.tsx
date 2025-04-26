@@ -37,7 +37,8 @@ export default function ComparacaoEstados() {
     const [selectedPeriods, setSelectedPeriods] = useState<number[]>([]);
     const [mercadoria, setMercadoria] = useState("");
     const [tipoProcesso, setTipoProcesso] = useState<"exp" | "imp" | null>(null);
-    const [graficoData, setGraficoData] = useState<any[]>([]); // Adiciona o estado para os dados do gráfico
+    const [graficoData, setGraficoData] = useState<any[]>([]);
+    const [exibirGrafico, setExibirGrafico] = useState(false);
 
     const toggleModeSelection = (id: number) => {
         setSelectedModes((prev) =>
@@ -68,54 +69,56 @@ export default function ComparacaoEstados() {
             )
         : 2022;
 
-    useEffect(() => {
-        const busca_top_estado = async () => {
-            const anosSelecionados = selectedPeriods.length > 0
-                ? selectedPeriods.map(Number)
-                : Array.from({ length: 2024 - 2014 + 1 }, (_, i) => 2014 + i);
+    const busca_top_estado = async () => {
+        const anosSelecionados = selectedPeriods.length > 0
+            ? selectedPeriods.map(Number)
+            : Array.from({ length: 2024 - 2014 + 1 }, (_, i) => 2014 + i);
 
-            const ncmDigitado = mercadoria.trim();
-            const viasSelecionadas = selectedModes.length > 0 ? selectedModes : undefined;
-            const tipoSelecionado =  tipoProcesso || "exp"; // fallback se não selecionado
+        const ncmDigitado = mercadoria.trim();
+        const viasSelecionadas = selectedModes.length > 0 ? selectedModes : undefined;
+        const tipoSelecionado = tipoProcesso || "exp"; // fallback se não selecionado
 
-            try {
-                const respostaApi = await busca_top_estados(
-                    tipoSelecionado, // Tipos de processo
-                    27, // Quantidade de estados
-                    anosSelecionados, // Anos selecionados
-                    undefined, // Meses não utilizados
-                    ncmDigitado ? [Number(ncmDigitado)] : undefined, // NCM digitado
-                    undefined, // Países não utilizados
-                    viasSelecionadas, // Vias selecionadas
-                    undefined, // URFs não utilizados
-                    undefined, // Municípios não utilizados
-                    0 // Crescente
-                );
+        try {
+            const respostaApi = await busca_top_estados(
+                tipoSelecionado, // Tipos de processo
+                27, // Quantidade de estados
+                anosSelecionados, // Anos selecionados
+                undefined, // Meses não utilizados
+                ncmDigitado ? [Number(ncmDigitado)] : undefined, // NCM digitado
+                undefined, // Países não utilizados
+                viasSelecionadas, // Vias selecionadas
+                undefined, // URFs não utilizados
+                undefined, // Municípios não utilizados
+                0 // Crescente
+            );
 
-                console.log("🔎 Resultado da função buscarRankingEstados:", respostaApi);
+            console.log("🔎 Resultado da função buscarRankingEstados:", respostaApi);
 
-                if (!respostaApi || respostaApi.length === 0) {
-                    console.warn("⚠️ Resposta vazia da função buscarRankingEstados.");
-                    return;
-                }
-
-                // Processando os dados da resposta para o gráfico de comparação
-                const dadosGrafico = respostaApi[0].dados
-
-                console.log("grafico data:", dadosGrafico)
-                // Atualiza o estado com os dados para renderizar no gráfico
-                setGraficoData(dadosGrafico);
-
-            } catch (erro) {
-                console.error("❌ Erro ao buscar ranking de estados:", erro);
+            if (!respostaApi || respostaApi.length === 0) {
+                console.warn("⚠️ Resposta vazia da função buscarRankingEstados.");
+                return;
             }
-        };
 
-        // Executa a busca apenas se tipoProcesso e mercadoria estiverem definidos
-        if (tipoProcesso && mercadoria.trim()) {
-            busca_top_estado();
+            // Processando os dados da resposta para o gráfico de comparação
+            const dadosGrafico = respostaApi[0].dados
+
+            console.log("grafico data:", dadosGrafico)
+            // Atualiza o estado com os dados para renderizar no gráfico
+            setGraficoData(dadosGrafico);
+
+        } catch (erro) {
+            console.error("❌ Erro ao buscar ranking de estados:", erro);
         }
-    }, [selectedPeriods, selectedModes, tipoProcesso, mercadoria]); // Dependências
+    };
+
+    const handleClickGerarGrafico = async () => {
+        await busca_top_estado();
+        setExibirGrafico(true);
+    }
+
+    const maxValor = graficoData.length > 0
+        ? Math.max(...graficoData.map(item => item.total_valor_fob))
+        : 0;
 
     return (
         <div className="flex flex-col items-center min-h-screen bg-[#656586] p-4 sm:p-6">
@@ -161,7 +164,7 @@ export default function ComparacaoEstados() {
                 </div>
 
                 {/* Modal de Transporte */}
-                <div className="flex flex-col space-y-4 h-auto w-full max-w-5xl mt-6">
+                <div className="flex flex-col space-y-4 h-auto w-full max-w-7xl mt-6">
                     <p className="text-black text-xl font-semibold text-center">Defina o modal de transporte</p>
 
                     {/* Dropdown para telas menores */}
@@ -203,7 +206,7 @@ export default function ComparacaoEstados() {
                 </div>
 
                 {/* Período de Análise */}
-                <div className="flex flex-col space-y-2 h-auto w-full max-w-5xl mt-6">
+                <div className="flex flex-col space-y-2 h-auto w-full max-w-7xl mt-6">
                     <p className="text-black text-xl font-semibold text-center">Defina o período de análise</p>
 
                     {/* Dropdown para telas menores */}
@@ -243,28 +246,47 @@ export default function ComparacaoEstados() {
             </div>
 
             <div className="flex flex-col space-y-4 w-full mt-8">
-                <button className="bg-gray-900 text-white text-sm sm:text-md font-bold p-2 sm:p-3 rounded-full shadow-md hover:bg-[#11114E] w-[200px] sm:w-1/4 mx-auto">
+                <button className="bg-gray-900 text-white text-sm sm:text-md font-bold p-2 sm:p-3 rounded-full shadow-md hover:bg-[#11114E] w-[200px] sm:w-1/4 mx-auto"
+                    onClick={handleClickGerarGrafico}
+                >
                     Gerar Gráfico
                 </button>
             </div>
 
-             
+            {exibirGrafico && graficoData.length > 0 ? (
+                <div className="bg-indigo-950 p-7 rounded-2xl shadow-xl w-full space-y-6 text-white mt-6">
+                    <div className="bg-white p-7 rounded-2xl shadow-xl w-full space-y-10 text-white mt-6">
+                        <h2 className="text-center text-xl font-bold text-indigo-950">
+                            Gráfico de Comparação de Valores entre os Estados
+                        </h2>
+                        <div className="mt-8 w-full mx-auto">
+                            {/* Gráfico para telas maiores */}
+                            <div className="hidden md:block">
+                                <ResponsiveContainer width="100%" height={400}>
+                                    <BarChart data={graficoData} margin={{ left: 70 }}>
+                                        <XAxis dataKey="sigla_estado" tick={{ fill: "#11114E" }} />
+                                        <YAxis tick={{ fill: "#11114E" }} domain={[0, Math.ceil(maxValor * 1.1)]} tickFormatter={(value) => { return Math.round(value).toString() }} />
+                                        <ChartTooltip />
+                                        <Bar dataKey="total_valor_fob" fill="#11114E" />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
 
-            {/* Gráfico de comparação */}
-            <div className="mt-8 w-full max-w-5xl mx-auto">
-                {graficoData.length > 0 ? (
-                    <ResponsiveContainer width="100%" height={400}>
-                        <BarChart data={graficoData}>
-                            <XAxis dataKey="sigla_estado" />
-                            <YAxis />
-                            <ChartTooltip />
-                            <Bar dataKey="total_valor_fob" fill="#8884d8" />
-                        </BarChart>
-                    </ResponsiveContainer>
-                ) : (
-                    <p className="text-white text-center text-lg">Nenhum dado disponível para o gráfico.</p>
-                )}
-            </div>
+                            {/* Gráfico para telas menores */}
+                            <div className="block md:hidden">
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <BarChart data={graficoData} margin={{ left: 50 }}>
+                                        <XAxis dataKey="sigla_estado" tick={{ fill: "#11114E" }} />
+                                        <YAxis tick={{ fill: "#11114E" }} domain={[0, Math.ceil(maxValor * 1.1)]} tickFormatter={(value) => { return Math.round(value).toString() }} />
+                                        <ChartTooltip />
+                                        <Bar dataKey="total_valor_fob" fill="#11114E" />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ) : null}
 
         </div>
     );
