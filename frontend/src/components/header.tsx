@@ -5,7 +5,12 @@ export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <header className="bg-[#0A0A37] text-white p-4">
+        <div className="relative">
+            {/* Degradê de fundo */}
+            <div className="absolute inset-0 h-96 bg-gradient-to-b from-[#0A0A37] to-transparent pointer-events-none">
+        </div>
+
+        <header className="relative z-10 bg-transparent text-white p-4">
             <div className="container mx-auto flex justify-between items-center gap-3"> {/* Adicionado gap */}
                 {/* Logo e Título */}
                 <div className="flex items-center gap-x-2 sm:gap-x-4 flex-shrink-0">
@@ -55,6 +60,6 @@ export default function Header() {
                 </button>
             </div>
         </header>
-
+       </div> 
     );
 }

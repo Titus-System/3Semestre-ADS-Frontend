@@ -159,7 +159,7 @@ export default function PaginaRanking() {
 
     
 
-    <div className=" from-indigo-900 to-indigo-950 min-h-screen flex items-center justify-center p-4">
+    <div className="relative from-indigo-900 to-indigo-950 min-h-screen flex items-center justify-center p-4">
 
       
       <div className="flex flex-col items-center w-full max-w-6xl space-y-6">
@@ -172,7 +172,6 @@ export default function PaginaRanking() {
           <p className="text-white text-xl font-semibold flex justify-center mt-8">
             Defina o período de análise
           </p>
-          <p>teste</p>
         </div>
 
       <div className="bg-indigo-950 p-6 rounded-2xl shadow-xl w-full space-y-6 text-white">

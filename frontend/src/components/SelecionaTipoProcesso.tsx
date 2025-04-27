@@ -6,7 +6,7 @@ interface SelecionaTipoProcessoProps {
 export default function SelecionaTipoProcesso({ tipoProcesso, setTipoProcesso }: SelecionaTipoProcessoProps) {
     return (
         <div className="flex flex-col space-y-2 w-full">
-            <label className="text-black text-xl font-semibold">Tipo de processo:</label>
+            <label className="text-white text-xl font-semibold">Tipo de processo:</label>
             <div className="inline-flex rounded-md shadow-sm">
                 <button
                     onClick={() => setTipoProcesso("exp")}

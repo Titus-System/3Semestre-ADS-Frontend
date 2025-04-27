@@ -155,7 +155,7 @@ export default function PesquisaMercadoria({ label, onChange, placeholder = "Dig
 
     return (
         <div className="flex flex-col space-y-2 w-full" ref={dropdownRef}>
-            <label className="text-gray-900 text-xl font-semibold">{label}</label>
+            <label className="text-white text-xl font-semibold">{label}</label>
             <div className="relative">
                 <input
                     ref={inputRef}

@@ -346,7 +346,7 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
   
 
   return (
-    <div className="p-8 mt-10">
+    <div className="p-8 mt-10 relative">
       <h2 className="text-white mb-4 text-4xl font-bold text-center">
         Consulta por Estado
       </h2>

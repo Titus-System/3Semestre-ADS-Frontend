@@ -79,8 +79,8 @@ export default function BuscarNCM() {
     };
 
     return (
-        <div className="flex flex-col items-center min-h-screen bg-[#656586] p-6">
-            <h1 className="text-4xl font-bold text-gray-900 mt-6 mb-4 text-center">Busca por NCM</h1>
+        <div className="flex flex-col items-center min-h-screen bg-transparent p-6 relative">
+            <h1 className="text-4xl font-bold text-white mt-6 mb-4 text-center">Busca por NCM</h1>
             <h3 className="text-2xl font-medium text-gray-900 mt-6 mb-9 text-center">Seção</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-center justify-center mt-9 mb-9 w-full max-w-5xl">
@@ -110,7 +110,7 @@ export default function BuscarNCM() {
                 </div>
 
                 <div className="flex flex-col space-y-2">
-                    <label className="text-gray-900 text-xl font-semibold">Defina a quantidade mínima (kg):</label>
+                    <label className="text-white text-xl font-semibold">Defina a quantidade mínima (kg):</label>
                     <input
                         type="text"
                         value={quantidade}
@@ -121,7 +121,7 @@ export default function BuscarNCM() {
                 </div>
 
                 <div className="flex flex-col space-y-2">
-                    <label className="text-gray-900 text-xl font-semibold">Defina a URF:</label>
+                    <label className="text-white text-xl font-semibold">Defina a URF:</label>
                     <input
                         type="text"
                         value={urf}
@@ -133,7 +133,7 @@ export default function BuscarNCM() {
             </div>
 
             <div className="p-4">
-                <h1 className="text-2xl font-bold mb-4">Selecione os Modais de Transporte</h1>
+                <h1 className="text-2xl font-bold text-white mb-4">Selecione os Modais de Transporte</h1>
                 <SelecionaModalTransporte onModaisSelecionados={handleModaisSelecionados} />
             </div>
 
