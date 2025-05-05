@@ -122,7 +122,7 @@ export async function buscarNcmHist(
     urfs: number[]
 ) {
     try {
-            const baseUrl = import.meta.env.VITE_BACKEND_URL;
+            const baseUrl = "http://localhost:5000";
             const url = new URL(`${baseUrl}/busca_ncm_hist`);
             url.searchParams.append('tipo', tipo);
         
@@ -207,7 +207,7 @@ export async function buscaNcmInfo(
 
 export async function buscaNcmPorNome(nome: string) {
     try {
-        const baseUrl = import.meta.env.VITE_BACKEND_URL;
+        const baseUrl = "http://localhost:5000";
         const url = new URL(`${baseUrl}/pesquisa_ncm_por_nome`);
         url.searchParams.append('nome', nome);
 

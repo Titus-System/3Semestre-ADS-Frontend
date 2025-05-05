@@ -1,7 +1,7 @@
 export default function HomePage(){
     return (
 
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-gray-900">
+        <div className="relative flex flex-col items-center justify-center min-h-screen bg-gray-100 text-gray-900">
             <div className="text-center max-w-2xl">
                 <h1 className="text-4xl font-bold text-blue-600 mb-4">Bem-vindo ao MovieRating</h1>
                 <p className="text-lg text-gray-700 mb-6">

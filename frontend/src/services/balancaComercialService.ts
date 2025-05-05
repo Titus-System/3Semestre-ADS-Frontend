@@ -5,7 +5,7 @@ export async function buscaBalancaComercial(
     paises?: number[],
 ) {
     try {
-        const baseUrl = import.meta.env.VITE_BACKEND_URL;
+        const baseUrl = "http://localhost:5000";
         const url = new URL(`http://localhost:5000/busca_balanca_comercial`);
         const appendListParams = (paramName: string, values?: number[]) => {
             values?.forEach(value => url.searchParams.append(paramName, value.toString()));

@@ -121,15 +121,15 @@ export default function ComparacaoEstados() {
         : 0;
 
     return (
-        <div className="flex flex-col items-center min-h-screen bg-[#656586] p-4 sm:p-6">
+        <div className="relative flex flex-col items-center min-h-screen bg-transparent p-4 sm:p-6">
             <div className="w-full max-w-[1200px] mx-auto">
-                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mt-6 mb-4 text-center">
+                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mt-6 mb-4 text-center">
                     Comparação dos Estados
                 </h1>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                     <div className="flex flex-col space-y-2 w-full">
-                        <label className="text-black text-xl font-semibold">Defina a mercadoria:</label>
+                        <label className="text-white text-xl font-semibold">Defina a mercadoria:</label>
                         <input
                             type="text"
                             value={mercadoria}
@@ -139,7 +139,7 @@ export default function ComparacaoEstados() {
                     </div>
 
                     <div className="flex flex-col w-full space-y-2">
-                        <label className="text-black text-xl font-semibold">Tipo de processo:</label>
+                        <label className="text-white text-xl font-semibold">Tipo de processo:</label>
                         <div className="inline-flex rounded-md shadow-sm">
                             <button
                                 onClick={() => setTipoProcesso("exp")}
@@ -165,7 +165,7 @@ export default function ComparacaoEstados() {
 
                 {/* Modal de Transporte */}
                 <div className="flex flex-col space-y-4 h-auto w-full max-w-7xl mt-6">
-                    <p className="text-black text-xl font-semibold text-center">Defina o modal de transporte</p>
+                    <p className="text-white text-xl font-semibold text-center">Defina o modal de transporte</p>
 
                     {/* Dropdown para telas menores */}
                     <div className="block md:hidden">
@@ -207,7 +207,7 @@ export default function ComparacaoEstados() {
 
                 {/* Período de Análise */}
                 <div className="flex flex-col space-y-2 h-auto w-full max-w-7xl mt-6">
-                    <p className="text-black text-xl font-semibold text-center">Defina o período de análise</p>
+                    <p className="text-white text-xl font-semibold text-center">Defina o período de análise</p>
 
                     {/* Dropdown para telas menores */}
                     <div className="block md:hidden">

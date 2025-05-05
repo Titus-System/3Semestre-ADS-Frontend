@@ -21,34 +21,34 @@ export default function Previsao(){
       };
       
       return (
-        <div className="flex flex-col items-center min-h-screen bg-[#656586] p-6">
-        <h1 className="text-4xl font-bold text-gray-900 mt-6 mb-10">Previsão de Tendências</h1>
+        <div className="flex flex-col items-center min-h-screen relative bg-transparent p-6">
+        <h1 className="text-4xl font-bold text-gray-900 mt-6 mb-10 text-white">Previsão de Tendências</h1>
         
     
         <div className="grid grid-cols-2 gap-10 items-center justify-center mt-9 mb-20">
           <div className="flex flex-col space-y-2 w-[505px] h-28">
-            <label className="text-black text-xl font-semibold">informe o estado que deseja analisar: *</label>
+            <label className="text-white text-xl font-semibold">informe o estado que deseja analisar: *</label>
             <input type="text" className="bg-white text-gray-900 text-md font-medium p-3 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 h-16"/>
           </div>
           
           <div className="flex flex-col space-y-2 w-[505px] h-28">
-            <label className="text-black text-xl font-semibold">Defina a mercadoria:</label>
+            <label className="text-white text-xl font-semibold">Defina a mercadoria:</label>
             <input type="text" className="bg-white text-gray-900 text-md font-medium p-3 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 h-16"/>
           </div>
           
           <div className="flex flex-col space-y-2 w-[505px] h-28">
-            <label className="text-black text-xl font-semibold">Defina o local de origem/destino:</label>
+            <label className="text-white text-xl font-semibold">Defina o local de origem/destino:</label>
             <input type="text" className="bg-white text-gray-900 text-md font-medium p-3 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 h-16"/>
           </div>
           
           <div className="flex flex-col space-y-2 w-[505px] h-28">
-            <label className="text-black text-xl font-semibold">Defina a URF:</label>
+            <label className="text-white text-xl font-semibold">Defina a URF:</label>
             <input type="text" className="bg-white text-gray-900 text-md font-medium p-3 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 h-16"/>
           </div>
         </div>
     
         <div className="flex flex-col space-y-2 h-40">
-      <p className="text-black text-xl font-semibold">Defina o modal de transporte</p>
+      <p className="text-white text-xl font-semibold">Defina o modal de transporte</p>
       <div className="bg-white text-gray-900 text-md font-bold p-3 border border-gray-300 rounded-full shadow-md hover:bg-gray-100 flex justify-center w-[1045px] h-20 gap-20">
         {transportModes.map((mode) => (
           <button

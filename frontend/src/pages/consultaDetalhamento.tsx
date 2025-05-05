@@ -1,6 +1,6 @@
 export default function ConsultaDetalhamento (){
     return (
-        <div>
+        <div className="relative">
             <div className="flex flex-col items-center gap-6 mt-16">
 
                 <div className="text-center">
