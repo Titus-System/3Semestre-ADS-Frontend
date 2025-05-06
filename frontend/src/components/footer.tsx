@@ -1,8 +1,11 @@
 export default function Footer(){
     return (
-        <footer className="bg-[#0A0A37] p-4 mt-20 ">
+      <div className="relative">
+            {/* Degradê de fundo invertido */}
+            <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-[#0A0A37] to-transparent pointer-events-none z-0"></div>
+        <footer className="relative bg-transparent p-4 mt-20 ">
           
-          <div className="w-full pl-8">
+          <div className="relative z-10 w-full pl-8">
             <h1 className="text-3xl font-bold text-[#7D8491] text-left">InsightFlow</h1>
             <p className="text-lg text-[#7D8491] text-left mt-4">Projeto desenvolvido no âmbito acadêmico por Titus Systems, sob orientação da Fatec Prof. Jessen Vidal.</p>
             <p className="text-lg text-[#7D8491] text-left mt-2">Última atualização: Abril de 2025.</p>
@@ -40,5 +43,6 @@ export default function Footer(){
             <p>&copy; {new Date().getFullYear()} InsightFlow. Todos os direitos reservados.</p>
           </div>
         </footer>
+      </div>
     );
 };
