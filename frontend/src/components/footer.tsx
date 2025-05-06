@@ -2,17 +2,17 @@ export default function Footer(){
     return (
       <div className="relative">
             {/* Degradê de fundo invertido */}
-            <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-[#0A0A37] to-transparent pointer-events-none z-0"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-[730px] bg-gradient-to-t from-[#0A0A37] to-transparent pointer-events-none z-0"></div>
         <footer className="relative bg-transparent p-4 mt-20 ">
           
           <div className="relative z-10 w-full pl-8">
             <h1 className="text-3xl font-bold text-[#7D8491] text-left">InsightFlow</h1>
             <p className="text-lg text-[#7D8491] text-left mt-4">Projeto desenvolvido no âmbito acadêmico por Titus Systems, sob orientação da Fatec Prof. Jessen Vidal.</p>
-            <p className="text-lg text-[#7D8491] text-left mt-2">Última atualização: Abril de 2025.</p>
+            <p className="text-lg text-[#7D8491] text-left mt-2">Última atualização: Maio de 2025.</p>
             <h1 className="text-3xl font-bold text-[#7D8491] text-left mt-4">Atalhos</h1>
-            <p className="text-lg text-[#7D8491] text-left mt-2 ">Comparação Global de Valor Agregado</p>
-            <p className="text-lg text-[#7D8491] text-left mt-2">Análise por Estado</p>
-            <p className="text-lg text-[#7D8491] text-left mt-2">Comparação de Estados</p>
+            <a href="/paginaRanking" className="text-lg text-[#7D8491] text-left mt-2 ">Comparação Global de Valor Agregado</a>
+            <p className="text-lg text-[#7D8491] text-left mt-2">Análise de Estados</p>
+            {/* <p className="text-lg text-[#7D8491] text-left mt-2">Comparação de Estados</p> */}
             <p className="text-lg text-[#7D8491] text-left mt-2">Previsão de Tendências</p>
             <p className="text-lg text-[#7D8491] text-left mt-2">Busca por NCM</p>
           </div>
@@ -40,7 +40,7 @@ export default function Footer(){
           </div>
           
           <div className="container text-[#7D8491] w-full pl-8 mt-4">
-            <p>&copy; {new Date().getFullYear()} InsightFlow. Todos os direitos reservados.</p>
+            <p>&copy; {new Date().getFullYear()} <strong>InsightFlow.</strong> Todos os direitos reservados.</p>
           </div>
         </footer>
       </div>
