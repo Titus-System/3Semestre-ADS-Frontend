@@ -40,7 +40,7 @@ export async function buscarRankingPaises(
     cresc: 0 | 1 = 0
 ){
     try {
-        const base_url = import.meta.env.VITE_BACKEND_URL;
+        const base_url = "http://localhost:5000";
         const url = new URL(`http://localhost:5000/ranking_pais`);
         url.searchParams.append('tipo', tipo);
         url.searchParams.append('qtd', qtd.toString());
