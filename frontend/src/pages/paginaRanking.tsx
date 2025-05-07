@@ -106,7 +106,7 @@ export default function PaginaRanking() {
   }, [anoSelecionado]);
 
   return (
-    <div className="relative from-indigo-900 to-indigo-950 min-h-screen flex items-center justify-center p-4">
+    <div className="relative z-10 from-indigo-900 to-indigo-950 min-h-screen flex items-center justify-center p-4">
       <div className="flex flex-col items-center w-full max-w-6xl space-y-6">
         <h2 className="text-center text-3xl font-bold text-white mt-10">
           Comparação Global de Valor Agregado

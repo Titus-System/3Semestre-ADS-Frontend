@@ -79,7 +79,7 @@ export default function BuscarNCM() {
     };
 
     return (
-        <div className="flex flex-col items-center min-h-screen bg-transparent p-6 relative">
+        <div className="flex flex-col items-center min-h-screen bg-transparent p-6 relative z-10">
             <h1 className="text-4xl font-bold text-white mt-6 mb-4 text-center">Busca por NCM</h1>
             <h3 className="text-2xl font-medium text-gray-900 mt-6 mb-9 text-center">Seção</h3>
 
