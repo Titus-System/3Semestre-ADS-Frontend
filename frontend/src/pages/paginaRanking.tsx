@@ -108,20 +108,20 @@ export default function PaginaRanking() {
   return (
     <div className="relative z-10 from-indigo-900 to-indigo-950 min-h-screen flex items-center justify-center p-4">
       <div className="flex flex-col items-center w-full max-w-6xl space-y-6">
-        <h2 className="text-center text-3xl font-bold text-white mt-10">
-          Comparação Global de Valor Agregado
-        </h2>
+      <h2 className="text-center text-3xl font-bold text-white mt-10">
+        Comparação Global de Valor Agregado
+      </h2>
 
-        <div className="justify-center space-y-2 h-40">
+      <div className="justify-center space-y-2 h-40">
           <p className="text-white text-xl font-semibold flex justify-center mt-8">
             Defina o período de análise
           </p>
         </div>
 
-        <div className="bg-indigo-950 p-6 rounded-2xl shadow-xl w-full space-y-6 text-white">
-          <h2 className="text-center text-xl font-bold">
-            Ranking de Valor Agregado no Comércio Internacional
-          </h2>
+      <div className="bg-indigo-950 p-6 rounded-2xl shadow-xl w-full space-y-6 text-white">
+        <h2 className="text-center text-xl font-bold">
+          Ranking de Valor Agregado no Comércio Internacional
+        </h2>
 
           <div className="w-full space-y-2">
             <p className="text-white text-lg sm:text-xl font-semibold text-center">
@@ -141,53 +141,53 @@ export default function PaginaRanking() {
 
             <div className="w-full overflow-x-auto bg-white rounded text-black">
               <table className="min-w-[600px] w-full text-sm text-center">
-                <thead className="bg-indigo-200 text-indigo-950 font-bold">
-                  <tr>
-                    <th className="px-4 py-2">País</th>
+            <thead className="bg-indigo-200 text-indigo-950 font-bold">
+              <tr>
+                <th className="px-4 py-2">País</th>
                     <th className="px-4 py-2">Valor Agregado Exportado</th>
                     <th className="px-4 py-2">Valor Agregado Importado</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dadosAno.map((item, index) => (
+              </tr>
+            </thead>
+            <tbody>
+              {dadosAno.map((item, index) => (
                     <tr key={index} className="border-t border-indigo-300 hover:bg-indigo-100">
-                      <td className="py-2">{item.pais}</td>
+                  <td className="py-2">{item.pais}</td>
                       <td className="py-2">US$ {item.valorAgregadoExp.toFixed(2)}</td>
                       <td className="py-2">US$ {item.valorAgregadoImp.toFixed(2)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
             <div className="bg-white rounded p-4 w-full max-w-full overflow-x-auto">
-              <h3 className="text-center text-indigo-900 font-semibold mb-2">
+          <h3 className="text-center text-indigo-900 font-semibold mb-2">
                 Valor Agregado por País (Ano {anoSelecionado})
-              </h3>
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={dadosAno}>
-                  <XAxis dataKey="pais" />
-                  <YAxis />
-                  <Tooltip />
+          </h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={dadosAno}>
+              <XAxis dataKey="pais" />
+              <YAxis />
+              <Tooltip />
                   <Bar dataKey="valorAgregadoExp" fill="#6366f1" name="Exportação" />
                   <Bar dataKey="valorAgregadoImp" fill="#facc15" name="Importação" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
 
             <div className="bg-white rounded p-4 w-full max-w-full overflow-x-auto">
-              <h3 className="text-center text-indigo-900 font-semibold mb-2">
+      <h3 className="text-center text-indigo-900 font-semibold mb-2">
                 Tendência de Valor Agregado Exportado (2014–2024)
-              </h3>
-              <ResponsiveContainer width="100%" height={250}>
+      </h3>
+      <ResponsiveContainer width="100%" height={250}>
                 <LineChart data={trendData}>
-                  <XAxis dataKey="ano" />
-                  <YAxis />
+          <XAxis dataKey="ano" />
+          <YAxis />
                   <Tooltip formatter={(value: any) => {
                     const num = typeof value === 'number' ? value : parseFloat(value) || 0;
                     return num.toFixed(2);
                   }} />
-                  <Legend />
+          <Legend />
                   {topPaises.map((pais, idx) => (
                     <Line
                       key={pais}
@@ -198,9 +198,9 @@ export default function PaginaRanking() {
                       dot={{ r: 3 }}
                     />
                   ))}
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
           </div>
         </div>
       </div>

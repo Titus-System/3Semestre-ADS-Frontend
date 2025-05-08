@@ -1,9 +1,11 @@
-export async function buscaEstadoPorNome(nome:string){
+export async function buscaEstadoPorNome(nome?:string|null){
     try {
         const baseUrl = "http://localhost:5000";
         
         const url = new URL(`${baseUrl}/pesquisa_estado_por_nome`);
-        url.searchParams.append('nome', nome);
+        if(nome){
+            url.searchParams.append('nome', nome);
+        }
 
         const response = await fetch (url.toString(),{
             method:"GET",

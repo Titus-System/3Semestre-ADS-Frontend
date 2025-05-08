@@ -1,71 +1,105 @@
+import { useEffect, useState } from 'react';
 import {
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    ResponsiveContainer,
-    Legend,
-    ReferenceLine
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+  ReferenceLine
 } from 'recharts';
 
-interface DadoPrevisao {
-    ds: string;
-    yhat: number;
+interface DadoIndividual {
+  ds: string;
+  yhat: number;
+}
+
+interface DadoUnificado {
+  ds: string;
+  mes: string;
+  exportacaoHistorico?: number;
+  exportacaoPrevisao?: number;
+  importacaoHistorico?: number;
+  importacaoPrevisao?: number;
 }
 
 interface Props {
-    dados: DadoPrevisao[];
-    tipo?: string;
-    estado?: string;
-    pais?: string
+  dadosExportacao: DadoIndividual[];
+  dadosImportacao: DadoIndividual[];
+}
+
+function unificarDados(
+  exportacao?: DadoIndividual[],
+  importacao?: DadoIndividual[],
+  balanca?: DadoIndividual[]
+): DadoUnificado[] {
+    const LIMIAR_PREVISAO = new Date("2025-01-01");
+    const mapa: Record<string, DadoUnificado> = {};
+
+    const adicionar = (dados: DadoIndividual[] | undefined, tipo: 'exportacao' | 'importacao' | 'balanca') => {
+        dados?.forEach(({ ds, yhat }) => {
+            const data = new Date(ds);
+            const chave = ds;
+            if (!mapa[chave]) {
+                mapa[chave] = {
+                ds,
+                mes: formatarData(ds),
+                };
+            }
+
+            const ehHistorico = data < LIMIAR_PREVISAO;
+
+            if (tipo === 'exportacao') {
+                if (ehHistorico) mapa[chave].exportacaoHistorico = yhat;
+                else mapa[chave].exportacaoPrevisao = yhat;
+            }
+
+            if (tipo === 'importacao') {
+                if (ehHistorico) mapa[chave].importacaoHistorico = yhat;
+                else mapa[chave].importacaoPrevisao = yhat;
+            }
+        });
+    };
+
+    adicionar(exportacao, 'exportacao');
+    adicionar(importacao, 'importacao');
+    adicionar(balanca, 'balanca');
+
+    return Object.values(mapa).sort((a, b) => new Date(a.ds).getTime() - new Date(b.ds).getTime());
 }
 
 function formatarData(iso: string) {
     const date = new Date(Date.UTC(
-        parseInt(iso.substring(0, 4)), // Ano
-        parseInt(iso.substring(5, 7)), // Mês (0 é janeiro, 11 é dezembro)
-        parseInt(iso.substring(8, 10)) // Dia
+        parseInt(iso.substring(0, 4)),
+        parseInt(iso.substring(5, 7)),
+        parseInt(iso.substring(8, 10))
     ));
     const mes = date.toLocaleDateString("pt-BR", { month: "short" }).replace(".", "");
     const ano = date.getFullYear();
     return `${mes.charAt(0).toUpperCase()}${mes.slice(1)}/${ano}`;
 }
 
-function formatarTitulo(tipo?:string, estado?:string, pais?:string){
-    let complemento = ``
-    if (estado) {
-        complemento = `${estado}`
-    } else {
-        complemento = `Brasil`
-    }
-    if (pais) {
-        complemento = `${complemento} em relação ao país ${pais}`
-    }
-    return `Valor Agregado médio de ${tipo}: ${complemento}`
-}
+export default function GraficoValorAgregado({dadosExportacao, dadosImportacao}: Props) {
 
+    const [dadosUnificados, setDadosUnificados] = useState<DadoUnificado[]>([]);
 
-export default function GraficoValorAgregado({ dados, tipo, estado, pais }: Props) {    
-    const tituloGrafico = formatarTitulo(estado, pais)
-    const LIMIAR_PREVISAO = new Date("2025-01-01");
+    useEffect(() => {
+        if (dadosExportacao.length && dadosImportacao.length) {
+            setDadosUnificados(unificarDados(dadosExportacao, dadosImportacao));
+        }
+    }, [dadosExportacao, dadosImportacao]);
 
-    const dadosComMes = dados?.map((item) => ({
-        ...item,
-        mes: formatarData(item.ds),
-        historico: new Date(item.ds) < LIMIAR_PREVISAO ? item.yhat : null,
-        previsao: new Date(item.ds) >= LIMIAR_PREVISAO ? item.yhat : null
-    }));
-
-    const pontoDivisao = dadosComMes?.find((d) => d.previsao !== null);
+    const pontoDivisao = dadosUnificados.find(d =>
+        d.exportacaoPrevisao || d.importacaoPrevisao
+    );
 
     return (
         <div className="bg-white rounded-lg p-4 shadow-md w-full h-[400px]">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">{tituloGrafico}</h2>
             <ResponsiveContainer width="100%" height="100%">
                 <LineChart
-                    data={dadosComMes?.filter(d => d.historico !== null || d.previsao !== null)}
+                    data={dadosUnificados}
                     margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                 >
                     <CartesianGrid strokeDasharray="3 3" />
@@ -74,39 +108,28 @@ export default function GraficoValorAgregado({ dados, tipo, estado, pais }: Prop
                         tickFormatter={(ds: string) => formatarData(ds)}
                         interval={11}
                         tick={{ fontSize: 12 }}
-
                     />
                     <YAxis
-                        tickFormatter={(value) => `${(value / 1e9)}`}
-                        label={{ value: '$ (Bilhões)', angle: -90, position: 'insideLeft', offset: 10 }}
+                        tickFormatter={(value) => `${Number(value).toFixed(2)}`}
+                        label={{ value: '$', angle: -90, position: 'insideLeft', offset: 10 }}
                     />
-                    <Tooltip formatter={(value: number) => `$ ${value?.toLocaleString('pt-BR')}`} />
-                    <Legend />
-
-                    {/* Linha Histórica */}
-                    <Line
-                        type="monotone"
-                        dataKey="historico"
-                        name={tipo}
-                        stroke="#3b82f6"
-                        strokeWidth={3}
-                        dot={{ r: 2 }}
-                        connectNulls={false}
+                    <Tooltip
+                        labelFormatter={(label) => `Data: ${label}`}
+                        formatter={(value: number) => `$ ${value
+                            ? Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : '0,00'}`}
                     />
+                    
+                    <Legend wrapperStyle={{}}/>
 
-                    {/* Linha de Previsão */}
-                    <Line
-                        type="monotone"
-                        dataKey="previsao"
-                        name="Previsão (SARIMA)"
-                        stroke="#f97316"
-                        strokeWidth={3}
-                        strokeDasharray="6 4"
-                        dot={{ r: 1 }}
-                        connectNulls={false}
-                    />
+                    {/* Linhas exportação */}
+                    <Line type="monotone" dataKey="exportacaoHistorico" name="Exportação" stroke="#10b981" strokeWidth={3} dot={{ r: 2 }} />
+                    <Line type="monotone" dataKey="exportacaoPrevisao" name="Exportação (Previsão)" stroke="#10b981" strokeWidth={3} strokeDasharray="6 4" dot={{ r: 1 }} />
 
-                    {/* Linha vertical divisória */}
+                    {/* Linhas importação */}
+                    <Line type="monotone" dataKey="importacaoHistorico" name="Importação" stroke="#3b82f6" strokeWidth={3} dot={{ r: 2 }} />
+                    <Line type="monotone" dataKey="importacaoPrevisao" name="Importação (Previsão)" stroke="#3b82f6" strokeWidth={3} strokeDasharray="6 4" dot={{ r: 1 }} />
+
                     {pontoDivisao && (
                         <ReferenceLine
                             x={pontoDivisao.mes}
