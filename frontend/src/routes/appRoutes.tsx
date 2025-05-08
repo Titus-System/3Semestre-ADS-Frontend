@@ -8,6 +8,7 @@ import Previsao from "../pages/previsao";
 import ComparacaoEstado from "../pages/comparacaoEstado";
 import ConsultaEstado from "../pages/consultaEstado";
 import PaginaRanking from "../pages/paginaRanking"
+import TendenciasPage from "../pages/tendencias";
 
 
 
@@ -23,7 +24,7 @@ export default function AppRoutes(){
                 <Route path="/buscaNCM" element={<BuscarNCM/>} />
                 <Route path="/ComparacaoEstado" element={<ComparacaoEstado/>} />
                 {/* <Route path="/dashboard" element={<DashboardPage/>} /> */}
-                <Route path="/previsao" element={<Previsao/>} />      
+                <Route path="/previsao" element={<TendenciasPage/>} />      
                 <Route path="/consulta_estado" element={<ConsultaEstado/>} /> 
                 <Route path="/paginaRanking" element={<PaginaRanking/>} />
 
