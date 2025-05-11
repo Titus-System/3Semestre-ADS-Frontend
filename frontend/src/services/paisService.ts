@@ -1,6 +1,6 @@
 export async function buscaPaisPorNome(nome:string){
     try {
-        const baseUrl = import.meta.env.VITE_BACKEND_URL;
+        const baseUrl = "http://localhost:5000";
         
         const url = new URL(`${baseUrl}/pesquisa_pais_por_nome`);
         url.searchParams.append('nome', nome);

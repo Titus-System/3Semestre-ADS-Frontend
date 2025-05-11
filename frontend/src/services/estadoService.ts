@@ -193,3 +193,47 @@ export async function busca_top_estados(
         throw new Error(data.error || "Erro desconhecido");
     }
 }
+
+export async function buscarRankingEstadosPorNcm(
+    tipo: string,
+    anos?: number[],
+    ncm?: number,
+    pais?: number,
+    cresc?: boolean | null
+){
+    try {
+        const base_url = "http://localhost:5000";
+        const url = new URL(`${base_url}/ranking_estado`);
+        url.searchParams.append('tipo', tipo);
+
+        ncm ? url.searchParams.append('ncm', ncm.toString()) : null;
+        pais ? url.searchParams.append('paises', pais.toString()) : null;
+        cresc ? url.searchParams.append('cresc', '1') : null;
+
+        const appendListParams = (paramName: string, values?: number[]) => {
+            values?.forEach(value => url.searchParams.append(paramName, value.toString()));
+        };
+        appendListParams('anos', anos);
+        
+        console.log("🔗 URL da requisição:", url.toString());
+        const response = await fetch (url.toString(),{
+            method:"GET",
+            headers: {
+                "Accept" : "application/json"
+            } 
+        });
+
+        const data = await response.json();
+
+        if (response.status == 200) {
+            console.log(data.resposta);
+            return data.resposta
+        } else{
+            throw new Error (data.error || "Erro desconhecido")
+        }
+    } catch (error) {
+        console.error("Erro ao acessar servidor:", error);
+        alert(error instanceof Error ? error.message : 'Erro desconhecido');
+        throw error;
+    }
+}

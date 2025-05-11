@@ -12,14 +12,14 @@ interface Estado {
 }
 
 interface PesquisaEstadoProps {
-    label: string
+    label?: string
     onChange: (value: Estado | null) => void
     placeholder?: string
     required?: boolean
 }
 
 export default function InputEstado({
-  label,
+  label = "Defina o estado:",
   onChange,
   placeholder = "Digite o nome do estado",
   required = false,

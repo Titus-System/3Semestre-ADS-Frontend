@@ -11,14 +11,14 @@ interface Pais {
 }
 
 interface PesquisaPaisProps {
-  label: string
+  label?: string
   onChange: (value: Pais | null) => void
   placeholder?: string
   required?: boolean
 }
 
-export default function PesquisaPais({
-  label,
+export default function InputPais({
+  label = "Defina o país:",
   onChange,
   placeholder = "Digite o nome do país",
   required = false,
