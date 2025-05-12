@@ -1,29 +1,19 @@
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { buscarHistoricoPais } from "../../services/paisService";
 import { useEffect, useState } from "react";
-import { NcmHist, RankingNcm } from "../../models/interfaces";
-import { buscarNcmHist } from "../../services/ncmService";
-import {
-    CartesianGrid,
-    Legend,
-    Line,
-    LineChart,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
-} from "recharts";
 
 type Props = {
-    rankingNcm: any;
-    anos:number[]|null;
+    tipo:string|null;
+    paises:number[]|null;
+    ncm:number|null;
     estado:number|null;
-    pais:number|null
-};
+    anos: number[] | null
+}
 
-interface HistNCMs {
+interface HistPaises {
     data: string;
     dados: {
-        descricao: string;
-        id_ncm: number;
+        nome_pais: string;
         total_kg_liquido: number;
         total_registros: number;
         total_valor_agregado: number;
@@ -31,33 +21,29 @@ interface HistNCMs {
     }[];
 }[];
 
-async function callBuscarNcmHist(
-    tipo: "exp" | "imp" | null,
-    ncmList: number[],
-    anos: number[] | null,
-    pais: number|null,
-    estado: number|null
-) {
-    const dados = await buscarNcmHist(
-        tipo ? tipo : "exp",
-        ncmList,
-        anos ? anos : [],
-        [],
-        pais ? [pais] : [],
-        estado ? [estado] : [],
-        [],
-        []
-    );
-    const dadosConvertidos = dados.map((item: NcmHist) => ({
-        ...item,
-        total_valor_fob: Number(item.total_valor_fob),
-        total_kg_liquido: Number(item.total_kg_liquido),
-        total_valor_agregado: Number(item.total_valor_agregado),
-    }));
-    return dadosConvertidos;
+
+async function callBuscarPaisHist (tipo:string|null, paises:number[]|null, ncm:number|null, estado:number|null, anos:number[]|null) {
+    if (paises && paises.length > 0) {
+        const dados = await buscarHistoricoPais(
+            tipo ? tipo : 'exp', 
+            paises, 
+            ncm ? [ncm] : undefined, 
+            estado ? [estado] : undefined, 
+            anos ? anos : undefined,
+            [1,2,3,4,5,6,7,8,9,10,11,12], undefined, undefined
+        )
+        const dadosConvertidos = dados.map((item: any) => ({
+            ...item,
+            valor_fob_total: Number(item.valor_fob_total),
+            kg_liquido_total: Number(item.kg_liquido_total),
+            valor_agregado_total: Number(item.valor_agregado_total),
+        }));
+        return dadosConvertidos;
+    }
+    return null;
 }
 
-async function formatarDadosNcmHist(dados: any[]): Promise<HistNCMs[]> {
+async function formatarDadosHist(dados: any[]): Promise<HistPaises[]> {
     const dadosAgrupados: Record<string, any[]> = {};
 
     dados.forEach((item) => {
@@ -70,16 +56,14 @@ async function formatarDadosNcmHist(dados: any[]): Promise<HistNCMs[]> {
         }
 
         dadosAgrupados[data].push({
-            descricao: item.descricao,
-            id_ncm: item.id_ncm,
-            total_kg_liquido: item.total_kg_liquido,
-            total_registros: item.total_registros,
-            total_valor_agregado: item.total_valor_agregado,
-            total_valor_fob: item.total_valor_fob,
+            nome_pais: item.nome_pais,
+            total_kg_liquido: item.kg_liquido_total,
+            total_valor_agregado: item.valor_agregado_total,
+            total_valor_fob: item.valor_fob_total,
         });
     });
 
-    const dadosFormatados: HistNCMs[] = Object.keys(dadosAgrupados)
+    const dadosFormatados: HistPaises[] = Object.keys(dadosAgrupados)
         .sort()
         .map((data) => ({
             data,
@@ -89,48 +73,47 @@ async function formatarDadosNcmHist(dados: any[]): Promise<HistNCMs[]> {
     return dadosFormatados;
 }
 
-export default function GraficoHistNcm({ rankingNcm, anos, estado, pais }: Props) {
-    const [histNcmData, setHistNcmData] = useState<HistNCMs[] | null>(null);
+
+export default function GraficoHistPais({tipo, paises, ncm, estado, anos}:Props) {
+    const [histPaisData, setHistPaisData] = useState<HistPaises[] | null>(null);
 
     useEffect(() => {
-        if (rankingNcm && Array.isArray(rankingNcm)) {
-            const ncmsList = rankingNcm.slice(0, 5).map((item: RankingNcm) => item.ncm);
-
+        if (paises && Array.isArray(paises)) {
             const fetchHistNcm = async () => {
                 try {
-                    const result = await formatarDadosNcmHist(
-                        await callBuscarNcmHist("exp", ncmsList, anos, pais, estado)
+                    const result = await formatarDadosHist(
+                        await callBuscarPaisHist(tipo, paises, ncm, estado, anos)
                     );
-                    setHistNcmData(result);
+                    setHistPaisData(result);
                 } catch (error) {
                     console.error("Erro ao obter histNcm:", error);
                 }
             };
 
-            if (ncmsList.length > 0) {
+            if (paises.length > 0) {
                 fetchHistNcm();
             }
         } else {
-            console.error("rankingNcm não é um array ou não foi encontrado.");
+            console.error("paises não é um array ou não foi encontrado.");
         }
-    }, [rankingNcm]);
+    }, [paises]);
 
-    // 🔁 Transforma os dados no formato que o Recharts entende
-    const dadosGrafico = histNcmData?.map((item) => {
+    const dadosGrafico = histPaisData?.map((item) => {
         const ponto: any = { data: item.data };
-        item.dados.forEach((ncm) => {
-            ponto[ncm.id_ncm] = ncm.total_valor_fob;
+        item.dados.forEach((pais) => {
+            ponto[pais.nome_pais] = pais.total_valor_fob;
         });
         return ponto;
     }) || [];
 
-    const idsNcm = histNcmData?.[0]?.dados.map((ncm) => ncm.id_ncm) || [];
+    const paisNomes = histPaisData?.[0]?.dados.map((pais) => pais.nome_pais) || [];
 
     return (
         <div className="bg-white rounded p-4 w-full max-w-full overflow-x-auto">
             <h3 className="text-center text-indigo-900 font-semibold mb-2">
-                Histórico dos principais NCMs
+                Histórico dos principais países
             </h3>
+
             <ResponsiveContainer width="100%" height={400}>
                 <LineChart
                     data={dadosGrafico}
@@ -152,11 +135,11 @@ export default function GraficoHistNcm({ rankingNcm, anos, estado, pais }: Props
                         labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
                     />
                     <Legend />
-                    {idsNcm.map((id, index) => (
+                    {paisNomes.map((nome_pais, index) => (
                         <Line
-                            key={id}
+                            key={nome_pais}
                             type="monotone"
-                            dataKey={id.toString()}
+                            dataKey={nome_pais}
                             stroke={
                                 ["rgb(41, 62, 247)", " #82ca9d", "rgb(6, 175, 48)", "rgb(241, 125, 30)", "rgb(31, 30, 78)"][
                                 index % 5

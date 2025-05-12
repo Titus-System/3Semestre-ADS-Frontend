@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { DadosSetores, Estado, Mercadoria, Pais, RankingEstados, RankingNcm, RankingPaises } from "../models/interfaces";
+import { DadosSetores, Estado, Mercadoria, Pais, RankingEstados, RankingNcm, RankingPais, RankingPaises } from "../models/interfaces";
 import InputNcm from "../components/input/inputNcm";
 import InputEstado from "../components/input/inputEstado";
 import InputPais from "../components/input/inputPais";
@@ -14,6 +14,7 @@ import GraficoBalancaComercial from "../components/tendencias/GraficoBalancaCome
 import { buscarTendenciaBalancaComercial, buscarTendenciaVlFob } from "../services/tendenciaServices";
 import GraficoHistEstados from "../components/rankings/GraficoHistEstados";
 import GraficoHistNcm from "../components/ncm/GraficoHistNcm";
+import GraficoHistPais from "../components/rankings/GraficoHistPais";
 
 // Tipagens
 interface RankingDados {
@@ -157,6 +158,18 @@ export default function PaginaRanking() {
         };
         buscarDados();
     }, [rankingEstados])
+
+
+    const [paisList, setPaisList] = useState<number[]|null>(null);
+    useEffect (() => {
+        const listarIdPaises = () => {
+            const idPaises = rankingPaises ? rankingPaises.slice(0, 5).map((item: RankingPais) => item.id_pais) : null;
+            setPaisList(idPaises);
+        };
+        listarIdPaises();
+    },[rankingPaises])
+    
+
     
     return (
         <div className="relative z-10 from-indigo-900 to-indigo-950 min-h-screen flex items-center justify-center p-4">
@@ -176,11 +189,17 @@ export default function PaginaRanking() {
                     </div>
                     <div className="w-full lg:w-3/4 space-y-6">
                         <div className="bg-indigo-950 min-h-screen p-4 sm:p-6 rounded-2xl shadow-xl w-full space-y-6 text-white">
-                            <GraficoBalancaComercial
-                                dadosExportacao={dadosExportacao}
-                                dadosImportacao={dadosImportacao}
-                                dadosBalanca={dadosBalanca}
-                            />
+                            <div className="bg-white rounded pt-4 w-full max-w-full overflow-x-auto">
+                                <h3 className="text-center text-indigo-900 font-semibold mb-2">
+                                    {`Balança Comercial ${estadoSelecionado ? ` de ${estadoSelecionado.nome}` : `do Brasil`}
+                                        ${paisSelecionado ? ` com ${paisSelecionado.nome}` : ``}`}
+                                </h3>
+                                <GraficoBalancaComercial
+                                    dadosExportacao={dadosExportacao}
+                                    dadosImportacao={dadosImportacao}
+                                    dadosBalanca={dadosBalanca}
+                                />
+                            </div>
                             <GraficoRanking
                                 titulo={rankingEstados ? {
                                     tipoProcesso: tipoProcesso,
@@ -200,6 +219,13 @@ export default function PaginaRanking() {
                                 }}
                                 ranking={rankingPaises ? rankingPaises : []}
                             />
+                            <GraficoHistPais
+                                tipo = {tipoProcesso}
+                                paises = {paisList}
+                                estado = {estadoSelecionado ? estadoSelecionado.id_estado : null}
+                                ncm = {mercadoriaSelecionada ? mercadoriaSelecionada.id_ncm : null}
+                                anos={anosSelecionados}
+                            />
                             <GraficoSetores dadosSetores={dadosSetores} tipo={tipoProcesso ? tipoProcesso : 'exp'} estado={estadoSelecionado?.sigla} pais={paisSelecionado?.nome} />
                             <GraficoRanking
                                 titulo={rankingNcm ? {
@@ -210,7 +236,12 @@ export default function PaginaRanking() {
                                 } : `Nenhum NCM ${tipoProcesso}ortado para os filtros de estado e país selecionados`}
                                 ranking={rankingNcm ? rankingNcm : []}
                             />
-                            <GraficoHistNcm rankingNcm={rankingNcm} />
+                            <GraficoHistNcm 
+                                rankingNcm={rankingNcm} 
+                                anos={anosSelecionados} 
+                                estado={estadoSelecionado ? estadoSelecionado.id_estado : null} 
+                                pais={paisSelecionado ? paisSelecionado.id_pais : null} 
+                            />
                         </div>
                     </div>
                 </div>

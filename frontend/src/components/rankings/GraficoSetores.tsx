@@ -29,7 +29,7 @@ export default function GraficoSetores({ tipo, estado, pais, dadosSetores }: Pro
     return (
         <div className="bg-white rounded p-4 w-full max-w-full overflow-x-auto">
             <h3 className="text-center text-indigo-900 font-semibold mb-2">
-                {`Distribuição de ${tipo}ortações de ${estado} ${pais ? `em relação a ${pais}` : ""}`}
+                {`Distribuição de ${tipo}ortações ${estado ? `de ${estado}` : ``} ${pais ? `em relação a ${pais}` : ""}`}
             </h3>
             <div className="flex justify-between items-center mb-2">
                 <div className="flex space-x-2">
