@@ -82,7 +82,7 @@ export default function GraficoHistPais({tipo, paises, ncm, estado, anos}:Props)
             const fetchHistNcm = async () => {
                 try {
                     const result = await formatarDadosHist(
-                        await callBuscarPaisHist("exp", paises, ncm, estado, anos)
+                        await callBuscarPaisHist(tipo, paises, ncm, estado, anos)
                     );
                     setHistPaisData(result);
                 } catch (error) {
