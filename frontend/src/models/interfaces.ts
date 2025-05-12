@@ -58,3 +58,21 @@ export interface DadoSetor {
     valor_agregado_imp: number
 }
 export type DadosSetores = DadoSetor[]
+
+export interface RankingDados {
+    rankingEstados: RankingEstados,
+    rankingPaises: RankingPaises,
+    rankingNcm: RankingNcm,
+    infoSetores: DadosSetores
+}
+
+export interface NcmHist {
+    ano: number,
+    descricao: string,
+    id_ncm: number,
+    mes: number,
+    total_kg_liquido: number,
+    total_registros: number,
+    total_valor_agregado: number,
+    total_valor_fob: number
+}

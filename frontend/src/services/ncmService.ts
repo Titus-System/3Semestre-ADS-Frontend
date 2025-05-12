@@ -1,18 +1,18 @@
 export async function busca_transacoes_por_ncm(
     ncm: number,
-    tipo: string, 
-    qtd?: number, 
-    anos?: number[], 
-    meses?: number[], 
-    paises?: number[], 
-    estados?: number[], 
-    vias?: number[], 
+    tipo: string,
+    qtd?: number,
+    anos?: number[],
+    meses?: number[],
+    paises?: number[],
+    estados?: number[],
+    vias?: number[],
     urfs?: number[]
 ): Promise<any> {
     try {
         // Constrói a URL com parâmetros de query
         const url = new URL('http://localhost:5000/busca_transacoes_por_ncm');
-        
+
         // Adiciona parâmetros obrigatórios
         url.searchParams.append('tipo', tipo);
         url.searchParams.append('ncm', ncm.toString());
@@ -65,7 +65,7 @@ export async function buscarRankingNcm(
     meses?: number[],
     vias?: number[],
     urfs?: number[],
-    crit?:  "valor_fob"|"kg_liquido"|"valor_agregado"|"registros",
+    crit?: "valor_fob" | "kg_liquido" | "valor_agregado" | "registros",
     cresc?: 0 | 1
 
 ) {
@@ -112,7 +112,7 @@ export async function buscarRankingNcm(
 }
 
 export async function buscarNcmHist(
-    tipo:"exp" | "imp",
+    tipo: "exp" | "imp",
     ncm: number[],
     anos: number[],
     meses: number[],
@@ -122,39 +122,45 @@ export async function buscarNcmHist(
     urfs: number[]
 ) {
     try {
-            const baseUrl = "http://localhost:5000";
-            const url = new URL(`${baseUrl}/busca_ncm_hist`);
-            url.searchParams.append('tipo', tipo);
-        
-            const appendListParams = (paramName: string, values?: number[]) => {
-                values?.forEach(value => url.searchParams.append(paramName, value.toString()));
-            };
-            appendListParams('ncm', ncm);
-            appendListParams('paises', paises);
-            appendListParams('estados', estados);
-            appendListParams('anos', anos);
-            appendListParams('meses', meses);
-            appendListParams('vias', vias);
-            appendListParams('urfs', urfs);
-        
-            const response = await fetch (url.toString(), {
-                method:"GET",
-                headers:{
-                    "Accept": "application/json"
-                }
-            });
-        
-            const data = await response.json();
-        
-            if (data.status == 200){
-                console.log(data.resposta);
-                return data.resposta;
-            }else {
-                throw new Error(data.error || "Erro desconhecido")
+        const baseUrl = "http://localhost:5000";
+        const url = new URL(`${baseUrl}/busca_ncm_hist`);
+        url.searchParams.append('tipo', tipo);
+
+        const appendListParams = (paramName: string, values?: number[]) => {
+            values?.forEach(value => url.searchParams.append(paramName, value.toString()));
+        };
+        appendListParams('ncm', ncm);
+        appendListParams('paises', paises);
+        appendListParams('estados', estados);
+        appendListParams('anos', anos);
+        appendListParams('meses', meses);
+        appendListParams('vias', vias);
+        appendListParams('urfs', urfs);
+
+        const response = await fetch(url.toString(), {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
             }
+        });
+
+        const text = await response.text();
+        console.log("Resposta bruta do servidor:", text);
+
+        try {
+            const data = JSON.parse(text);
+
+            if (data.status == 200) {
+                return data.resposta;
+            } else {
+                throw new Error(data.error || "Erro desconhecido");
+            }
+        } catch (e) {
+            throw new Error("Resposta inválida do servidor: " + text);
+        }
     } catch (error) {
         console.error("Erro ao acessar servidor:", error);
-        alert(error instanceof Error ? error.message : 'Erro desconhecido');
+        // alert(error instanceof Error ? error.message : 'Erro desconhecido');
         throw error;
     }
 }
@@ -167,11 +173,11 @@ export async function buscaNcmInfo(
     paises: number[],
     vias: number[],
     urfs: number[]
-){
+) {
     try {
         const baseUrl = "http://localhost:5000";
         const url = new URL(`${baseUrl}/busca_por_ncm`);
-        
+
         const appendListParams = (paramName: string, values?: number[]) => {
             values?.forEach(value => url.searchParams.append(paramName, value.toString()));
         };

@@ -55,7 +55,7 @@ export async function buscarTendenciaVlFob(tipo:"exp"|"imp", estado?:number|null
         const data = await response.json();
 
         if (response.status == 200) {
-            console.log(data.resposta);
+            console.log(`tendenciavlfob estado:${estado} - pais:${pais}`, data.resposta);
             return data.resposta;
         } else {
             throw new Error(data.error || "Erro desconhecido");

@@ -1,73 +1,73 @@
 import { useEffect, useState } from 'react';
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-  ReferenceLine
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+    Legend,
+    ReferenceLine
 } from 'recharts';
 
 interface DadoIndividual {
-  ds: string;
-  yhat: number;
+    ds: string;
+    yhat: number;
 }
 
 interface DadoUnificado {
-  ds: string;
-  mes: string;
-  exportacaoHistorico?: number;
-  exportacaoPrevisao?: number;
-  importacaoHistorico?: number;
-  importacaoPrevisao?: number;
-  balancaHistorico?: number;
-  balancaPrevisao?: number;
+    ds: string;
+    mes: string;
+    exportacaoHistorico?: number;
+    exportacaoPrevisao?: number;
+    importacaoHistorico?: number;
+    importacaoPrevisao?: number;
+    balancaHistorico?: number;
+    balancaPrevisao?: number;
 }
 
 interface Props {
-  dadosExportacao: DadoIndividual[];
-  dadosImportacao: DadoIndividual[];
-  dadosBalanca: DadoIndividual[];
+    dadosExportacao: DadoIndividual[];
+    dadosImportacao: DadoIndividual[];
+    dadosBalanca: DadoIndividual[];
 }
 
 function unificarDados(
-  exportacao?: DadoIndividual[],
-  importacao?: DadoIndividual[],
-  balanca?: DadoIndividual[]
+    exportacao?: DadoIndividual[],
+    importacao?: DadoIndividual[],
+    balanca?: DadoIndividual[]
 ): DadoUnificado[] {
     const LIMIAR_PREVISAO = new Date("2025-01-01");
     const mapa: Record<string, DadoUnificado> = {};
 
     const adicionar = (dados: DadoIndividual[] | undefined, tipo: 'exportacao' | 'importacao' | 'balanca') => {
         dados?.forEach(({ ds, yhat }) => {
-        const data = new Date(ds);
-        const chave = ds;
-        if (!mapa[chave]) {
-            mapa[chave] = {
-            ds,
-            mes: formatarData(ds),
-            };
-        }
+            const data = new Date(ds);
+            const chave = ds;
+            if (!mapa[chave]) {
+                mapa[chave] = {
+                    ds,
+                    mes: formatarData(ds),
+                };
+            }
 
-        const ehHistorico = data < LIMIAR_PREVISAO;
+            const ehHistorico = data < LIMIAR_PREVISAO;
 
-        if (tipo === 'exportacao') {
-            if (ehHistorico) mapa[chave].exportacaoHistorico = yhat;
-            else mapa[chave].exportacaoPrevisao = yhat;
-        }
+            if (tipo === 'exportacao') {
+                if (ehHistorico) mapa[chave].exportacaoHistorico = yhat;
+                else mapa[chave].exportacaoPrevisao = yhat;
+            }
 
-        if (tipo === 'importacao') {
-            if (ehHistorico) mapa[chave].importacaoHistorico = yhat;
-            else mapa[chave].importacaoPrevisao = yhat;
-        }
+            if (tipo === 'importacao') {
+                if (ehHistorico) mapa[chave].importacaoHistorico = yhat;
+                else mapa[chave].importacaoPrevisao = yhat;
+            }
 
-        if (tipo === 'balanca') {
-            if (ehHistorico) mapa[chave].balancaHistorico = yhat;
-            else mapa[chave].balancaPrevisao = yhat;
-        }
+            if (tipo === 'balanca') {
+                if (ehHistorico) mapa[chave].balancaHistorico = yhat;
+                else mapa[chave].balancaPrevisao = yhat;
+            }
         });
     };
 
@@ -89,7 +89,7 @@ function formatarData(iso: string) {
     return `${mes.charAt(0).toUpperCase()}${mes.slice(1)}/${ano}`;
 }
 
-export default function GraficoBalancaComercial({dadosExportacao, dadosImportacao, dadosBalanca }: Props) {
+export default function GraficoBalancaComercial({ dadosExportacao, dadosImportacao, dadosBalanca }: Props) {
 
     const [dadosUnificados, setDadosUnificados] = useState<DadoUnificado[]>([]);
 
@@ -124,9 +124,22 @@ export default function GraficoBalancaComercial({dadosExportacao, dadosImportaca
                     <Tooltip
                         labelFormatter={(label) => `Data: ${label}`}
                         formatter={(value: number) => `$ ${value?.toLocaleString('pt-BR')}`}
+                        labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
                     />
-                    
-                    <Legend wrapperStyle={{}}/>
+
+                    <Legend wrapperStyle={{}} />
+                    <ReferenceLine
+                        x="2025-01-01"
+                        stroke="red"
+                        strokeDasharray="3 3"
+                        label={{
+                            value: "Projeção",
+                            position: "top",
+                            angle: 0,
+                            fontSize: 12,
+                            fill: "red"
+                        }}
+                    />
 
                     {/* Linhas exportação */}
                     <Line type="monotone" dataKey="exportacaoHistorico" name="Exportação" stroke="#10b981" strokeWidth={3} dot={{ r: 2 }} />
@@ -139,22 +152,6 @@ export default function GraficoBalancaComercial({dadosExportacao, dadosImportaca
                     {/* Linhas balança comercial */}
                     <Line type="monotone" dataKey="balancaHistorico" name="Balança Comercial" stroke="#f97316" strokeWidth={3} dot={{ r: 2 }} />
                     <Line type="monotone" dataKey="balancaPrevisao" name="Balança Comercial (Previsão)" stroke="#f97316" strokeWidth={3} strokeDasharray="6 4" dot={{ r: 1 }} />
-
-                    {pontoDivisao && (
-                        <ReferenceLine
-                            x={pontoDivisao.mes}
-                            stroke="#9ca3af"
-                            strokeDasharray="3 3"
-                            label={{
-                                value: 'Início da Previsão',
-                                angle: -90,
-                                position: 'insideTopRight',
-                                fill: '#6b7280',
-                                fontSize: 12,
-                                offset: 10,
-                            }}
-                        />
-                    )}
                 </LineChart>
             </ResponsiveContainer>
         </div>

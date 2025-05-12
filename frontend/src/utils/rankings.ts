@@ -1,7 +1,8 @@
-import { RankingEstado, RankingNcm, RankingPais } from "../models/interfaces"
+import { DadosSetores, RankingDados, RankingEstado, RankingEstados, RankingNcm, RankingPais, RankingPaises } from "../models/interfaces"
 import { buscarRankingEstadosPorNcm } from "../services/estadoService"
 import { buscarRankingNcm } from "../services/ncmService";
 import { buscarRankingPaises } from "../services/paisService";
+import { buscaInfoSetores } from "../services/setoresService";
 
 export async function estadosMaisExpImpPorNcm(tipo:"exp"|"imp"|null, anos:number[]|null, ncm:number|null, pais: number|null, cresc:boolean = false){
     const dados: any = await buscarRankingEstadosPorNcm(
@@ -58,4 +59,29 @@ export async function ncmMaisExpImpPorEstadoPorPais(tipo:"exp"|"imp"|null, anos:
         total_valor_agregado: Number(item.total_valor_agregado)
     }));
     return rankingNcm;
+}
+
+export async function buscarDados(
+    anosSelecionados: number[] | null,
+    ncmSelecionado: number | null,
+    idEstadoSelecionado: number | null,
+    idPaisSelecionado: number | null,
+    tipoSelecionado: string | null,
+    cresc: boolean = false,
+    siglaEstadoSelecionado: string | null
+) {
+    if (tipoSelecionado !== "exp" && tipoSelecionado !== "imp") {
+        tipoSelecionado = null;
+    }
+    const rankingEstadosPorNcm = await estadosMaisExpImpPorNcm(tipoSelecionado, anosSelecionados, ncmSelecionado, idPaisSelecionado, cresc);
+    const rankingPaisPorNcmPorEstado = await paisesMaisExpImpPorNcmPorEstado(tipoSelecionado, anosSelecionados, ncmSelecionado, idEstadoSelecionado, cresc);
+    const rankingNcmPorEstadoPorPais = await ncmMaisExpImpPorEstadoPorPais(tipoSelecionado, anosSelecionados, idPaisSelecionado, idEstadoSelecionado, cresc);
+    const infoSetores = await buscaInfoSetores(anosSelecionados, idPaisSelecionado, siglaEstadoSelecionado)
+    const dados: RankingDados = {
+        rankingEstados: rankingEstadosPorNcm,
+        rankingPaises: rankingPaisPorNcmPorEstado,
+        rankingNcm: rankingNcmPorEstadoPorPais,
+        infoSetores: infoSetores
+    }
+    return dados
 }
