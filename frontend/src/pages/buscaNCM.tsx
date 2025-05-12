@@ -81,7 +81,6 @@ export default function BuscarNCM() {
     return (
         <div className="flex flex-col items-center min-h-screen bg-transparent p-6 relative z-10">
             <h1 className="text-4xl font-bold text-white mt-6 mb-4 text-center">Busca por NCM</h1>
-            <h3 className="text-2xl font-medium text-gray-900 mt-6 mb-9 text-center">Seção</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-center justify-center mt-9 mb-9 w-full max-w-5xl">
                 <PesquisaMercadoria
@@ -144,7 +143,7 @@ export default function BuscarNCM() {
             {/* Botão Final */}
             <div className="flex flex-col space-y-2 w-full max-w-md h-28 mt-9 mb-9">
                 <button
-                    className="bg-gray-900 text-white p-4 text-md font-bold rounded-full shadow-md hover:bg-[#11114E] w-full h-16"
+                    className="w-full h-16 rounded-full mt-16 px-10 py-4 bg-[#0A0A37] text-white hover:bg-[#34538D] text-xl font-semibold"
                     onClick={buscarTransacoes}
                 >
                     Buscar Transações
