@@ -1,23 +1,31 @@
-export default function HomePage(){
+export default function HomePage() {
     return (
+        <div className="relative">
+            <div className="relative h-[800px] flex flex-col items-center justify-center text-center overflow-hidden">
 
-        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen bg-gray-100 text-gray-900">
-            <div className="text-center max-w-2xl">
-                <h1 className="text-4xl font-bold text-blue-600 mb-4">Bem-vindo ao InsightFlow</h1>
-                <p className="text-lg text-gray-700 mb-6">
-                    
-                </p>
+                {/* Imagem de fundo com opacidade geral */}
+                <div className="absolute inset-0 bg-[url('/background.jpg')] bg-cover bg-center opacity-40 z-0"></div>
 
-                <div className="flex space-x-4">
-                <a href="/login" className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition">
-                    Entrar
-                </a>
-                <a href="/login" className="bg-gray-200 text-gray-900 px-6 py-3 rounded-lg shadow-md hover:bg-gray-300 transition">
-                    Criar Conta
-                </a>
+                  {/* Gradientes superior e inferior */}
+                  <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#11114e] to-transparent z-10"></div>
+                <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#11114e] to-transparent z-10"></div>
+
+                {/* Conteúdo principal */}
+                <div className="relative z-20 max-w-4xl px-4">
+                    <h1 className="text-white text-4xl md:text-5xl font-bold leading-tight">
+                        Compreenda o mercado e tome decisões com mais confiança
+                    </h1>
+                    <p className="text-white text-md md:text-lg mt-20 leading-relaxed">
+                        O InsightFlow reúne dados confiáveis de comércio exterior do Brasil, permitindo a comparação de performances estaduais, 
+                        a identificação de padrões e tendências e a segmentação personalizada de dados para diferentes necessidades.
+                    </p>
                 </div>
             </div>
-        </div>
 
+            {/* Botões de funcionalidades */}
+            <div className="flex flex-col items-center gap-6 mt-10 mb-[300px] max-w-2xl w-full mx-auto px-4">
+                {/* seus botões aqui... */}
+            </div>
+        </div>
     );
 }

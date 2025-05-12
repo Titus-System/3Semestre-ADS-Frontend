@@ -5,9 +5,8 @@ export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className="relative">
-            {/* Degradê de fundo */}
-            <div className="absolute inset-0 h-96 bg-gradient-to-b from-[#0A0A37] to-transparent pointer-events-none">
+        <div className="relative bg-[#11114e]">
+            <div className="">
         </div>
 
         <header className="relative z-10 bg-transparent text-white p-4">
@@ -34,18 +33,18 @@ export default function Header() {
                         </li>
                         <li>
                             <a
-                                href="/consulta_detalhamento"
+                                href="/funcionalidades"
                                 className="hover:underline text-sm sm:text-base"
                             >
-                                Consulta e Detalhamento
+                                Funcionalidades
                             </a>
                         </li>
                         <li>
                             <a
-                                href="/analise_comparacoes"
+                                href="/sobreNos"
                                 className="hover:underline text-sm sm:text-base"
                             >
-                                Análise e Comparações
+                                Sobre Nós 
                             </a>
                         </li>
                     </ul>
