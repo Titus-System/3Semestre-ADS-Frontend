@@ -99,10 +99,6 @@ export default function GraficoBalancaComercial({ dadosExportacao, dadosImportac
         }
     }, [dadosExportacao, dadosImportacao, dadosBalanca]);
 
-    const pontoDivisao = dadosUnificados.find(d =>
-        d.exportacaoPrevisao || d.importacaoPrevisao || d.balancaPrevisao
-    );
-
     return (
         <div className="bg-white rounded-lg p-4 shadow-md w-full h-[400px]">
             <ResponsiveContainer width="100%" height="100%">

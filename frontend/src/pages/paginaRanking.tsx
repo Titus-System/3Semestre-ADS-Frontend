@@ -13,8 +13,9 @@ import GraficoSetores from "../components/rankings/GraficoSetores";
 import GraficoBalancaComercial from "../components/tendencias/GraficoBalancaComercial";
 import { buscarTendenciaBalancaComercial, buscarTendenciaVlFob } from "../services/tendenciaServices";
 import GraficoHistEstados from "../components/rankings/GraficoHistEstados";
-import GraficoHistNcm from "../components/ncm/GraficoHistNcm";
+import GraficoHistNcm from "../components/ncm/GraficoHistRankingNcm";
 import GraficoHistPais from "../components/rankings/GraficoHistPais";
+import { ResponsiveContainer, Tooltip, Treemap } from "recharts";
 
 // Tipagens
 interface RankingDados {
@@ -237,6 +238,7 @@ export default function PaginaRanking() {
                                 ranking={rankingNcm ? rankingNcm : []}
                             />
                             <GraficoHistNcm 
+                                tipo = {tipoProcesso ? tipoProcesso : 'exp'}
                                 rankingNcm={rankingNcm} 
                                 anos={anosSelecionados} 
                                 estado={estadoSelecionado ? estadoSelecionado.id_estado : null} 

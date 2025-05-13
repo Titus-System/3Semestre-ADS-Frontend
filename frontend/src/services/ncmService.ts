@@ -210,6 +210,52 @@ export async function buscaNcmInfo(
     }
 }
 
+export async function buscaPorNcm(
+    ncm: number[],
+    anos?: number[],
+    meses?: number[],
+    estados?: number[],
+    paises?: number[],
+    vias?: number[],
+    urfs?: number[]
+) {
+    try {
+        const baseUrl = "http://localhost:5000";
+        const url = new URL(`${baseUrl}/busca_por_ncm`);
+
+        const appendListParams = (paramName: string, values?: number[]) => {
+            values?.forEach(value => url.searchParams.append(paramName, value.toString()));
+        };
+        appendListParams('ncm', ncm);
+        appendListParams('anos', anos);
+        appendListParams('meses', meses);
+        appendListParams('paises', paises);
+        appendListParams('estados', estados);
+        appendListParams('vias', vias);
+        appendListParams('urfs', urfs);
+
+        const response = await fetch(url.toString(), {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
+        const data = await response.json();
+
+        if (response.status == 200) {
+            console.log(data.resposta);
+            return data.resposta;
+        } else {
+            throw new Error(data.error || "Erro desconhecido");
+        }
+    } catch (error) {
+        console.error("Erro ao acessar servidor:", error);
+        alert(error instanceof Error ? error.message : 'Erro desconhecido');
+        throw error;
+    }
+}
+
 
 export async function buscaNcmPorNome(nome: string) {
     try {

@@ -7,6 +7,7 @@ import TabelaResultados from "../components/TabelaResultados";
 import PesquisaPais from "../components/pesquisaPais";
 import PesquisaEstado from "../components/pesquisaEstado";
 import PesquisaMercadoria from "../components/pesquisaMercadoria";
+import InfoCardsNcm from "../components/ncm/InfoCardsNcm";
 
 interface Transacao {
     id_transacao: number;
@@ -149,6 +150,19 @@ export default function BuscarNCM() {
                     Buscar Transações
                 </button>
             </div>
+            
+            <div className="w-full overflow-x-auto p-6">
+                <InfoCardsNcm
+                    ncm = {mercadoria ? parseInt(mercadoria) : null}
+                    anos = {selectedPeriods}
+                    tipo = {tipoProcesso}
+                    estado = {estado ? parseInt(estado) : undefined}
+                    pais = {paisSelecionadoId ? parseInt(paisSelecionadoId) : undefined}
+                    transporte = {selectedModes}
+                    urf = {urf ? [parseInt(urf)] : undefined}
+                />
+            </div>
+
 
             <div className="w-full max-w-5xl overflow-x-auto">
                 {transacoes.length > 0 ? (
