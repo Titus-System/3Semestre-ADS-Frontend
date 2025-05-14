@@ -25,7 +25,7 @@ export default function Funcionalidades() {
             <div className="flex flex-col items-center gap-6 mt-40 mb-[300px] max-w-2xl w-full mx-auto px-4">
                 <a href="/consulta_estado" className="w-full">
                     <button className="w-full h-16 rounded-full px-10 py-4 bg-[#0A0A37] text-white hover:bg-[#34538D] text-xl font-semibold">
-                        Análise de estados
+                        Análise de Estados
                     </button>
                 </a>
                 <a href="/buscaNCM" className="w-full">

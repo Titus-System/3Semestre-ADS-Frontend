@@ -345,150 +345,153 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
   
   
 
-  return (
-    <div className="p-8 mt-10 relative z-10">
-      <h2 className="text-white mb-4 text-4xl font-bold text-center">
-        Consulta por Estado
-      </h2>
+return (
+  <div className="p-8 mt-10 relative z-10">
+    <h2 className="text-white mb-4 text-4xl font-bold text-center">
+      Análise de Estados
+    </h2>
+
     <div className="w-full flex flex-col justify-center mt-11">
       <div className="w-full max-w-5xl mx-auto">
         <SelecionaPeriodo onPeriodosSelecionados={handlePeriodosSelecionados} />
       </div>
       <br />
 
-      <div
-  className="relative w-full mb-28 sm:mb-44 map-wrapper"
-  style={{ height: "500px" }} 
->{loading ? ( // Verifica o estado de carregamento
-            <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center z-[999] bg-transparent flex flex-col">
-              <FaSpinner className="animate-spin text-blue-500 text-5xl" /> {/* Ícone de carregamento */}
+      {/* NOVA DIV agrupando mapa, legenda e bloco com capital/PIB */}
+      <div className={`relative w-full flex flex-row items-center" ${estadoSelecionado ? "justify-center" : " "}`}>
+        <div
+        className={`relative w-full mb-28 sm:mb-44 map-wrapper transition-all duration-500 ${
+          estadoSelecionado ? "lg:translate-x-[-20%]" : ""
+        }`}
+        style={{ height: "72vh" }}
+      >
+
+          {loading && (
+            <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center z-[999] bg-transparent flex-col">
+              <FaSpinner className="animate-spin text-blue-500 text-5xl" />
               <p className="mt-3">Carregando cores para o mapa...</p>
             </div>
-          ) : null}
-  <MapContainer
-    center={[-14.235, -51.9253]}
-    zoom={4}
-    scrollWheelZoom={false}
-    dragging={false}
-    zoomControl={false}
-    doubleClickZoom={false}
-    boxZoom={false}
-    keyboard={false}
-    style={{
-      height: "100%",
-      backgroundColor: "transparent"
-    }}
-    className="h-full"
-  >
-          <TileLayer
-            url="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAkcBT2Od3Y4AAAAASUVORK5CYII="
-            attribution=""
-          />
-          <GeoJSON
-            data={geoData as FeatureCollection}
-            style={(feature) => {
-              const nome = feature?.properties?.Estado || "Desconhecido";
-              return {
-                color: "#fff",
-                weight: 1,
-                fillColor: getCorPorMovimento(nome),
-                fillOpacity: 0.9,
-              };
-            }}
-            onEachFeature={(feature, layer: Layer) => {
-              const nome = feature?.properties?.Estado;
-              if (!nome) return;
+          )}
 
-              layer.on({
-                click: () => setEstadoSelecionado(nome),
-                mouseover: (e: LeafletMouseEvent) => {
-                  const layer = e.target as L.Path;
-                  layer.setStyle({ weight: 2, fillOpacity: 1 });
-                },
-                mouseout: (e: LeafletMouseEvent) => {
-                  const layer = e.target as L.Path;
-                  layer.setStyle({ weight: 1, fillOpacity: 0.9 });
-                },
-              });
+          <MapContainer
+            center={[-14.235, -51.9253]}
+            zoom={4}
+            scrollWheelZoom={false}
+            dragging={false}
+            zoomControl={false}
+            doubleClickZoom={false}
+            boxZoom={false}
+            keyboard={false}
+            style={{ height: "100%", backgroundColor: "transparent" }}
+            className="h-full"
+          >
+            <TileLayer
+              url="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAkcBT2Od3Y4AAAAASUVORK5CYII="
+              attribution=""
+            />
+            <GeoJSON
+              data={geoData as FeatureCollection}
+              style={(feature) => {
+                const nome = feature?.properties?.Estado || "Desconhecido";
+                return {
+                  color: "#fff",
+                  weight: 1,
+                  fillColor: getCorPorMovimento(nome),
+                  fillOpacity: 0.9,
+                };
+              }}
+              onEachFeature={(feature, layer: Layer) => {
+                const nome = feature?.properties?.Estado;
+                if (!nome) return;
 
-              layer.bindTooltip(nome, { sticky: true });
-            }}
-          />
+                layer.on({
+                  click: () => setEstadoSelecionado(nome),
+                  mouseover: (e: LeafletMouseEvent) => {
+                    const layer = e.target as L.Path;
+                    layer.setStyle({ weight: 2, fillOpacity: 1 });
+                  },
+                  mouseout: (e: LeafletMouseEvent) => {
+                    const layer = e.target as L.Path;
+                    layer.setStyle({ weight: 1, fillOpacity: 0.9 });
+                  },
+                });
 
-        </MapContainer>
-        <div className="relative 
-                lg:absolute lg:bottom-[-10px] lg:left-2 lg:w-fit 
-                xl:left-2 xl:w-fit 
-                2xl:w-fit 
-                bg-white/10 text-white text-sm p-4 rounded-lg shadow-md 
-                backdrop-blur border border-white/20 
-                z-[1000] mt-4 lg:mt-0">
-  <h4 className="font-semibold">Legenda - Balança Comercial</h4>
-  <p className="mb-3 opacity-75">Cálculo: exportações / importações</p>
-  <ul className="flex flex-col gap-2 lg:flex-col">
-    <li className="flex items-center space-x-2">
-      <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#28965A" }}></span>
-      <span>Desempenho positivo</span>
-    </li>
-    <li className="flex items-center space-x-2">
-      <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#F9C846" }}></span>
-      <span>Neutro</span>
-    </li>
-    <li className="flex items-center space-x-2">
-      <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#F57C00" }}></span>
-      <span>Alerta</span>
-    </li>
-    <li className="flex items-center space-x-2">
-      <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#D64045" }}></span>
-      <span>Desempenho negativo</span>
-    </li>
-  </ul>
-</div>
+                layer.bindTooltip(nome, { sticky: true });
+              }}
+            />
+          </MapContainer>
+              
+          <div className={`transition-all duration-500 z-[1000] text-sm 
+    bg-white/10 text-white shadow-md backdrop-blur border border-white/20
+    p-4 rounded-lg
+    ${estadoSelecionado 
+      ? "absolute bottom-[-25%] right-[18%] w-7/12 flex flex-row justify-around items-center gap-4 mt-4"
+      : "relative lg:absolute lg:bottom-[-10px] lg:left-2 lg:w-fit lg:mt-0 flex flex-col gap-2"
+    }`}
+          >
+            <div className="flex flex-col mr-2">
+              <h4 className="font-semibold">Legenda - Balança Comercial</h4>
+              <p className="opacity-75">Cálculo: exportações / importações</p>
+            </div>
+            <ul className={`gap-2 ${estadoSelecionado ? "flex flex-row" : "flex flex-col lg:flex-col"}`}>
+              <li className="flex items-center space-x-2">
+                <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#28965A" }}></span>
+                <span>Desempenho positivo</span>
+              </li>
+              <li className="flex items-center space-x-2">
+                <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#F9C846" }}></span>
+                <span>Neutro</span>
+              </li>
+              <li className="flex items-center space-x-2">
+                <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#F57C00" }}></span>
+                <span>Alerta</span>
+              </li>
+              <li className="flex items-center space-x-2">
+                <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#D64045" }}></span>
+                <span>Desempenho negativo</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bloco com capital, PIB etc. */}
+        {estadoSelecionado && info && (
+          <div className="hidden lg:flex flex-col justify-items-center absolute right-[11.4%] top-[8.8%] h-2/4 w-[30%] z-[1000] bg-white/10 border border-white/20 backdrop-blur rounded-lg p-6 pt-8 pb-8 text-white space-y-3 shadow-lg 
+                  mx-auto mt-6 text-base overflow-y-auto transition-all duration-500">
+            <div className="mb-3">
+            <h3 className="text-xl font-bold mb-2">{info.estado}</h3>
+            <hr className="border-0 h-[1px] w-full bg-[linear-gradient(to_right,#d5b8e8_60%,transparent_100%)]" />
+            </div>
+            <p className="text-lg"><span className="font-semibold">Capital:</span> {info.capital}</p>
+            <p className="text-lg"><span className="font-semibold">Área Territorial:</span> {info.area}</p>
+            {(() => {
+              const anoKey = anoMaisProximo.toString() as keyof typeof info.pib;
+              const valorPib = info.pib[anoKey];
+              const dados = dadosFiltrados.find((e) => e.estado === estadoSelecionado);
+              const exp = dados?.exportacao;
+              const imp = dados?.importacao;
+              return (
+                <div>
+                  <p className="mb-2 mt-6 text-lg">
+                    <span className="font-semibold">PIB:</span>{" "}
+                    {valorPib}
+                  </p>
+                  <ul className="list-disc pl-5">
+                    <li><span className="font-medium text-lg">Exportação: $</span>{" "}
+                      {exp ? formatNumber(exp) : 'N/A'}</li>
+                    <li><span className="font-medium text-lg">Importação: $</span>{" "}
+                      {imp ? formatNumber(imp) : 'N/A'}</li>
+                  </ul>
+                </div>
+              );
+            })()}
+          </div>
+        )}
       </div>
 
-      {estadoSelecionado && (
-        <>
-        <div className="flex flex-wrap justify-center w-full mx-auto px-2 mt-24 relative top-6">
-          {/* Bloco com duas caixas lado a lado */}
-          <div className="flex flex-wrap justify-center w-full mx-auto px-4 gap-6">
-            {/* Caixa de informações do estado */}
-            {info && (
-              <div className="bg-white/10 border border-white/20 backdrop-blur rounded-lg p-4 text-white space-y-3 shadow-lg 
-                  w-full sm:w-full md:w-full lg:w-full xl:w-5/12 2xl:w-5/12 md:w-5/12 
-                  mx-auto
-                  text-base
-            ">            
-                <h3 className="text-xl font-bold">{info.estado}</h3>
-                <p><span className="font-bold">Capital:</span> {info.capital}</p>
-                <p><span className="font-bold">Área Territorial:</span> {info.area}</p>
-
-                {/* Cálculo seguro do PIB por ano mais próximo */}
-                {(() => {
-                  const anoKey = anoMaisProximo.toString() as keyof typeof info.pib;
-                  const valorPib = info.pib[anoKey];
-                  const dados = dadosFiltrados.find((e) => e.estado === estadoSelecionado);
-                  const exp = dados?.exportacao
-                  const imp = dados?.importacao
-                  return (
-                    <div>
-                      <p className="mb-2">
-                        <span className="font-bold">PIB:</span>{" "}
-                        {valorPib}
-                      </p>
-                      <ul className="list-disc pl-5">
-                        <li><span className="font-medium">Exportação: $</span>{" "}
-                        {exp ? formatNumber(exp) : 'N/A'}</li>
-                        <li><span className="font-medium">Importação: $</span>{" "}
-                        {imp ? formatNumber(imp) : 'N/A'}</li>
-                      </ul>
-                  </div>
-                  );
-                })()}
-
-              </div>
-            )}
-
             {/* Nova caixa de informações adicional */}
+            {/* {estadoSelecionado && (
+              <>
             <div className="bg-white/10 border border-white/20 backdrop-blur rounded-lg p-4 text-white space-y-2 shadow-lg 
             w-full sm:w-full md:w-full lg:w-full xl:w-5/12 2xl:w-5/12 mx-auto
             text-base
@@ -508,10 +511,12 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
               <p><strong>Importadores:</strong> {importadores.join(", ")}</p>
               </div>
             </div>
-          </div>
+          </>
+            )} */}
 
-        <div className="flex flex-wrap justify-center items-center w-full mx-auto px-4">
+        <div className="flex flex-wrap gap-4 justify-between items-start w-full">
           {/* Gráfico de barras - Setores Econômicos */}
+          {estadoSelecionado && (
           <div className="md:w-full lg:w-8/12 xl:w-2/4 2xl:w-2/4 mx-auto">
             <h3 className="text-white mt-6 mb-4 text-lg font-medium">
               Exportações vs Importações por Setor: {estadoSelecionado}
@@ -521,14 +526,16 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
                 <XAxis dataKey="setor" stroke="#ffffff" tick={{fontSize: isSmallerScreen ? 0 : isSmallScreen ? 8 : 10, fill: "#ffffff"}} interval={0} />
                 <YAxis stroke="#ffffff" tick={{ fill: "#ffffff"}} domain={[0, 'dataMax']} allowDataOverflow={true} tickFormatter={formatarNumeroEixoY} minTickGap={15}  interval="preserveStartEnd"/>
                 
-                <ChartTooltip />
+                <ChartTooltip formatter={(value: number) => `$ ${value?.toLocaleString('pt-BR')}`}/>
                 <Bar dataKey="exportacao" fill="#66bb6a" name="Exportações" />
                 <Bar dataKey="importacao" fill="#42a5f5" name="Importações" />
               </BarChart>
             </ResponsiveContainer>
           </div>
+          )}
 
           {/* Gráfico de barras - Exportações vs Importações */}
+          {estadoSelecionado && (
           <div className="md:w-full lg:w-3/12 xl:w-3/12 2xl:w-3/12 mx-auto">
             <h3 className="text-white mt-6 mb-4 text-lg font-medium">
               Exportações vs Importações: {estadoSelecionado}
@@ -537,17 +544,15 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
               <BarChart data={dadosFiltrados}>
                 <XAxis dataKey="estado" stroke="#ffffff" />
                 <YAxis stroke="#ffffff" tickFormatter={formatarNumeroEixoY}/>
-                <ChartTooltip />
+                <ChartTooltip formatter={(value: number) => `$ ${value?.toLocaleString('pt-BR')}`}/>
                 <Bar dataKey="exportacao" fill="#66bb6a" name="Exportações" />
                 <Bar dataKey="importacao" fill="#42a5f5" name="Importações" />
               </BarChart>
             </ResponsiveContainer>
           </div>
+          )}
         </div>
         </div>
-        </>
-      )}
-    </div>
     </div>
   );
 }
