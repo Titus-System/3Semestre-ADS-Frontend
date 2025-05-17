@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NcmHist, RankingNcm } from "../../models/interfaces";
+import { Estado, Mercadoria, NcmHist, Pais } from "../../models/interfaces";
 import { buscarNcmHist } from "../../services/ncmService";
 import {
     CartesianGrid,
@@ -13,11 +13,11 @@ import {
 } from "recharts";
 
 type Props = {
-    tipo:'exp'|'imp'|null
-    rankingNcm: any;
-    anos:number[]|null;
-    estado:number|null;
-    pais:number|null
+    tipo: 'exp' | 'imp' | null
+    ncms: Mercadoria[] | null;
+    anos: number[] | null;
+    estado: Estado | null;
+    pais: Pais | null
 };
 
 interface HistNCMs {
@@ -32,12 +32,27 @@ interface HistNCMs {
     }[];
 }[];
 
+function formataTitulo(tipo?: string | null, pais?: Pais | null, estado?: Estado | null) {
+    let titulo = `Histórico dos NCMs que foram mais ${tipo ? tipo : 'exp'}ortados`
+    if (estado) {
+        titulo = `${titulo} por ${estado.sigla}`
+    }
+    if (pais) {
+        if (tipo == 'imp') {
+            titulo = `${titulo} de ${pais.nome}`
+        } else {
+            titulo = `${titulo} para ${pais.nome}`
+        }
+    }
+    return titulo
+}
+
 async function callBuscarNcmHist(
     tipo: "exp" | "imp" | null,
     ncmList: number[],
     anos: number[] | null,
-    pais: number|null,
-    estado: number|null
+    pais: number | null,
+    estado: number | null
 ) {
     const dados = await buscarNcmHist(
         tipo ? tipo : "exp",
@@ -90,16 +105,20 @@ async function formatarDadosNcmHist(dados: any[]): Promise<HistNCMs[]> {
     return dadosFormatados;
 }
 
-export default function GraficoHistNcm({ tipo, rankingNcm, anos, estado, pais }: Props) {
+export default function GraficoHistNcms({ tipo, ncms, anos, estado, pais }: Props) {
     const [histNcmData, setHistNcmData] = useState<HistNCMs[] | null>(null);
+    const [titulo, setTitulo] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(false);
+
     useEffect(() => {
-        if (rankingNcm && Array.isArray(rankingNcm)) {
-            const ncmsList = rankingNcm.slice(0, 5).map((item: RankingNcm) => item.ncm);
+        setLoading(true);
+        if (ncms && Array.isArray(ncms)) {
+            const ncmsList = ncms.slice(0, 5).map((item: Mercadoria) => item.id_ncm);
 
             const fetchHistNcm = async () => {
                 try {
                     const result = await formatarDadosNcmHist(
-                        await callBuscarNcmHist(tipo, ncmsList, anos, pais, estado)
+                        await callBuscarNcmHist(tipo, ncmsList, anos, pais ? pais.id_pais : null, estado ? estado.id_estado : null)
                     );
                     setHistNcmData(result);
                 } catch (error) {
@@ -113,18 +132,19 @@ export default function GraficoHistNcm({ tipo, rankingNcm, anos, estado, pais }:
         } else {
             console.error("rankingNcm não é um array ou não foi encontrado.");
         }
-    }, [rankingNcm]);
+        setTitulo(formataTitulo(tipo, pais, estado));
+        setLoading(false);
+    }, [tipo, ncms, anos, estado, pais]);
 
 
     const [mostrarAgregado, setMostrarAgregado] = useState(false);
-
 
     const dadosGrafico = histNcmData?.map((item) => {
         const ponto: any = { data: item.data };
         item.dados.forEach((ncm) => {
             if (mostrarAgregado) {
                 ponto[ncm.id_ncm] = ncm.total_valor_agregado
-            }else{
+            } else {
                 ponto[ncm.id_ncm] = ncm.total_valor_fob;
             }
         });
@@ -133,32 +153,45 @@ export default function GraficoHistNcm({ tipo, rankingNcm, anos, estado, pais }:
 
     const idsNcm = histNcmData?.[0]?.dados.map((ncm) => ncm.id_ncm) || [];
 
+
+    if (loading) {
+        return (
+            <div className="p-6 bg-white rounded-lg shadow">
+                <div className="flex justify-center items-center h-64">
+                    <svg className="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </div>
+            </div>
+        );
+    };
+
+
     return (
         <div className="bg-white rounded p-4 w-full max-w-full overflow-x-auto">
             <h3 className="text-center text-indigo-900 font-semibold mb-2">
-                Histórico dos principais NCMs
+                {titulo}
             </h3>
             <div className="flex justify-between items-center mb-2">
                 <div className="flex space-x-2">
                     <button
-                    onClick={() => setMostrarAgregado(false)}
-                    className={`px-4 py-1 rounded-md text-sm border transition ${
-                        !mostrarAgregado
-                        ? 'bg-indigo-600 text-white border-indigo-600'
-                        : 'bg-white text-indigo-600 border-indigo-300 hover:border-indigo-600'
-                    }`}
+                        onClick={() => setMostrarAgregado(false)}
+                        className={`px-4 py-1 rounded-md text-sm border transition ${!mostrarAgregado
+                            ? 'bg-indigo-600 text-white border-indigo-600'
+                            : 'bg-white text-indigo-600 border-indigo-300 hover:border-indigo-600'
+                            }`}
                     >
-                    {`Valor FOB ${tipo}`}
+                        {`Valor FOB ${tipo}`}
                     </button>
                     <button
-                    onClick={() => setMostrarAgregado(true)}
-                    className={`px-4 py-1 rounded-md text-sm border transition ${
-                        mostrarAgregado
-                        ? 'bg-indigo-600 text-white border-indigo-600'
-                        : 'bg-white text-indigo-600 border-indigo-300 hover:border-indigo-600'
-                    }`}
+                        onClick={() => setMostrarAgregado(true)}
+                        className={`px-4 py-1 rounded-md text-sm border transition ${mostrarAgregado
+                            ? 'bg-indigo-600 text-white border-indigo-600'
+                            : 'bg-white text-indigo-600 border-indigo-300 hover:border-indigo-600'
+                            }`}
                     >
-                    {`Valor Agregado ${tipo}`}
+                        {`Valor Agregado ${tipo}`}
                     </button>
                 </div>
             </div>

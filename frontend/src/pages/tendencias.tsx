@@ -1,24 +1,27 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import GraficoBalancaComercial from "../components/tendencias/GraficoBalancaComercial"
+import GraficoBalancaComercial from "../components/tendencias/GraficoBalancaComercialGambiarra"
 import { buscarTendenciaBalancaComercial, buscarTendenciaVa, buscarTendenciaVlFob } from "../services/tendenciaServices"
 import InputEstado from "../components/input/inputEstado"
 import InputPais from "../components/input/inputPais"
 import GraficoValorAgregado from "../components/tendencias/GraficoValorAgregado"
+import PainelEstatisticasAuxiliares from "../components/paineis/PainelEstatisticasAuxiliaresVlfob"
+import PainelEstatisticasBalancaComercial from "../components/paineis/PainelEstatisticasBalancaComercial"
+import PainelEstatisticasVlfob from "../components/paineis/PainelEstatisticasVlfob"
 
 interface Data {
-  ds: string
-  yhat: number
+    ds: string
+    yhat: number
 }
 interface Estado {
-  id_estado: number
-  nome: string
-  sigla: string
+    id_estado: number
+    nome: string
+    sigla: string
 }
 interface Pais {
-  id_pais: number
-  nome: string
+    id_pais: number
+    nome: string
 }
 
 export default function Previsao() {
@@ -35,7 +38,6 @@ export default function Previsao() {
     const [isLoading, setIsLoading] = useState(false)
     const [tituloBalanca, setTituloBalanca] = useState<string>("")
     const [tituloVa, setTituloVa] = useState<string>("")
-
 
     const montarTitulos = () => {
         let tituloBc = `Balança comercial`;
@@ -54,18 +56,18 @@ export default function Previsao() {
     const buscarVlFob = async () => {
         setIsLoading(true)
         setTimeout(async () => {
-            console.log("Buscando dados para:", { 
-                estado: estadoSelecionado?.id_estado, 
-                pais: paisSelecionado?.id_pais 
+            console.log("Buscando dados para:", {
+                estado: estadoSelecionado?.id_estado,
+                pais: paisSelecionado?.id_pais
             })
-            
+
             try {
                 const [dadosExp, dadosImp, dadosBal] = await Promise.all([
-                buscarTendenciaVlFob("exp", estadoSelecionado?.id_estado, paisSelecionado?.id_pais),
-                buscarTendenciaVlFob("imp", estadoSelecionado?.id_estado, paisSelecionado?.id_pais),
-                buscarTendenciaBalancaComercial(estadoSelecionado?.id_estado, paisSelecionado?.id_pais),
+                    buscarTendenciaVlFob("exp", estadoSelecionado?.id_estado, paisSelecionado?.id_pais),
+                    buscarTendenciaVlFob("imp", estadoSelecionado?.id_estado, paisSelecionado?.id_pais),
+                    buscarTendenciaBalancaComercial(estadoSelecionado?.id_estado, paisSelecionado?.id_pais),
                 ])
-        
+
                 setDadosExportacao(dadosExp)
                 setDadosImportacao(dadosImp)
                 setDadosBalanca(dadosBal)
@@ -76,18 +78,18 @@ export default function Previsao() {
         })
     }
 
-    const buscarVa = async() => {
+    const buscarVa = async () => {
         setIsLoading(true)
         setTimeout(async () => {
-            console.log("Buscando dados para:", { 
-                estado: estadoSelecionado?.id_estado, 
-                pais: paisSelecionado?.id_pais 
+            console.log("Buscando dados para:", {
+                estado: estadoSelecionado?.id_estado,
+                pais: paisSelecionado?.id_pais
             })
-            
+
             try {
                 const [vaImp, vaExp] = await Promise.all([
-                buscarTendenciaVa('imp', estadoSelecionado?.id_estado, paisSelecionado?.id_pais),
-                buscarTendenciaVa('exp', estadoSelecionado?.id_estado, paisSelecionado?.id_pais)
+                    buscarTendenciaVa('imp', estadoSelecionado?.id_estado, paisSelecionado?.id_pais),
+                    buscarTendenciaVa('exp', estadoSelecionado?.id_estado, paisSelecionado?.id_pais)
                 ])
                 setDadosVaExp(vaExp)
                 setDadosVaImp(vaImp)
@@ -98,7 +100,7 @@ export default function Previsao() {
         })
     }
 
-    const buscarDados = async() => {
+    const buscarDados = async () => {
         buscarVlFob()
         buscarVa()
     }
@@ -115,23 +117,23 @@ export default function Previsao() {
             <h2 className="text-white mb-4 text-4xl font-bold text-center">Séries históricas e análises de tendências</h2>
             <div className="w-full max-w-3xl mx-auto space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <InputEstado
-                    label="Defina o estado:"
-                    onChange={(estado) => {
-                        console.log("Estado recebido do componente:", estado)
-                        setEstadoSelecionado(estado)
-                    }}
-                    placeholder="Digite o nome do estado"
-                />
+                    <InputEstado
+                        label="Defina o estado:"
+                        onChange={(estado) => {
+                            console.log("Estado recebido do componente:", estado)
+                            setEstadoSelecionado(estado)
+                        }}
+                        placeholder="Digite o nome do estado"
+                    />
 
-                <InputPais
-                    label="Defina o país de origem/destino:"
-                    onChange={(pais) => {
-                        console.log("País recebido do componente: ", pais)
-                        setPaisSelecionado(pais)
-                    }}
-                    placeholder="Digite o nome do país"
-                />
+                    <InputPais
+                        label="Defina o país de origem/destino:"
+                        onChange={(pais) => {
+                            console.log("País recebido do componente: ", pais)
+                            setPaisSelecionado(pais)
+                        }}
+                        placeholder="Digite o nome do país"
+                    />
                 </div>
 
                 <div className="p-6 border-t border-gray-200 flex justify-center">
@@ -141,48 +143,81 @@ export default function Previsao() {
                         disabled={isLoading}
                     >
                         {isLoading ? (
-                        <>
-                            <div className="h-5 w-5 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                            Buscando...
-                        </>
+                            <>
+                                <div className="h-5 w-5 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                                Buscando...
+                            </>
                         ) : (
-                        <>
-                            <svg
-                            className="mr-2 h-5 w-5"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            >
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <path d="m21 21-4.3-4.3"></path>
-                            </svg>
-                            Buscar
-                        </>
+                            <>
+                                <svg
+                                    className="mr-2 h-5 w-5"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path d="m21 21-4.3-4.3"></path>
+                                </svg>
+                                Buscar
+                            </>
                         )}
                     </button>
                 </div>
             </div>
 
-            <div className="p-8 text-black">
+            <div className="p-8 text-white">
                 <p className="text-white text-sm italic">* Previsões calculadas usando SARIMA</p>
-                <div className="p-8">
-                    <h2 className="text-xl font-semibold mb-4 text-gray-800">{tituloBalanca}</h2>
+                <div className="p-8 ">
+                    <h2 className="text-xl text-white font-semibold mb-4 text-gray-800">{tituloBalanca}</h2>
                     <GraficoBalancaComercial
                         dadosExportacao={dadosExportacao}
                         dadosImportacao={dadosImportacao}
                         dadosBalanca={dadosBalanca}
                     />
-                    <h2 className="text-xl font-semibold mb-4 mt-8 text-gray-800">{tituloVa}</h2>
+                    <h2 className="text-xl text-white font-semibold mb-4 mt-8 text-gray-800">{tituloVa}</h2>
                     <GraficoValorAgregado
                         dadosExportacao={dadosVaExp}
-                        dadosImportacao={dadosVaImp} 
+                        dadosImportacao={dadosVaImp}
                     />
+                    <div className="p-6 bg-gray-50 rounded-2xl shadow-sm">
+                        <div className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-2 gap-6">
+
+                            <div className="bg-white p-6 rounded-xl shadow hover:shadow-md transition-shadow border border-gray-100">
+                                <h2 className="text-lg font-semibold text-gray-800 mb-4">Valor FOB</h2>
+                                <PainelEstatisticasVlfob
+                                    ncm={null}
+                                    estado={estadoSelecionado?.id_estado}
+                                    pais={paisSelecionado?.id_pais}
+                                />
+                            </div>
+
+                            <div className="bg-white p-6 rounded-xl shadow hover:shadow-md transition-shadow border border-gray-100">
+                                <h2 className="text-lg font-semibold text-gray-800 mb-4">Balança Comercial</h2>
+                                <PainelEstatisticasBalancaComercial
+                                    ncm={null}
+                                    estado={estadoSelecionado?.id_estado}
+                                    pais={paisSelecionado?.id_pais}
+                                />
+                            </div>
+
+                            <div className="bg-white p-6 rounded-xl shadow hover:shadow-md transition-shadow border border-gray-100">
+                                <h2 className="text-lg font-semibold text-gray-800 mb-4">Outras Estatísticas</h2>
+                                <PainelEstatisticasAuxiliares
+                                    ncm={null}
+                                    estado={estadoSelecionado?.id_estado}
+                                    pais={paisSelecionado?.id_pais}
+                                />
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

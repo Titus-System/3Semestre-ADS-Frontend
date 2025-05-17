@@ -142,7 +142,7 @@ export default function InputPais({
     <div className="grid gap-2" ref={dropdownRef}>
       <label
         htmlFor={label.toLowerCase().replace(/\s/g, "-")}
-        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        className="text-sm text-white font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
       >
         {label} {required && <span className="text-red-500">*</span>}
       </label>

@@ -1,12 +1,13 @@
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { buscarHistoricoPais } from "../../services/paisService";
 import { useEffect, useState } from "react";
+import { Estado, Mercadoria, Pais } from "../../models/interfaces";
 
 type Props = {
-    tipo:string|null;
-    paises:number[]|null;
-    ncm:number|null;
-    estado:number|null;
+    tipo: string | null;
+    paises: Pais[] | null;
+    ncm: Mercadoria | null;
+    estado: Estado | null;
     anos: number[] | null
 }
 
@@ -21,16 +22,22 @@ interface HistPaises {
     }[];
 }[];
 
+function formataTitulo(tipo?: string | null, estado?: Estado | null, ncm?: Mercadoria | null) {
+    let titulo = `Histórico dos países que ${estado ? estado.sigla : 'Brasil'} mais ${tipo ? `${tipo}portou` : 'exportou'}`
+    if (ncm) { titulo = `${titulo} ${ncm.descricao}` }
+    return titulo
+}
 
-async function callBuscarPaisHist (tipo:string|null, paises:number[]|null, ncm:number|null, estado:number|null, anos:number[]|null) {
+
+async function callBuscarPaisHist(tipo: string | null, paises: number[] | null, ncm: number | null, estado: number | null, anos: number[] | null) {
     if (paises && paises.length > 0) {
         const dados = await buscarHistoricoPais(
-            tipo ? tipo : 'exp', 
-            paises, 
-            ncm ? [ncm] : undefined, 
-            estado ? [estado] : undefined, 
+            tipo ? tipo : 'exp',
+            paises,
+            ncm ? [ncm] : undefined,
+            estado ? [estado] : undefined,
             anos ? anos : undefined,
-            [1,2,3,4,5,6,7,8,9,10,11,12], undefined, undefined
+            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], undefined, undefined
         )
         const dadosConvertidos = dados.map((item: any) => ({
             ...item,
@@ -74,15 +81,21 @@ async function formatarDadosHist(dados: any[]): Promise<HistPaises[]> {
 }
 
 
-export default function GraficoHistPais({tipo, paises, ncm, estado, anos}:Props) {
+export default function GraficoHistPais({ tipo, paises, ncm, estado, anos }: Props) {
     const [histPaisData, setHistPaisData] = useState<HistPaises[] | null>(null);
+    const [titulo, setTitulo] = useState<string>("");
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
+        setIsLoading(true);
         if (paises && Array.isArray(paises)) {
+            const ids = paises.map((item) => {
+                return item.id_pais
+            })
             const fetchHistNcm = async () => {
                 try {
                     const result = await formatarDadosHist(
-                        await callBuscarPaisHist(tipo, paises, ncm, estado, anos)
+                        await callBuscarPaisHist(tipo, ids, ncm ? ncm.id_ncm : null, estado ? estado.id_estado : null, anos)
                     );
                     setHistPaisData(result);
                 } catch (error) {
@@ -96,7 +109,9 @@ export default function GraficoHistPais({tipo, paises, ncm, estado, anos}:Props)
         } else {
             console.error("paises não é um array ou não foi encontrado.");
         }
-    }, [paises]);
+        setTitulo(formataTitulo(tipo, estado, ncm))
+        setIsLoading(false);
+    }, [tipo, paises, ncm, estado, anos]);
 
     const dadosGrafico = histPaisData?.map((item) => {
         const ponto: any = { data: item.data };
@@ -107,11 +122,24 @@ export default function GraficoHistPais({tipo, paises, ncm, estado, anos}:Props)
     }) || [];
 
     const paisNomes = histPaisData?.[0]?.dados.map((pais) => pais.nome_pais) || [];
+    
+    if (isLoading) {
+        return (
+            <div className="p-6 bg-white rounded-lg shadow">
+                <div className="flex justify-center items-center h-64">
+                    <svg className="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </div>
+            </div>
+        );
+    };
 
     return (
         <div className="bg-white rounded p-4 w-full max-w-full overflow-x-auto">
             <h3 className="text-center text-indigo-900 font-semibold mb-2">
-                Histórico dos principais países
+                {titulo}
             </h3>
 
             <ResponsiveContainer width="100%" height={400}>

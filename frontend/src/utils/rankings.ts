@@ -1,4 +1,4 @@
-import { DadosSetores, RankingDados, RankingEstado, RankingEstados, RankingNcm, RankingPais, RankingPaises } from "../models/interfaces"
+import { RankingDados, RankingEstado, RankingNcm, RankingPais} from "../models/interfaces"
 import { buscarRankingEstadosPorNcm } from "../services/estadoService"
 import { buscarRankingNcm } from "../services/ncmService";
 import { buscarRankingPaises } from "../services/paisService";

@@ -9,7 +9,6 @@ import ComparacaoEstado from "../pages/comparacaoEstado";
 import ConsultaEstado from "../pages/consultaEstado";
 import PaginaRanking from "../pages/paginaRanking"
 import TendenciasPage from "../pages/tendencias";
-import PaginaPais from "../pages/paginaPais";
 
 
 export default function AppRoutes(){
@@ -27,7 +26,6 @@ export default function AppRoutes(){
                 <Route path="/previsao" element={<TendenciasPage/>} />      
                 <Route path="/consulta_estado" element={<ConsultaEstado/>} /> 
                 <Route path="/paginaRanking" element={<PaginaRanking/>} />
-                <Route path="/pais" element={<PaginaPais/>} />
 
             </Routes>
         </BrowserRouter>
