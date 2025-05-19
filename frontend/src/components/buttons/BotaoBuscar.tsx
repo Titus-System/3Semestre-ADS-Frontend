@@ -18,7 +18,7 @@ export default function BotaoBuscar({
       <button
         onClick={onClick}
         disabled={isLoading}
-        className={`bg-[#11114E] hover:bg-[#0a0a3d] text-white px-8 py-3 rounded-full font-semibold text-lg shadow-lg transition-all duration-200 flex items-center h-12 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+        className={`bg-[ #11114E] hover:bg-[#0a0a3d] text-white px-8 py-3 rounded-full font-semibold text-lg shadow-lg transition-all duration-200 flex items-center h-12 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
       >
         {isLoading ? (
           <>

@@ -32,11 +32,9 @@ export default function InputNcm({
                 setSuggestions([])
                 return
             }
-
             if (selectedMercadoria && inputValue === selectedMercadoria.descricao) {
                 return
             }
-
             setIsLoading(true)
             try {
                 const resultados = await buscaNcmPorNome(inputValue)
@@ -53,7 +51,6 @@ export default function InputNcm({
                 setIsLoading(false)
             }
         }
-
         const debounceTimer = setTimeout(searchMercadoriaes, 300)
         return () => clearTimeout(debounceTimer)
     }, [inputValue, selectedMercadoria])
@@ -136,7 +133,7 @@ export default function InputNcm({
         <div className="grid gap-2" ref={dropdownRef}>
             <label
                 htmlFor={label.toLowerCase().replace(/\s/g, "-")}
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                className="text-sm text-white font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
                 {label} {required && <span className="text-red-500">*</span>}
             </label>
