@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { buscarRegressaoLinearBalanca } from "../../services/tendenciaServices";
 import { CartesianGrid, Legend, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { formatarData } from "../../utils/formatarData";
+import ModalRegressaoLinear from "../modais/ModalRegressaoLinear";
 
 type Props = {
     ncm?: number | null;
@@ -12,6 +13,7 @@ type Props = {
 export default function GraficoRegressaoLinearBalanca({ ncm, estado, pais }: Props) {
     const [dados, setDados] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [exibirModal, setExibirModal] = useState(false);
 
     useEffect(() => {
         async function fetchData() {
@@ -36,7 +38,7 @@ export default function GraficoRegressaoLinearBalanca({ ncm, estado, pais }: Pro
         }
 
         fetchData();
-    }, [estado, pais]);
+    }, [estado, pais, ncm]);
 
     if (loading) {
         return (
@@ -53,43 +55,52 @@ export default function GraficoRegressaoLinearBalanca({ ncm, estado, pais }: Pro
     if (!dados || dados.length === 0) return <p>Nenhum dado disponível.</p>;
 
     return (
-        <div className="rounded-lg p-5 w-full max-w-full" style={{ width: "100%", height: 400 }}>
-            <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={dados} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis
-                        dataKey="ds"
-                        type="category"
-                        tickFormatter={(ds: string) => formatarData(ds)}
-                        interval={11}
-                        tick={{ fontSize: 12 }}
-                    />
-                    <YAxis
-                        tickFormatter={(value) => `${(value / 1e9)}`}
-                        label={{ value: '$ (Bilhões)', angle: -90, position: 'insideLeft', offset: 10 }}
-                    />
-                    <Tooltip
-                        labelFormatter={(label) => `Data: ${formatarData(label as string)}`}
-                        formatter={(value: number) => `$ ${value.toLocaleString('pt-BR', { maximumFractionDigits: 2 })}`}
-                        labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }}
-                    />
-                    <Legend />
-                    <ReferenceLine
-                        x="2025-01-01"
-                        stroke="red"
-                        strokeDasharray="3 3"
-                        label={{
-                            value: "Projeção",
-                            position: "top",
-                            angle: 0,
-                            fontSize: 12,
-                            fill: "red"
-                        }}
-                    />
-                    <Line type="monotone" dataKey="y_real" stroke="rgb(51, 111, 207)" name="Balança Comercial Real" strokeWidth={2} dot={{ r: 1 }} />
-                    <Line type="monotone" dataKey="y_regressao" stroke="rgb(102, 158, 231)" name="Balança (Regressão)" strokeWidth={2} dot={{ r: 2 }} />
-                </LineChart>
-            </ResponsiveContainer>
+        <div className="w-full max-w-full">
+            <h3
+                className="text-lg font-medium mb-2 text-gray-700 cursor-pointer hover:underline"
+                onClick={() => setExibirModal(true)}
+            >
+                Regressão Linear
+            </h3>
+            {exibirModal && <ModalRegressaoLinear onClose={() => setExibirModal(false)} />}
+            <div className="h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={dados} margin={{ top: 20, right: 30, left: 20, bottom: 40 }}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis
+                            dataKey="ds"
+                            type="category"
+                            tickFormatter={(ds: string) => formatarData(ds)}
+                            interval={11}
+                            tick={{ fontSize: 12 }}
+                        />
+                        <YAxis
+                            tickFormatter={(value) => `${(value / 1e9)}`}
+                            label={{ value: '$ (Bilhões)', angle: -90, position: 'insideLeft', offset: 10 }}
+                        />
+                        <Tooltip
+                            labelFormatter={(label) => `Data: ${formatarData(label as string)}`}
+                            formatter={(value: number) => `$ ${value.toLocaleString('pt-BR', { maximumFractionDigits: 2 })}`}
+                            labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }}
+                        />
+                        <Legend />
+                        <ReferenceLine
+                            x="2025-01-01"
+                            stroke="red"
+                            strokeDasharray="3 3"
+                            label={{
+                                value: "Projeção",
+                                position: "top",
+                                angle: 0,
+                                fontSize: 12,
+                                fill: "red"
+                            }}
+                        />
+                        <Line type="monotone" dataKey="y_real" stroke="rgb(51, 111, 207)" name="Balança Comercial Real" strokeWidth={2} dot={{ r: 1 }} />
+                        <Line type="monotone" dataKey="y_regressao" stroke="rgb(102, 158, 231)" name="Balança (Regressão)" strokeWidth={2} dot={{ r: 2 }} />
+                    </LineChart>
+                </ResponsiveContainer>
+            </div>
         </div>
     );
 }

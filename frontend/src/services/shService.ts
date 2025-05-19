@@ -33,8 +33,8 @@ export async function buscaVlFobSh4(
 
     }catch (error) {
         console.error("Erro ao acessar servidor:", error);
-        alert(error instanceof Error ? error.message : 'Erro desconhecido');
-        throw error;
+        // alert(error instanceof Error ? error.message : 'Erro desconhecido');
+        // throw error;
     }
 }
 
@@ -72,7 +72,7 @@ export async function buscaVlFobSetores(
         }
     }catch (error) {
         console.error("Erro ao acessar servidor:", error);
-        alert(error instanceof Error ? error.message : 'Erro desconhecido');
-        throw error;
+        // alert(error instanceof Error ? error.message : 'Erro desconhecido');
+        // throw error;
     }
 }

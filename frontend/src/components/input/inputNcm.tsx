@@ -32,11 +32,9 @@ export default function InputNcm({
                 setSuggestions([])
                 return
             }
-
             if (selectedMercadoria && inputValue === selectedMercadoria.descricao) {
                 return
             }
-
             setIsLoading(true)
             try {
                 const resultados = await buscaNcmPorNome(inputValue)
@@ -53,7 +51,6 @@ export default function InputNcm({
                 setIsLoading(false)
             }
         }
-
         const debounceTimer = setTimeout(searchMercadoriaes, 300)
         return () => clearTimeout(debounceTimer)
     }, [inputValue, selectedMercadoria])

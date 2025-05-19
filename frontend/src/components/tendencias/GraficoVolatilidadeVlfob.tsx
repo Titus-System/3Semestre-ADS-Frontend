@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { buscarVolatilidadeVlfob } from "../../services/tendenciaServices";
 import { formatarData } from "../../utils/formatarData";
+import ModalVolatilidade from "../modais/ModalVolatilidade";
 
 type Props = {
     ncm?: number | null;
@@ -23,7 +24,7 @@ export function GraficoVolatilidadeVlfob({ ncm, estado, pais }: Props) {
     const [volatilidadeExp, setVolatilidadeExp] = useState<any[]>([]);
     const [volatilidadeImp, setVolatilidadeImp] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-
+const [exibirModal, setExibirModal] = useState(false);
     useEffect(() => {
         async function fetchVolatilidade() {
             setLoading(true);
@@ -60,7 +61,7 @@ export function GraficoVolatilidadeVlfob({ ncm, estado, pais }: Props) {
         }
 
         fetchVolatilidade();
-    }, [estado, pais]);
+    }, [estado, pais, ncm]);
 
     if (loading) {
         return (
@@ -78,39 +79,49 @@ export function GraficoVolatilidadeVlfob({ ncm, estado, pais }: Props) {
         return <p>Nenhum dado de volatilidade disponível.</p>;
 
     return (
-        <div className="rounded-lg p-5 w-full max-w-full" style={{ width: "100%", height: 400 }}>
-            <p className="text-black">desvio padrão móvel em 6 meses do valor FOB</p>
-            <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={volatilidadeExp}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="ds"
-                        type="category"
-                        tickFormatter={(ds: string) => formatarData(ds)}
-                        interval={11}
-                        tick={{ fontSize: 12 }}
-                    />
-                    <YAxis
-                        tickFormatter={(value) => `${(value / 1e9)}`}
-                        label={{ value: '$ (Bilhões)', angle: -90, position: 'insideLeft', offset: 10 }}
-                    />
-                    <Tooltip labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }} />
-                    <Legend />
-                    <ReferenceLine
-                        x="2025-01-01"
-                        stroke="red"
-                        strokeDasharray="3 3"
-                        label={{
-                            value: "Projeção",
-                            position: "top",
-                            angle: 0,
-                            fontSize: 12,
-                            fill: "red"
-                        }}
-                    />
-                    <Line type="monotone" dataKey="volatilidade_exp" stroke="rgb(18, 148, 1)" name="Volatilidade Exportação" strokeWidth={2} dot={{ r: 1 }} />
-                    <Line type="monotone" dataKey="volatilidade_imp" stroke="rgb(255, 0, 0)" name="Volatilidade Importação" strokeWidth={2} dot={{ r: 1 }} />
-                </LineChart>
-            </ResponsiveContainer>
+        <div className="w-full max-w-full" style={{ width: "100%", height: 400 }}>
+            <h3
+                className="text-lg font-medium mb-2 text-gray-700 cursor-pointer hover:underline"
+                onClick={() => setExibirModal(true)}
+            >
+                Volatilidade
+            </h3>
+            {exibirModal && <ModalVolatilidade onClose={() => setExibirModal(false)} />}
+            <div className="h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={volatilidadeExp} margin={{ top: 20, right: 30, left: 20, bottom: 40 }}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="ds"
+                            type="category"
+                            tickFormatter={(ds: string) => formatarData(ds)}
+                            interval={11}
+                            tick={{ fontSize: 12 }}
+                        />
+                        <YAxis
+                            tickFormatter={(value) => `${(value / 1e9)}`}
+                            label={{ value: '$ (Bilhões)', angle: -90, position: 'insideLeft', offset: 10 }}
+                        />
+                        <Tooltip labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }} />
+                        <Legend />
+                        <ReferenceLine
+                            x="2025-01-01"
+                            stroke="red"
+                            strokeDasharray="3 3"
+                            label={{
+                                value: "Projeção",
+                                position: "top",
+                                angle: 0,
+                                fontSize: 12,
+                                fill: "red"
+                            }}
+                        />
+                        <Line type="monotone" dataKey="volatilidade_exp" stroke="rgb(18, 148, 1)" name="Volatilidade Exportação" strokeWidth={2} dot={{ r: 1 }} />
+                        <Line type="monotone" dataKey="volatilidade_imp" stroke="rgb(255, 0, 0)" name="Volatilidade Importação" strokeWidth={2} dot={{ r: 1 }} />
+                    </LineChart>
+                </ResponsiveContainer>
+
+
+            </div>
         </div>
     );
 }

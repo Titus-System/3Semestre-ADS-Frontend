@@ -85,6 +85,7 @@ function unificarDados(
 
 export default function GraficoBalancaComercial({ anos, estado, pais, ncm }: Props) {
     const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<boolean>(false);
 
     const [dadosUnificados, setDadosUnificados] = useState<DadoUnificado[]>([]);
     const [dadosExportacao, setDadosExportacao] = useState<Data[]>([])
@@ -110,8 +111,10 @@ export default function GraficoBalancaComercial({ anos, estado, pais, ncm }: Pro
                 setDadosExportacao(dadosExp);
                 setDadosImportacao(dadosImp);
                 setDadosBalanca(dadosBal);
+                setError(false);
             } catch (error) {
                 console.error("Erro ao buscar dados:", error);
+                setError(true);
             }
             setTitulo(formataTitulo(estado, pais))
             setLoading(false);
@@ -126,7 +129,6 @@ export default function GraficoBalancaComercial({ anos, estado, pais, ncm }: Pro
         };
         executarBusca();
     }, [anos, estado, pais, ncm]);
-
 
     useEffect(() => {
         if (dadosExportacao.length && dadosImportacao.length && dadosBalanca.length) {
@@ -146,14 +148,22 @@ export default function GraficoBalancaComercial({ anos, estado, pais, ncm }: Pro
             </div>
         );
     };
+    if (error) {
+        return (
+            <div className="p-6 bg-white rounded-lg shadow">
+                <div className="flex justify-center items-center h-64">
+                    <p>Erro ao acessar dados</p>
+                </div>
+            </div>
+        );
+    };
 
     return (
-        <div className="bg-white rounded-lg p-4 shadow-md w-full">
+        <div className="rounded-lg p-4 shadow-md w-full h-[500px]">
             <h3 className="text-center text-indigo-900 font-semibold mb-2">
                 {titulo}
             </h3>
-            <div className=" w-full h-[400px]">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="90%">
                     <LineChart
                         data={dadosUnificados}
                         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -172,7 +182,7 @@ export default function GraficoBalancaComercial({ anos, estado, pais, ncm }: Pro
                         <Tooltip
                             labelFormatter={(label) => `Data: ${label}`}
                             formatter={(value: number) => `$ ${value?.toLocaleString('pt-BR')}`}
-                            labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
+                            labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }}
                         />
 
                         <Legend wrapperStyle={{}} />
@@ -190,20 +200,18 @@ export default function GraficoBalancaComercial({ anos, estado, pais, ncm }: Pro
                         />
 
                         {/* Linhas exportação */}
-                        <Line type="monotone" dataKey="exportacaoHistorico" name="Exportação" stroke="#10b981" strokeWidth={3} dot={{ r: 2 }} />
-                        <Line type="monotone" dataKey="exportacaoPrevisao" name="Exportação (Previsão)" stroke="#10b981" strokeWidth={3} strokeDasharray="6 4" dot={{ r: 1 }} />
+                        <Line type="monotone" dataKey="exportacaoHistorico" name="Exportação" stroke="rgb(15, 116, 2)" strokeWidth={3} dot={{ r: 2 }} />
+                        <Line type="monotone" dataKey="exportacaoPrevisao" name="Exportação (Previsão)" stroke="rgb(15, 116, 2)" strokeWidth={3} strokeDasharray="6 4" dot={{ r: 1 }} />
 
                         {/* Linhas importação */}
-                        <Line type="monotone" dataKey="importacaoHistorico" name="Importação" stroke="#3b82f6" strokeWidth={3} dot={{ r: 2 }} />
-                        <Line type="monotone" dataKey="importacaoPrevisao" name="Importação (Previsão)" stroke="#3b82f6" strokeWidth={3} strokeDasharray="6 4" dot={{ r: 1 }} />
+                        <Line type="monotone" dataKey="importacaoHistorico" name="Importação" stroke="rgb(179, 15, 15)" strokeWidth={3} dot={{ r: 2 }} />
+                        <Line type="monotone" dataKey="importacaoPrevisao" name="Importação (Previsão)" stroke="rgb(179, 15, 15)" strokeWidth={3} strokeDasharray="6 4" dot={{ r: 1 }} />
 
                         {/* Linhas balança comercial */}
-                        <Line type="monotone" dataKey="balancaHistorico" name="Balança Comercial" stroke="#f97316" strokeWidth={3} dot={{ r: 2 }} />
-                        <Line type="monotone" dataKey="balancaPrevisao" name="Balança Comercial (Previsão)" stroke="#f97316" strokeWidth={3} strokeDasharray="6 4" dot={{ r: 1 }} />
+                        <Line type="monotone" dataKey="balancaHistorico" name="Balança Comercial" stroke="rgb(51, 111, 207)" strokeWidth={3} dot={{ r: 2 }} />
+                        <Line type="monotone" dataKey="balancaPrevisao" name="Balança Comercial (Previsão)" stroke="rgb(51, 111, 207)" strokeWidth={3} strokeDasharray="6 4" dot={{ r: 1 }} />
                     </LineChart>
                 </ResponsiveContainer>
             </div>
-
-        </div>
     );
 }

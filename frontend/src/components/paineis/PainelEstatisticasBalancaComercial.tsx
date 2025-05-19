@@ -12,7 +12,7 @@ type Props = {
 export default function PainelEstatisticasBalancaComercial({ ncm, estado, pais }: Props) {
     const [abaAtiva, setAbaAtiva] = useState("regressao");
     return (
-        <div className="w-full bg-white rounded-lg shadow-md p-5 w-full max-w-full">
+        <div className="w-full rounded-lg shadow-md p-5 w-full max-w-full">
             <h3 className="text-xl text-black font-semibold mb-4">Análises estatísticas de Balança Comercial</h3>
 
             {/* Abas */}

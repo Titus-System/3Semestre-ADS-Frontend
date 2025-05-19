@@ -251,8 +251,8 @@ export async function buscaPorNcm(
         }
     } catch (error) {
         console.error("Erro ao acessar servidor:", error);
-        alert(error instanceof Error ? error.message : 'Erro desconhecido');
-        throw error;
+        // alert(error instanceof Error ? error.message : 'Erro desconhecido');
+        // throw error;
     }
 }
 

@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { buscarRegressaoLinearVlfob } from "../../services/tendenciaServices";
 import { formatarData } from "../../utils/formatarData";
+import ModalRegressaoLinear from "../modais/ModalRegressaoLinear";
 
 type Props = {
   ncm?: number | null;
@@ -22,7 +23,7 @@ type Props = {
 export function GraficoRegressaoLinearVlfob({ ncm, estado, pais }: Props) {
   const [dados, setDados] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-
+const [exibirModal, setExibirModal] = useState(false);
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
@@ -53,7 +54,7 @@ export function GraficoRegressaoLinearVlfob({ ncm, estado, pais }: Props) {
     }
 
     fetchData();
-  }, [estado, pais]);
+  }, [estado, pais, ncm]);
 
   if (loading) {
     return (
@@ -70,45 +71,54 @@ export function GraficoRegressaoLinearVlfob({ ncm, estado, pais }: Props) {
   if (!dados || dados.length === 0) return <p>Nenhum dado disponível.</p>;
 
   return (
-    <div className="rounded-lg p-5 w-full max-w-full" style={{ width: "100%", height: 400 }}>
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={dados} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="ds"
-            type="category"
-            tickFormatter={(ds: string) => formatarData(ds)}
-            interval={11}
-            tick={{ fontSize: 12 }}
-          />
-          <YAxis
-            tickFormatter={(value) => `${(value / 1e9)}`}
-            label={{ value: '$ (Bilhões)', angle: -90, position: 'insideLeft', offset: 10 }}
-          />
-          <Tooltip
-            labelFormatter={(label) => `Data: ${formatarData(label as string)}`}
-            formatter={(value: number) => `$ ${value.toLocaleString('pt-BR', { maximumFractionDigits: 2 })}`}
-            labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
-          />
-          <Legend />
-          <ReferenceLine
-            x="2025-01-01"
-            stroke="red"
-            strokeDasharray="3 3"
-            label={{
-              value: "Projeção",
-              position: "top",
-              angle: 0,
-              fontSize: 12,
-              fill: "red"
-            }}
-          />
-          <Line type="monotone" dataKey="exp_real" stroke="rgb(18, 148, 1)" name="Exportação Real" strokeWidth={2} dot={{ r: 1 }} />
-          <Line type="monotone" dataKey="exp_regressao" stroke="rgb(61, 156, 66)" name="Exportação (Regressão)" dot={{ r: 1 }} />
-          <Line type="monotone" dataKey="imp_real" stroke="rgb(255, 0, 0)" name="Importação Real" strokeWidth={2} dot={{ r: 1 }} />
-          <Line type="monotone" dataKey="imp_regressao" stroke="rgb(156, 93, 93)" name="Importação (Regressão)" dot={{ r: 1 }} />
-        </LineChart>
-      </ResponsiveContainer>
+    <div className="w-full max-w-full">
+      <h3
+        className="text-lg font-medium mb-2 text-gray-700 cursor-pointer hover:underline"
+        onClick={() => setExibirModal(true)}
+      >
+        Regressão Linear
+      </h3>
+      {exibirModal && <ModalRegressaoLinear onClose={() => setExibirModal(false)} />}
+      <div className="h-[400px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={dados} margin={{ top: 20, right: 30, left: 20, bottom: 40 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="ds"
+              type="category"
+              tickFormatter={(ds: string) => formatarData(ds)}
+              interval={11}
+              tick={{ fontSize: 12 }}
+            />
+            <YAxis
+              tickFormatter={(value) => `${(value / 1e9)}`}
+              label={{ value: '$ (Bilhões)', angle: -90, position: 'insideLeft', offset: 10 }}
+            />
+            <Tooltip
+              labelFormatter={(label) => `Data: ${formatarData(label as string)}`}
+              formatter={(value: number) => `$ ${value.toLocaleString('pt-BR', { maximumFractionDigits: 2 })}`}
+              labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
+            />
+            <Legend />
+            <ReferenceLine
+              x="2025-01-01"
+              stroke="red"
+              strokeDasharray="3 3"
+              label={{
+                value: "Projeção",
+                position: "top",
+                angle: 0,
+                fontSize: 12,
+                fill: "red"
+              }}
+            />
+            <Line type="monotone" dataKey="exp_real" stroke="rgb(18, 148, 1)" name="Exportação Real" strokeWidth={2} dot={{ r: 1 }} />
+            <Line type="monotone" dataKey="exp_regressao" stroke="rgb(61, 156, 66)" name="Exportação (Regressão)" dot={{ r: 1 }} />
+            <Line type="monotone" dataKey="imp_real" stroke="rgb(255, 0, 0)" name="Importação Real" strokeWidth={2} dot={{ r: 1 }} />
+            <Line type="monotone" dataKey="imp_regressao" stroke="rgb(156, 93, 93)" name="Importação (Regressão)" dot={{ r: 1 }} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

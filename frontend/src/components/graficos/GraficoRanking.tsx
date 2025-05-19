@@ -1,13 +1,15 @@
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { RankingEstados, RankingNcms, RankingPaises } from "../../models/interfaces"
+import { formatarValor } from "../../utils/formatarValor";
 
 type Props = {
     titulo?: string,
     ranking?: RankingPaises | RankingEstados | RankingNcms
+    valor_agregado?: boolean | null
 }
 
-export default function GraficoRanking({ titulo, ranking }: Props) {
-    const bar_datakey = "total_valor_fob"
+export default function GraficoRanking({ titulo, ranking, valor_agregado }: Props) {
+    const bar_datakey = valor_agregado ? "total_valor_agregado" : "total_valor_fob"
 
     const x_datakey = (() => {
         if (!ranking?.length) return "";
@@ -40,15 +42,16 @@ export default function GraficoRanking({ titulo, ranking }: Props) {
                 <p>Nenhum dado encontrado</p>
             )}
             <ResponsiveContainer width="100%" height={400}>
-                <BarChart data={ranking}>
+                <BarChart data={ranking} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <XAxis
                         dataKey={x_datakey}
                         tickFormatter={(value: string) => value.substring(0, 10)}
                         tick={{ fontSize: 11, }}
                     />
                     <YAxis
-                        tickFormatter={(value) => `${(value / 1e9)}`}
-                        label={{ value: '$ (Bilhões)', angle: -90, position: 'insideLeft', offset: 10 }}
+                        tickFormatter={formatarValor}
+                        label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10 }}
+                        tick={{ fontSize: 11 }}
                     />
                     <Tooltip
                         labelFormatter={(label) => `${label}`}
@@ -56,7 +59,7 @@ export default function GraficoRanking({ titulo, ranking }: Props) {
                         labelClassName=''
                         labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
                     />
-                    <Bar dataKey={bar_datakey} fill={color} name="Valor FOB $" />
+                    <Bar dataKey={bar_datakey} fill={color} name="$" />
                     <Legend />
                 </BarChart>
             </ResponsiveContainer>

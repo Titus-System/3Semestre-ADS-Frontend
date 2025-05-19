@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { buscarAnalisesEstatisticasAuxiliaresVlfob } from "../../services/tendenciaServices";
 import {
-    LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
+    BarChart, Bar, XAxis, YAxis, CartesianGrid,
     Tooltip, Legend, ResponsiveContainer,
     AreaChart,
     ReferenceLine,
     Area
 } from "recharts";
+import Hhi from "../modais/hhi";
+import Sazonalidade from "../modais/sazonalidade";
 
 type Props = {
     ncm?: number | null;
@@ -19,6 +21,10 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
     const [abaAtiva, setAbaAtiva] = useState<string>("sazonalidade");
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+
+    const [mostrarModalHhi, setMostrarModalHhi] = useState(false);
+    const [mostrarModalSazonalidade, setMostrarModalSazonalidade] = useState(false);
+
 
     useEffect(() => {
         async function carregarDados() {
@@ -65,7 +71,13 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
 
         return (
             <div className="w-full mt-6">
-                <h3 className="text-lg font-medium mb-2 text-gray-700">Sazonalidade Mensal</h3>
+                <h3
+                    className="text-lg font-medium mb-2 text-gray-700 cursor-pointer hover:underline"
+                    onClick={() => setMostrarModalSazonalidade(true)}
+                >
+                    Sazonalidade Mensal
+                </h3>
+                {mostrarModalSazonalidade && <Sazonalidade onClose={() => setMostrarModalSazonalidade(false)} />}
                 <div className="h-[400px]">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart
@@ -98,7 +110,13 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
         console.log("dadosConcentracao: ", dadosConcentracao)
         return (
             <div className="w-full  mt-6">
-                <h3 className="text-lg font-medium mb-2 text-gray-700">Índice de Concentração (HHI)</h3>
+                <h3
+                    className="text-lg font-medium mb-2 text-gray-700 cursor-pointer hover:underline"
+                    onClick={() => setMostrarModalHhi(true)}
+                >
+                    Índice de Concentração (HHI)
+                </h3>
+                {mostrarModalHhi && <Hhi onClose={() => setMostrarModalHhi(false)} />}
                 <div className="h-[400px]">
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart
@@ -230,7 +248,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
 
     if (error) {
         return (
-            <div className="p-6 bg-white rounded-lg shadow">
+            <div className="p-6 rounded-lg shadow">
                 <div className="text-center text-red-600 p-4">
                     <svg className="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -242,7 +260,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
     }
 
     return (
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Análises Estatísticas Auxiliares</h2>
 
             {/* Tabs de navegação */}

@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { buscarVolatilidadeBalancaComercial } from "../../services/tendenciaServices";
 import { formatarData } from "../../utils/formatarData";
+import ModalVolatilidade from "../modais/ModalVolatilidade";
 
 type Props = {
     ncm?: number | null
@@ -21,7 +22,7 @@ type Props = {
 
 export default function GraficoVolatilidadeBalanca({ ncm, estado, pais }: Props) {
     const [volatilidade, setVolatilidade] = useState<any[]>([]);
-
+    const [exibirModal, setExibirModal] = useState(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -51,7 +52,7 @@ export default function GraficoVolatilidadeBalanca({ ncm, estado, pais }: Props)
         }
 
         fetchVolatilidade();
-    }, [estado, pais]);
+    }, [estado, pais, ncm]);
 
     if (loading) {
         return (
@@ -67,12 +68,17 @@ export default function GraficoVolatilidadeBalanca({ ncm, estado, pais }: Props)
     };
     if (!volatilidade || volatilidade.length === 0)
         return <p>Nenhum dado de volatilidade disponível.</p>;
-
     return (
-        <div className="rounded-lg p-5 w-full max-w-full" style={{ width: "100%", height: 400 }}>
-            <p className="text-black">desvio padrão móvel em 6 meses do valor FOB</p>
+        <div className="w-full max-w-full" style={{ width: "100%", height: 400 }}>
+            <h3
+                className="text-lg font-medium mb-2 text-gray-700 cursor-pointer hover:underline"
+                onClick={() => setExibirModal(true)}
+            >
+                Volatilidade
+            </h3>
+            {exibirModal && <ModalVolatilidade onClose={() => setExibirModal(false)} />}
             <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={volatilidade}>
+                <LineChart data={volatilidade} margin={{ top: 20, right: 30, left: 20, bottom: 40 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="ds"
                         type="category"

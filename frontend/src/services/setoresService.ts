@@ -22,8 +22,8 @@ export async function buscaPaisPorNome(nome:string){
         }
     } catch (error) {
         console.error("Erro ao acessar servidor:", error);
-        alert(error instanceof Error ? error.message : 'Erro desconhecido');
-        throw error;
+        // alert(error instanceof Error ? error.message : 'Erro desconhecido');
+        // throw error;
     }
 }
 
@@ -61,7 +61,7 @@ export async function buscaInfoSetores(anos:number[]|null, pais:number|null, est
         }
     } catch (error) {
         console.error("Erro ao acessar servidor:", error);
-        alert(error instanceof Error ? error.message : 'Erro desconhecido');
-        throw error;
+        // alert(error instanceof Error ? error.message : 'Erro desconhecido');
+        // throw error;
     }
 }

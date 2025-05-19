@@ -8,6 +8,8 @@ import PesquisaPais from "../components/pesquisaPais";
 import PesquisaEstado from "../components/pesquisaEstado";
 import PesquisaMercadoria from "../components/pesquisaMercadoria";
 import InfoCardsNcm from "../components/ncm/InfoCardsNcm";
+import PainelEstatisticasVlfob from "../components/paineis/PainelEstatisticasVlfob";
+import PainelEstatisticasAuxiliares from "../components/paineis/PainelEstatisticasAuxiliaresVlfob";
 
 interface Transacao {
     id_transacao: number;
@@ -150,19 +152,40 @@ export default function BuscarNCM() {
                     Buscar Transações
                 </button>
             </div>
-            
-            <div className="w-full overflow-x-auto p-6">
-                <InfoCardsNcm
-                    ncm = {mercadoria ? parseInt(mercadoria) : null}
-                    anos = {selectedPeriods}
-                    tipo = {tipoProcesso}
-                    estado = {estado ? parseInt(estado) : undefined}
-                    pais = {paisSelecionadoId ? parseInt(paisSelecionadoId) : undefined}
-                    transporte = {selectedModes}
-                    urf = {urf ? [parseInt(urf)] : undefined}
-                />
-            </div>
 
+            <div className="w-full bg-gray-200 rounded-xl overflow-x-auto p-2">
+                <InfoCardsNcm
+                    ncm={mercadoria ? parseInt(mercadoria) : null}
+                    anos={selectedPeriods}
+                    tipo={tipoProcesso}
+                    estado={estado ? parseInt(estado) : undefined}
+                    pais={paisSelecionadoId ? parseInt(paisSelecionadoId) : undefined}
+                    transporte={selectedModes}
+                    urf={urf ? [parseInt(urf)] : undefined}
+                />
+                {mercadoria && !selectedModes.length && !urf.length ? (
+                    <div className="gap-4 bg-gray-200 flex rounded p-4 w-full">
+                        <div className="bg-white flex-1 rounded-lg">
+                            <PainelEstatisticasVlfob
+                                ncm={Number(mercadoria)}
+                                estado={Number(estado)}
+                                pais={Number(paisSelecionadoId)}
+                            />
+                        </div>
+                        <br /><br />
+                        <div className="bg-white flex-1 rounded-lg">
+                            <PainelEstatisticasAuxiliares
+                                ncm={Number(mercadoria)}
+                                estado={Number(estado)}
+                                pais={Number(paisSelecionadoId)}
+                            />
+                        </div>
+                    </div>
+
+                ) : (
+                    <p className="text-sm italic">*Estatísticas complementares não disponíveis para os filtros selecionados</p>
+                )}
+            </div>
 
             <div className="w-full max-w-5xl overflow-x-auto">
                 {transacoes.length > 0 ? (

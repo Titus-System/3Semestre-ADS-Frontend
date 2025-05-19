@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { buscarCrescimentoMensalBalancaComercial } from "../../services/tendenciaServices";
 import { formatarData } from "../../utils/formatarData";
+import ModalCrescimentoMensal from "../modais/ModalCrescimentoMensal";
 
 type Props = {
     ncm?: number | null
@@ -22,6 +23,7 @@ type Props = {
 export function GraficoCrescimentoMensalBalanca({ ncm, estado, pais }: Props) {
     const [dados, setDados] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [exibirModal, setExibirModal] = useState(false);
 
     useEffect(() => {
         async function fetchCrescimento() {
@@ -54,7 +56,7 @@ export function GraficoCrescimentoMensalBalanca({ ncm, estado, pais }: Props) {
         }
 
         fetchCrescimento();
-    }, [estado, pais]);
+    }, [estado, pais, ncm]);
 
     if (loading) {
         return (
@@ -72,43 +74,53 @@ export function GraficoCrescimentoMensalBalanca({ ncm, estado, pais }: Props) {
         return <p>Nenhum dado de crescimento mensal disponível.</p>;
 
     return (
-        <div className="rounded-lg p-5 w-full max-w-full" style={{ width: "100%", height: 400 }}>
-            <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={dados}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis
-                        dataKey="ds"
-                        tick={{ fontSize: 11 }}
-                        tickFormatter={(ds: string) => formatarData(ds)}
-                    />
-                    <YAxis tickFormatter={(tick) => `${tick}%`} />
-                    <Tooltip
-                        labelFormatter={(label) => `Data: ${formatarData(label as string)}`}
-                        formatter={(value: any) => `${value.toFixed(2)}%`}
-                        labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }}
-                    />
-                    <Legend />
-                    <ReferenceLine
-                        x="2025-01-01"
-                        stroke="red"
-                        strokeDasharray="3 3"
-                        label={{
-                            value: "Projeção",
-                            position: "top",
-                            angle: 0,
-                            fontSize: 12,
-                            fill: "red"
-                        }}
-                    />
-                    <Line
-                        type="monotone"
-                        dataKey="crescimento"
-                        stroke="rgb(51, 111, 207)"
-                        name="Crescimento (%)"
-                        strokeWidth={2} dot={{ r: 1 }}
-                    />
-                </LineChart>
-            </ResponsiveContainer>
+        <div className="w-full max-w-full">
+            <h3
+                className="text-lg font-medium mb-2 text-gray-700 cursor-pointer hover:underline"
+                onClick={() => setExibirModal(true)}
+            >
+                Crescimento Mensal
+            </h3>
+            {exibirModal && <ModalCrescimentoMensal onClose={() => setExibirModal(false)} />}
+            <div className="h-[400px]">
+
+                <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={dados} margin={{ top: 20, right: 30, left: 20, bottom: 40 }}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis
+                            dataKey="ds"
+                            tick={{ fontSize: 11 }}
+                            tickFormatter={(ds: string) => formatarData(ds)}
+                        />
+                        <YAxis tickFormatter={(tick) => `${tick}%`} />
+                        <Tooltip
+                            labelFormatter={(label) => `Data: ${formatarData(label as string)}`}
+                            formatter={(value: any) => `${value.toFixed(2)}%`}
+                            labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }}
+                        />
+                        <Legend />
+                        <ReferenceLine
+                            x="2025-01-01"
+                            stroke="red"
+                            strokeDasharray="3 3"
+                            label={{
+                                value: "Projeção",
+                                position: "top",
+                                angle: 0,
+                                fontSize: 12,
+                                fill: "red"
+                            }}
+                        />
+                        <Line
+                            type="monotone"
+                            dataKey="crescimento"
+                            stroke="rgb(51, 111, 207)"
+                            name="Crescimento (%)"
+                            strokeWidth={2} dot={{ r: 1 }}
+                        />
+                    </LineChart>
+                </ResponsiveContainer>
+            </div>
         </div>
     );
 }
