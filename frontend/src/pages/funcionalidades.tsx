@@ -37,12 +37,7 @@ export default function Funcionalidades() {
                     <button className="w-full h-16 rounded-full px-10 py-4 bg-[#0A0A37] text-white hover:bg-[#34538D] text-xl font-semibold">
                         Comparação geral de Estados e Paises
                     </button>
-                </a>
-                <a href="/comparacaoEstado" className="w-full">
-                    <button className="w-full h-16 rounded-full px-10 py-4 bg-[#0A0A37] text-white hover:bg-[#34538D] text-xl font-semibold">
-                        Comparação de Estados
-                    </button>
-                </a>
+                </a> 
                 <a href="/previsao" className="w-full">
                     <button className="w-full h-16 rounded-full px-10 py-4 bg-[#0A0A37] text-white hover:bg-[#34538D] text-xl font-semibold">
                         Previsão de Tendências

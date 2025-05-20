@@ -25,8 +25,8 @@ export async function buscaEstadoPorNome(nome?:string|null){
     }
     catch (error) {
         console.error("Erro ao acessar servidor:", error);
-        alert(error instanceof Error ? error.message : 'Erro desconhecido');
-        throw error;
+        // alert(error instanceof Error ? error.message : 'Erro desconhecido');
+        // throw error;
     }
 }
 
@@ -75,8 +75,8 @@ export async function buscarRankingEstados(
         }
     } catch (error) {
         console.error("Erro ao acessar servidor:", error);
-        alert(error instanceof Error ? error.message : 'Erro desconhecido');
-        throw error;
+        // alert(error instanceof Error ? error.message : 'Erro desconhecido');
+        // throw error;
     }
 }
 
@@ -124,8 +124,8 @@ export async function buscarHistoricoEstado(
         }
     } catch (error) {
         console.error("Erro ao acessar servidor:", error);
-        alert(error instanceof Error ? error.message : 'Erro desconhecido');
-        throw error;
+        // alert(error instanceof Error ? error.message : 'Erro desconhecido');
+        // throw error;
     }
 }
 
@@ -233,7 +233,7 @@ export async function buscarRankingEstadosPorNcm(
         }
     } catch (error) {
         console.error("Erro ao acessar servidor:", error);
-        alert(error instanceof Error ? error.message : 'Erro desconhecido');
-        throw error;
+        // alert(error instanceof Error ? error.message : 'Erro desconhecido');
+        // throw error;
     }
 }
