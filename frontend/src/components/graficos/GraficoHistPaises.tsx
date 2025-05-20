@@ -2,6 +2,7 @@ import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, X
 import { buscarHistoricoPais } from "../../services/paisService";
 import { useEffect, useState } from "react";
 import { Estado, Mercadoria, Pais } from "../../models/interfaces";
+import { formatarValor } from "../../utils/formatarValor";
 
 type Props = {
     tipo: string | null;
@@ -153,8 +154,9 @@ export default function GraficoHistPais({ tipo, paises, ncm, estado, anos }: Pro
                         tick={{ fontSize: 11, }}
                     />
                     <YAxis
-                        tickFormatter={(value) => `${(value / 1e9)}`}
-                        label={{ value: '$ (Bilhões)', angle: -90, position: 'insideLeft', offset: 10 }}
+                        tickFormatter={formatarValor}
+                        label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10 }}
+                        tick={{fontSize:11}}
                     />
                     <Tooltip
                         labelFormatter={(label) => `${label}`}
@@ -162,7 +164,7 @@ export default function GraficoHistPais({ tipo, paises, ncm, estado, anos }: Pro
                         labelClassName=''
                         labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
                     />
-                    <Legend />
+                    <Legend     />
                     {paisNomes.map((nome_pais, index) => (
                         <Line
                             key={nome_pais}

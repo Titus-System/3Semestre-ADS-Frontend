@@ -96,6 +96,7 @@ export function GraficoCrescimentoMensalVlfob({ ncm, estado, pais }: Props) {
                         dataKey="ds"
                         tick={{ fontSize: 11 }}
                         tickFormatter={(ds: string) => formatarData(ds)}
+                        interval={23}
                     />
                     <YAxis tickFormatter={(tick) => `${tick}%`} />
                     <Tooltip

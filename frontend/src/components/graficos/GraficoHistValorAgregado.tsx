@@ -3,6 +3,7 @@ import { formatarData } from "../../utils/formatarData";
 import { useEffect, useState } from "react";
 import { buscarTendenciaVa } from "../../services/tendenciaServices";
 import { Estado, Mercadoria, Pais } from "../../models/interfaces";
+import { formatarValor } from "../../utils/formatarValor";
 
 type Props = {
     estado?: Estado | null;
@@ -148,8 +149,9 @@ export default function GraficoHistValorAgregado({ estado, pais, ncm }: Props) {
                         tick={{ fontSize: 12 }}
                     />
                     <YAxis
-                        tickFormatter={(value) => `${Number(value).toFixed(2)}`}
-                        label={{ value: '$', angle: -90, position: 'insideLeft', offset: 10 }}
+                        tickFormatter={formatarValor}
+                        label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10 }}
+                        tick={{fontSize:11}}
                     />
                     <Tooltip
                         labelFormatter={(label) => `Data: ${label}`}

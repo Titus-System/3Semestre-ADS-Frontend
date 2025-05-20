@@ -9,6 +9,7 @@ import {
 } from "recharts";
 import Hhi from "../modais/hhi";
 import Sazonalidade from "../modais/sazonalidade";
+import { formatarValor } from "../../utils/formatarValor";
 
 type Props = {
     ncm?: number | null;
@@ -51,14 +52,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
     };
 
     // Formatar valores para exibição
-    const formatarValor = (valor: number) => {
-        return new Intl.NumberFormat("pt-BR", {
-            style: "currency",
-            currency: "USD",
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }).format(valor);
-    };
+
 
     // Formatar valores para o índice HHI
     const formatarHHI = (valor: number) => {
@@ -87,8 +81,8 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                             <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                             <XAxis dataKey="mes" angle={-45} textAnchor="end" height={70} />
                             <YAxis
-                                tickFormatter={(value) => `$${(value / 1e9).toFixed(1)}B`}
-                                label={{ value: 'Valor (USD)', angle: -90, position: 'insideLeft', offset: 0 }}
+                                tickFormatter={formatarValor}
+                                label={{ value: 'Valor (USD)', angle: -90, position: 'insideLeft', offset: -10 }}
                             />
                             <Tooltip
                                 formatter={(value: number) => formatarValor(value)}
@@ -150,7 +144,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                             <YAxis
                                 domain={[0, 1]}
                                 tickFormatter={(value) => value.toFixed(2)}
-                                label={{ value: 'Índice HHI', angle: -90, position: 'insideLeft', offset: 10 }}
+                                label={{ value: 'Índice HHI', angle: -90, position: 'insideLeft', offset: -10 }}
                             />
                             <Tooltip
                                 formatter={(value: number) => formatarHHI(value)}

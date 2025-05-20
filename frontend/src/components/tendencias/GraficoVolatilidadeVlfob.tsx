@@ -13,6 +13,7 @@ import {
 import { buscarVolatilidadeVlfob } from "../../services/tendenciaServices";
 import { formatarData } from "../../utils/formatarData";
 import ModalVolatilidade from "../modais/ModalVolatilidade";
+import { formatarValor } from "../../utils/formatarValor";
 
 type Props = {
     ncm?: number | null;
@@ -24,7 +25,7 @@ export function GraficoVolatilidadeVlfob({ ncm, estado, pais }: Props) {
     const [volatilidadeExp, setVolatilidadeExp] = useState<any[]>([]);
     const [volatilidadeImp, setVolatilidadeImp] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-const [exibirModal, setExibirModal] = useState(false);
+    const [exibirModal, setExibirModal] = useState(false);
     useEffect(() => {
         async function fetchVolatilidade() {
             setLoading(true);
@@ -94,12 +95,13 @@ const [exibirModal, setExibirModal] = useState(false);
                         <XAxis dataKey="ds"
                             type="category"
                             tickFormatter={(ds: string) => formatarData(ds)}
-                            interval={11}
+                            interval={23}
                             tick={{ fontSize: 12 }}
                         />
                         <YAxis
-                            tickFormatter={(value) => `${(value / 1e9)}`}
-                            label={{ value: '$ (Bilhões)', angle: -90, position: 'insideLeft', offset: 10 }}
+                            tickFormatter={formatarValor}
+                            label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10 }}
+                            tick={{ fontSize: 11 }}
                         />
                         <Tooltip labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }} />
                         <Legend />

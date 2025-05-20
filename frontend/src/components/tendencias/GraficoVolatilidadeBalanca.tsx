@@ -13,6 +13,7 @@ import {
 import { buscarVolatilidadeBalancaComercial } from "../../services/tendenciaServices";
 import { formatarData } from "../../utils/formatarData";
 import ModalVolatilidade from "../modais/ModalVolatilidade";
+import { formatarValor } from "../../utils/formatarValor";
 
 type Props = {
     ncm?: number | null
@@ -83,12 +84,13 @@ export default function GraficoVolatilidadeBalanca({ ncm, estado, pais }: Props)
                     <XAxis dataKey="ds"
                         type="category"
                         tickFormatter={(ds: string) => formatarData(ds)}
-                        interval={11}
+                        interval={23}
                         tick={{ fontSize: 12 }}
                     />
                     <YAxis
-                        tickFormatter={(value) => `${(value / 1e9)}`}
-                        label={{ value: '$ (Bilhões)', angle: -90, position: 'insideLeft', offset: 10 }}
+                        tickFormatter={formatarValor}
+                        label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10 }}
+                        tick={{fontSize:11}}
                     />
                     <Tooltip labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }} />
                     <Legend />

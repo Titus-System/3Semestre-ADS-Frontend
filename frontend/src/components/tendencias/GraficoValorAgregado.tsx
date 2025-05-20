@@ -10,6 +10,7 @@ import {
   Legend,
   ReferenceLine
 } from 'recharts';
+import { formatarValor } from '../../utils/formatarValor';
 
 interface DadoIndividual {
   ds: string;
@@ -110,8 +111,9 @@ export default function GraficoValorAgregado({dadosExportacao, dadosImportacao}:
                         tick={{ fontSize: 12 }}
                     />
                     <YAxis
-                        tickFormatter={(value) => `${Number(value).toFixed(2)}`}
-                        label={{ value: '$', angle: -90, position: 'insideLeft', offset: 10 }}
+                        tickFormatter={formatarValor}
+                        label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10 }}
+                        tick={{fontSize:11}}
                     />
                     <Tooltip
                         labelFormatter={(label) => `Data: ${label}`}

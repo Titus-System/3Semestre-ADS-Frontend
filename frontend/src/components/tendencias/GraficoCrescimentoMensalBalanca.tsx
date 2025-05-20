@@ -91,14 +91,22 @@ export function GraficoCrescimentoMensalBalanca({ ncm, estado, pais }: Props) {
                             dataKey="ds"
                             tick={{ fontSize: 11 }}
                             tickFormatter={(ds: string) => formatarData(ds)}
+                            interval={23}
+                            
                         />
-                        <YAxis tickFormatter={(tick) => `${tick}%`} />
+                        <YAxis
+                            tickFormatter={(tick) => `${tick}%`}
+                            label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10 }}
+                            tick={{ fontSize: 11 }}
+                        />
                         <Tooltip
                             labelFormatter={(label) => `Data: ${formatarData(label as string)}`}
                             formatter={(value: any) => `${value.toFixed(2)}%`}
                             labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }}
                         />
-                        <Legend />
+                        <Legend 
+
+                        />
                         <ReferenceLine
                             x="2025-01-01"
                             stroke="red"

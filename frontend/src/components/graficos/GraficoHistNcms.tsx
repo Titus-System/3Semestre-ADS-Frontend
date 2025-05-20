@@ -11,6 +11,7 @@ import {
     XAxis,
     YAxis,
 } from "recharts";
+import { formatarValor } from "../../utils/formatarValor";
 
 type Props = {
     tipo: 'exp' | 'imp' | null
@@ -206,8 +207,9 @@ export default function GraficoHistNcms({ tipo, ncms, anos, estado, pais }: Prop
                         tick={{ fontSize: 11, }}
                     />
                     <YAxis
-                        tickFormatter={(value) => `${(value / 1e9)}`}
-                        label={{ value: '$ (Bilhões)', angle: -90, position: 'insideLeft', offset: 10 }}
+                        tickFormatter={formatarValor}
+                        label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10 }}
+                        tick={{fontSize:11}}
                     />
                     <Tooltip
                         labelFormatter={(label) => `${label}`}

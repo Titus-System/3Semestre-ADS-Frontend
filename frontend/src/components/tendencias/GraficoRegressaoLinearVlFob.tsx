@@ -13,6 +13,7 @@ import {
 import { buscarRegressaoLinearVlfob } from "../../services/tendenciaServices";
 import { formatarData } from "../../utils/formatarData";
 import ModalRegressaoLinear from "../modais/ModalRegressaoLinear";
+import { formatarValor } from "../../utils/formatarValor";
 
 type Props = {
   ncm?: number | null;
@@ -23,7 +24,7 @@ type Props = {
 export function GraficoRegressaoLinearVlfob({ ncm, estado, pais }: Props) {
   const [dados, setDados] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-const [exibirModal, setExibirModal] = useState(false);
+  const [exibirModal, setExibirModal] = useState(false);
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
@@ -91,8 +92,9 @@ const [exibirModal, setExibirModal] = useState(false);
               tick={{ fontSize: 12 }}
             />
             <YAxis
-              tickFormatter={(value) => `${(value / 1e9)}`}
-              label={{ value: '$ (Bilhões)', angle: -90, position: 'insideLeft', offset: 10 }}
+              tickFormatter={formatarValor}
+              label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10 }}
+              tick={{ fontSize: 11 }}
             />
             <Tooltip
               labelFormatter={(label) => `Data: ${formatarData(label as string)}`}

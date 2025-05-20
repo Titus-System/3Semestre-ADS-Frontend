@@ -3,6 +3,7 @@ import { Estado, Mercadoria, Pais } from "../../models/interfaces";
 import { buscarTendenciaVlFob } from "../../services/tendenciaServices";
 import { CartesianGrid, Legend, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { formatarData } from "../../utils/formatarData";
+import { formatarValor } from "../../utils/formatarValor";
 
 type Props = {
     tipo?: 'exp' | 'imp' | null
@@ -137,13 +138,9 @@ export default function GraficoHistEstados({ tipo, estados, pais, ncm }: Props) 
                         tick={{ fontSize: 12 }}
                     />
                     <YAxis
-                        tickFormatter={(value) => `${(value / 1e9).toFixed(2)}`}
-                        label={{
-                            value: '$ (Bilhões)',
-                            angle: -90,
-                            position: 'insideLeft',
-                            offset: 10
-                        }}
+                        tickFormatter={formatarValor}
+                        label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10 }}
+                        tick={{fontSize:11}}
                     />
                     <Tooltip
                         labelFormatter={(label) => `Data: ${formatarData(label as string)}`}

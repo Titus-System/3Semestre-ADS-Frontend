@@ -3,6 +3,7 @@ import { formatarData } from "../../utils/formatarData";
 import { useEffect, useState } from "react";
 import { buscarTendenciaBalancaComercial, buscarTendenciaVlFob } from "../../services/tendenciaServices";
 import { Estado, Mercadoria, Pais } from "../../models/interfaces";
+import { formatarValor } from "../../utils/formatarValor";
 
 type Props = {
     anos?: number[] | null;
@@ -95,30 +96,26 @@ export default function GraficoBalancaComercial({ anos, estado, pais, ncm }: Pro
     const [titulo, setTitulo] = useState<string>();
 
     const buscarVlFob = async () => {
-        setLoading(true)
-        setTimeout(async () => {
-            console.log("Buscando dados para:", {
-                estado: estado?.id_estado,
-                pais: pais?.id_pais
-            })
-            try {
-                const [dadosExp, dadosImp, dadosBal] = await Promise.all([
-                    buscarTendenciaVlFob("exp", estado?.id_estado, pais?.id_pais, ncm?.id_ncm),
-                    buscarTendenciaVlFob("imp", estado?.id_estado, pais?.id_pais, ncm?.id_ncm),
-                    buscarTendenciaBalancaComercial(estado?.id_estado, pais?.id_pais, ncm?.id_ncm),
-                ]);
-
-                setDadosExportacao(dadosExp);
-                setDadosImportacao(dadosImp);
-                setDadosBalanca(dadosBal);
-                setError(false);
-            } catch (error) {
-                console.error("Erro ao buscar dados:", error);
-                setError(true);
-            }
-            setTitulo(formataTitulo(estado, pais))
-            setLoading(false);
+        console.log("Buscando dados para:", {
+            estado: estado?.id_estado,
+            pais: pais?.id_pais
         })
+        try {
+            const [dadosExp, dadosImp, dadosBal] = await Promise.all([
+                buscarTendenciaVlFob("exp", estado?.id_estado, pais?.id_pais, ncm?.id_ncm),
+                buscarTendenciaVlFob("imp", estado?.id_estado, pais?.id_pais, ncm?.id_ncm),
+                buscarTendenciaBalancaComercial(estado?.id_estado, pais?.id_pais, ncm?.id_ncm),
+            ]);
+
+            setDadosExportacao(dadosExp);
+            setDadosImportacao(dadosImp);
+            setDadosBalanca(dadosBal);
+            setError(false);
+        } catch (error) {
+            console.error("Erro ao buscar dados:", error);
+            setError(true);
+        }
+        setTitulo(formataTitulo(estado, pais))
     };
 
     useEffect(() => {
@@ -163,55 +160,56 @@ export default function GraficoBalancaComercial({ anos, estado, pais, ncm }: Pro
             <h3 className="text-center text-indigo-900 font-semibold mb-2">
                 {titulo}
             </h3>
-                <ResponsiveContainer width="100%" height="90%">
-                    <LineChart
-                        data={dadosUnificados}
-                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis
-                            dataKey="ds"
-                            tickFormatter={(ds: string) => formatarData(ds)}
-                            interval={11}
-                            tick={{ fontSize: 12 }}
-                        />
-                        <YAxis
-                            tickFormatter={(value) => `${(value / 1e9)}`}
-                            label={{ value: '$ (Bilhões)', angle: -90, position: 'insideLeft', offset: 10 }}
-                        />
-                        <Tooltip
-                            labelFormatter={(label) => `Data: ${label}`}
-                            formatter={(value: number) => `$ ${value?.toLocaleString('pt-BR')}`}
-                            labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }}
-                        />
+            <ResponsiveContainer width="100%" height="90%">
+                <LineChart
+                    data={dadosUnificados}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis
+                        dataKey="ds"
+                        tickFormatter={(ds: string) => formatarData(ds)}
+                        interval={11}
+                        tick={{ fontSize: 12 }}
+                    />
+                    <YAxis
+                        tickFormatter={formatarValor}
+                        label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10 }}
+                        tick={{fontSize:11}}
+                    />
+                    <Tooltip
+                        labelFormatter={(label) => `Data: ${label}`}
+                        formatter={(value: number) => `$ ${value?.toLocaleString('pt-BR')}`}
+                        labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }}
+                    />
 
-                        <Legend wrapperStyle={{}} />
-                        <ReferenceLine
-                            x="2025-01-01"
-                            stroke="red"
-                            strokeDasharray="3 3"
-                            label={{
-                                value: "Projeção",
-                                position: "top",
-                                angle: 0,
-                                fontSize: 12,
-                                fill: "red"
-                            }}
-                        />
+                    <Legend wrapperStyle={{}} />
+                    <ReferenceLine
+                        x="2025-01-01"
+                        stroke="red"
+                        strokeDasharray="3 3"
+                        label={{
+                            value: "Projeção",
+                            position: "top",
+                            angle: 0,
+                            fontSize: 12,
+                            fill: "red"
+                        }}
+                    />
 
-                        {/* Linhas exportação */}
-                        <Line type="monotone" dataKey="exportacaoHistorico" name="Exportação" stroke="rgb(15, 116, 2)" strokeWidth={3} dot={{ r: 2 }} />
-                        <Line type="monotone" dataKey="exportacaoPrevisao" name="Exportação (Previsão)" stroke="rgb(15, 116, 2)" strokeWidth={3} strokeDasharray="6 4" dot={{ r: 1 }} />
+                    {/* Linhas exportação */}
+                    <Line type="monotone" dataKey="exportacaoHistorico" name="Exportação" stroke="rgb(15, 116, 2)" strokeWidth={3} dot={{ r: 2 }} />
+                    <Line type="monotone" dataKey="exportacaoPrevisao" name="Exportação (Previsão)" stroke="rgb(15, 116, 2)" strokeWidth={3} strokeDasharray="6 4" dot={{ r: 1 }} />
 
-                        {/* Linhas importação */}
-                        <Line type="monotone" dataKey="importacaoHistorico" name="Importação" stroke="rgb(179, 15, 15)" strokeWidth={3} dot={{ r: 2 }} />
-                        <Line type="monotone" dataKey="importacaoPrevisao" name="Importação (Previsão)" stroke="rgb(179, 15, 15)" strokeWidth={3} strokeDasharray="6 4" dot={{ r: 1 }} />
+                    {/* Linhas importação */}
+                    <Line type="monotone" dataKey="importacaoHistorico" name="Importação" stroke="rgb(179, 15, 15)" strokeWidth={3} dot={{ r: 2 }} />
+                    <Line type="monotone" dataKey="importacaoPrevisao" name="Importação (Previsão)" stroke="rgb(179, 15, 15)" strokeWidth={3} strokeDasharray="6 4" dot={{ r: 1 }} />
 
-                        {/* Linhas balança comercial */}
-                        <Line type="monotone" dataKey="balancaHistorico" name="Balança Comercial" stroke="rgb(51, 111, 207)" strokeWidth={3} dot={{ r: 2 }} />
-                        <Line type="monotone" dataKey="balancaPrevisao" name="Balança Comercial (Previsão)" stroke="rgb(51, 111, 207)" strokeWidth={3} strokeDasharray="6 4" dot={{ r: 1 }} />
-                    </LineChart>
-                </ResponsiveContainer>
-            </div>
+                    {/* Linhas balança comercial */}
+                    <Line type="monotone" dataKey="balancaHistorico" name="Balança Comercial" stroke="rgb(51, 111, 207)" strokeWidth={3} dot={{ r: 2 }} />
+                    <Line type="monotone" dataKey="balancaPrevisao" name="Balança Comercial (Previsão)" stroke="rgb(51, 111, 207)" strokeWidth={3} strokeDasharray="6 4" dot={{ r: 1 }} />
+                </LineChart>
+            </ResponsiveContainer>
+        </div>
     );
 }

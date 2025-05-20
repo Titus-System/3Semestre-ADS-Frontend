@@ -3,6 +3,7 @@ import { buscarRegressaoLinearBalanca } from "../../services/tendenciaServices";
 import { CartesianGrid, Legend, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { formatarData } from "../../utils/formatarData";
 import ModalRegressaoLinear from "../modais/ModalRegressaoLinear";
+import { formatarValor } from "../../utils/formatarValor";
 
 type Props = {
     ncm?: number | null;
@@ -75,8 +76,9 @@ export default function GraficoRegressaoLinearBalanca({ ncm, estado, pais }: Pro
                             tick={{ fontSize: 12 }}
                         />
                         <YAxis
-                            tickFormatter={(value) => `${(value / 1e9)}`}
-                            label={{ value: '$ (Bilhões)', angle: -90, position: 'insideLeft', offset: 10 }}
+                        tickFormatter={formatarValor}
+                        label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10 }}
+                        tick={{fontSize:11}}
                         />
                         <Tooltip
                             labelFormatter={(label) => `Data: ${formatarData(label as string)}`}
