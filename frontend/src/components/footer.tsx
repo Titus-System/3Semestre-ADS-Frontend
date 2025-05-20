@@ -34,10 +34,10 @@ export default function Footer(){
             {/* Terceira coluna */}
             <div className="w-full max-w-1/4 flex flex-col">
               <h1 className="text-xl font-bold text-[#7D8491] mb-3">Atalhos</h1>
-              <a href="/paginaRanking" className="text-base text-[#7D8491] mt-2 hover:text-white transition-colors duration-200">Comparação Global de Valor Agregado</a>
-              <p className="text-base text-[#7D8491] mt-2 hover:text-white transition-colors duration-200">Análise de Estados</p>
-              <p className="text-base text-[#7D8491] mt-2 hover:text-white transition-colors duration-200">Previsão de Tendências</p>
-              <p className="text-base text-[#7D8491] mt-2 hover:text-white transition-colors duration-200">Busca por NCM</p>
+              <a href="/consulta_estado" className="text-base text-[#7D8491] mt-2 hover:text-white transition-colors duration-200">Análise de Estados</a>
+              <a href="/buscaNCM" className="text-base text-[#7D8491] mt-2 hover:text-white transition-colors duration-200">Busca por NCM</a>
+              <a href="/paginaRanking" className="text-base text-[#7D8491] mt-2 hover:text-white transition-colors duration-200">Comparação geral de Estados e Paises</a>
+              <a href="/previsao" className="text-base text-[#7D8491] mt-2 hover:text-white transition-colors duration-200">Previsão de Tendências</a>
             </div>
           </div>
           </div>

@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { FaSpinner } from 'react-icons/fa';
 import { MapContainer, GeoJSON, TileLayer } from "react-leaflet";
+import { GeoJSON as LeafletGeoJSON } from "leaflet";
 import { BarChart, Bar, XAxis, YAxis, Tooltip as ChartTooltip, ResponsiveContainer } from "recharts";
 import type { FeatureCollection } from "geojson";
 import type { Layer, LeafletMouseEvent } from "leaflet";
@@ -33,6 +34,8 @@ export default function ConsultaEstado() {
   const [selectedPeriods, setSelectedPeriods] = useState<number[]>([]);
   const [dadosSetores, setDadosSetores] = useState<{ setor: string; exportacao: number; importacao: number }[]>([]);
 
+  const geoJsonRef = useRef<LeafletGeoJSON | null>(null);
+
   const [exportados, setExportados] = useState<string[]>([]);
   const [importados, setImportados] = useState<string[]>([]);
   const [exportadores, setExportadores] = useState<string[]>([]);
@@ -57,18 +60,27 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
   function useScreenSize() {
     const [isSmallScreen, setIsSmallScreen] = useState(false);
     const [isSmallerScreen, setIsSmallerScreen] = useState(false);
+    const [isNormalScreen, setIsNormalScreen] = useState(false);
   
     useEffect(() => {
       const handleResize = () => {
         const width = window.innerWidth;
-  
+        
+        if (width <= 1416){
+          setIsNormalScreen(true)
+          setIsSmallerScreen(false);
+          setIsSmallScreen(false);
+        }
         if (width <= 628) {
+          setIsNormalScreen(false)
           setIsSmallerScreen(true);
           setIsSmallScreen(false);
         } else if (width <= 768) {
+          setIsNormalScreen(false)
           setIsSmallerScreen(false);
           setIsSmallScreen(true);
         } else {
+          setIsNormalScreen(false)
           setIsSmallerScreen(false);
           setIsSmallScreen(false);
         }
@@ -80,7 +92,7 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
       return () => window.removeEventListener("resize", handleResize);
     }, []);
   
-    return { isSmallScreen, isSmallerScreen };
+    return { isSmallScreen, isSmallerScreen, isNormalScreen };
   }
 
   const anoMaisProximo = selectedPeriods.length > 0
@@ -343,7 +355,65 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
     buscarDadosBalancaComercial();
   }, [estadoSelecionado, selectedPeriods]);
   
-  
+  useEffect(() => {
+  if (!geoJsonRef.current) return;
+
+  geoJsonRef.current.eachLayer((layer) => {
+    const feature = (layer as any).feature;
+    const nome = feature?.properties?.Estado;
+    if (!nome) return;
+
+    const isSelecionado = nome === estadoSelecionado;
+
+    (layer as L.Path).setStyle({
+      weight: isSelecionado ? 4 : 1,
+      fillOpacity: isSelecionado ? 1 : 0.8,
+    });
+  });
+}, [estadoSelecionado]);
+
+function onEachFeature(feature: any, layer: Layer) {
+  const nomeEstado = feature?.properties?.Estado;
+  if (!nomeEstado) return;
+
+  // Define o estilo inicial
+  const cor = getCorPorMovimento(nomeEstado);
+
+  // Estilo inicial de cada estado
+  (layer as L.Path).setStyle({
+    fillColor: cor,
+    fillOpacity: 0.8,
+    color: "white", // borda branca padrão
+    weight: estadoSelecionado === nomeEstado ? 3 : 1, // destaque se selecionado
+  });
+
+  layer.on({
+    mouseover: (e: LeafletMouseEvent) => {
+      const target = e.target as L.Path;
+      target.setStyle({
+        weight: 2,
+        color: "white",       // borda cinza leve no hover
+        fillOpacity: 0.9,
+      });
+      target.bringToFront(); // garante que o estado fique por cima
+    },
+    mouseout: (e: LeafletMouseEvent) => {
+      const target = e.target as L.Path;
+      const estadoAtual = e.target.feature.properties?.Estado;
+      const corAtual = getCorPorMovimento(estadoAtual);
+      target.setStyle({
+        fillColor: corAtual,
+        fillOpacity: 0.8,
+        color: "white", // mantém branco
+        weight: estadoSelecionado === estadoAtual ? 4 : 1,
+      });
+    },
+    click: () => {
+      setEstadoSelecionado(nomeEstado);
+    },
+  });
+};
+
 
 return (
   <div className="p-8 mt-10 relative z-10">
@@ -352,18 +422,18 @@ return (
     </h2>
 
     <div className="w-full flex flex-col justify-center mt-11">
-      <div className="w-full max-w-5xl mx-auto">
+      <div className="w-full max-w-5xl mx-auto mb-6">
         <SelecionaPeriodo onPeriodosSelecionados={handlePeriodosSelecionados} />
       </div>
       <br />
 
       {/* NOVA DIV agrupando mapa, legenda e bloco com capital/PIB */}
-      <div className={`relative w-full flex flex-row items-center" ${estadoSelecionado ? "justify-center" : " "}`}>
+      <div className={`relative w-full flex flex-col items-center ${estadoSelecionado ? "justify-center md:flex-col" : " "}`}>
         <div
         className={`relative w-full mb-28 sm:mb-44 map-wrapper transition-all duration-500 ${
-          estadoSelecionado ? "lg:translate-x-[-20%]" : ""
+          estadoSelecionado ? "lg:translate-x-[-23.4%]" : ""
         }`}
-        style={{ height: "72vh" }}
+        style={{ height: "81vh" }}
       >
 
           {loading && (
@@ -390,80 +460,99 @@ return (
               attribution=""
             />
             <GeoJSON
+              key={JSON.stringify(dadosEstadoMapa)}
+              onEachFeature={onEachFeature}
+              ref={(ref) => {
+              if (ref) geoJsonRef.current = ref;
+            }}
               data={geoData as FeatureCollection}
               style={(feature) => {
                 const nome = feature?.properties?.Estado || "Desconhecido";
+
+                const isSelecionado = nome === estadoSelecionado;
+
                 return {
                   color: "#fff",
-                  weight: 1,
+                  weight: isSelecionado ? 4 : 1,
                   fillColor: getCorPorMovimento(nome),
-                  fillOpacity: 0.9,
+                  fillOpacity: isSelecionado ? 1 : 0.8,
                 };
-              }}
-              onEachFeature={(feature, layer: Layer) => {
-                const nome = feature?.properties?.Estado;
-                if (!nome) return;
-
-                layer.on({
-                  click: () => setEstadoSelecionado(nome),
-                  mouseover: (e: LeafletMouseEvent) => {
-                    const layer = e.target as L.Path;
-                    layer.setStyle({ weight: 2, fillOpacity: 1 });
-                  },
-                  mouseout: (e: LeafletMouseEvent) => {
-                    const layer = e.target as L.Path;
-                    layer.setStyle({ weight: 1, fillOpacity: 0.9 });
-                  },
-                });
-
-                layer.bindTooltip(nome, { sticky: true });
               }}
             />
           </MapContainer>
               
           <div className={`transition-all duration-500 z-[1000] text-sm 
-    bg-white/10 text-white shadow-md backdrop-blur border border-white/20
-    p-4 rounded-lg
+    bg-white/10 text-white shadow-md backdrop-blur border border-white/20 p-3 rounded-lg w-fit
     ${estadoSelecionado 
-      ? "absolute bottom-[-25%] right-[18%] w-7/12 flex flex-row justify-around items-center gap-4 mt-4"
-      : "relative lg:absolute lg:bottom-[-10px] lg:left-2 lg:w-fit lg:mt-0 flex flex-col gap-2"
+      ? "absolute w-fit bottom-[-32%] md:bottom-[-25%] flex flex-col gap-4 p-4 md:pr-2 md:pl-2 md:flex-col md:h-fit md:w-fit md:gap-[1rem] lg:left-[23.5%] lg:flex-row lg:justify-start lg:pr-6 lg:pl-6 lg:items-center lg:gap-2 xl:flex-row xl:justify-between xl:pr-8 xl:pl-8 xl:items-center xl:gap-20"
+      : "relative w-fit mt-4 lg:absolute lg:bottom-[-94px] lg:left-2 lg:w-fit"
     }`}
           >
-            <div className="flex flex-col mr-2">
-              <h4 className="font-semibold">Legenda - Balança Comercial</h4>
-              <p className="opacity-75">Cálculo: exportações / importações</p>
+            <div className={`flex flex-col mr-2`}>
+              <h4 className="font-semibold mb-1 whitespace-nowrap">Legenda - Balança Comercial</h4>
+              <hr className="border-0 h-[1px] w-full bg-[linear-gradient(to_right,#d5b8e8_50%,transparent_100%)]"/>
+              <p className={`opacity-75 mt-1 whitespace-nowrap ${estadoSelecionado ? "" : "mb-4"}`}>Cálculo: exportações / importações</p>
             </div>
-            <ul className={`gap-2 ${estadoSelecionado ? "flex flex-row" : "flex flex-col lg:flex-col"}`}>
-              <li className="flex items-center space-x-2">
-                <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#28965A" }}></span>
-                <span>Desempenho positivo</span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#F9C846" }}></span>
-                <span>Neutro</span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#F57C00" }}></span>
-                <span>Alerta</span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: "#D64045" }}></span>
-                <span>Desempenho negativo</span>
-              </li>
-            </ul>
+            <ul
+            className={`gap-y-1 gap-x-4 z-10 ${
+              estadoSelecionado
+                ? "grid grid-cols-2 md:flex md:flex-col 2xl:grid grid-cols-2"
+                : "grid grid-cols-1"
+            }`}
+          >
+            <li className="flex items-start gap-2 max-w-[180px]">
+              <span
+                className="inline-block w-4 h-4 rounded mt-[0.25rem] shrink-0"
+                style={{ backgroundColor: "#28965A" }}
+              ></span>
+              <span className="break-words whitespace-normal leading-snug">
+                Desempenho positivo
+              </span>
+            </li>
+            <li className="flex items-start gap-2 max-w-[180px]">
+              <span
+                className="inline-block w-4 h-4 rounded mt-[0.25rem] shrink-0"
+                style={{ backgroundColor: "#F57C00" }}
+              ></span>
+              <span className="break-words whitespace-normal leading-snug">
+                Alerta
+              </span>
+            </li>
+            <li className="flex items-start gap-2 max-w-[180px]">
+              <span
+                className="inline-block w-4 h-4 rounded mt-[0.25rem] shrink-0"
+                style={{ backgroundColor: "#F9C846" }}
+              ></span>
+              <span className="break-words whitespace-normal leading-snug">
+                Neutro
+              </span>
+            </li>
+            <li className="flex items-start gap-2 max-w-[190px]">
+              <span
+                className="inline-block w-4 h-4 rounded mt-[0.25rem] shrink-0"
+                style={{ backgroundColor: "#D64045" }}
+              ></span>
+              <span className="break-keep whitespace-normal leading-snug">
+                Desempenho negativo
+              </span>
+            </li>
+          </ul>
           </div>
         </div>
 
         {/* Bloco com capital, PIB etc. */}
         {estadoSelecionado && info && (
-          <div className="hidden lg:flex flex-col justify-items-center absolute right-[11.4%] top-[8.8%] h-2/4 w-[30%] z-[1000] bg-white/10 border border-white/20 backdrop-blur rounded-lg p-6 pt-8 pb-8 text-white space-y-3 shadow-lg 
-                  mx-auto mt-6 text-base overflow-y-auto transition-all duration-500">
+          <div className={`flex flex-col z-[1000] bg-white/10 border border-white/20 backdrop-blur rounded-lg p-6 text-white shadow-lg text-base transition-all duration-500
+          w-[90%] mt-4
+          ${estadoSelecionado ? "block mb-6 lg:mb-0 mt-[6rem] sm:mt-0" : "hidden"}
+          lg:absolute lg:right-[0.4%] lg:top-[8.8%] lg:h-2/4 lg:w-[35%] xl:w-[33%]"
+        }`}>
             <div className="mb-3">
-            <h3 className="text-xl font-bold mb-2">{info.estado}</h3>
+            <h3 className="text-lg sm:text-xl font-bold mb-2">{info.estado}</h3>
             <hr className="border-0 h-[1px] w-full bg-[linear-gradient(to_right,#d5b8e8_60%,transparent_100%)]" />
             </div>
-            <p className="text-lg"><span className="font-semibold">Capital:</span> {info.capital}</p>
-            <p className="text-lg"><span className="font-semibold">Área Territorial:</span> {info.area}</p>
+            <p className="text-sm sm:text-lg"><span className="font-semibold">Capital:</span> {info.capital}</p>
+            <p className="text-sm sm:text-lg"><span className="font-semibold">Área Territorial:</span> {info.area}</p>
             {(() => {
               const anoKey = anoMaisProximo.toString() as keyof typeof info.pib;
               const valorPib = info.pib[anoKey];
@@ -472,14 +561,14 @@ return (
               const imp = dados?.importacao;
               return (
                 <div>
-                  <p className="mb-2 mt-6 text-lg">
+                  <p className="mb-2 mt-6 text-sm sm:text-lg">
                     <span className="font-semibold">PIB:</span>{" "}
                     {valorPib}
                   </p>
                   <ul className="list-disc pl-5">
-                    <li><span className="font-medium text-lg">Exportação: $</span>{" "}
+                    <li><span className="font-medium text-sm sm:text-lg">Exportação: $</span>{" "}
                       {exp ? formatNumber(exp) : 'N/A'}</li>
-                    <li><span className="font-medium text-lg">Importação: $</span>{" "}
+                    <li><span className="font-medium text-sm sm:text-lg">Importação: $</span>{" "}
                       {imp ? formatNumber(imp) : 'N/A'}</li>
                   </ul>
                 </div>
@@ -514,16 +603,16 @@ return (
           </>
             )} */}
 
-        <div className="flex flex-wrap gap-4 justify-between items-start w-full">
+        <div className="flex flex-col lg:flex-row gap-4 justify-between w-full bg-white/10 border border-white/20 backdrop-blur rounded-lg text-white shadow-lg">
           {/* Gráfico de barras - Setores Econômicos */}
           {estadoSelecionado && (
-          <div className="md:w-full lg:w-8/12 xl:w-2/4 2xl:w-2/4 mx-auto">
+          <div className="w-5/12 mx-auto">
             <h3 className="text-white mt-6 mb-4 text-lg font-medium">
               Exportações vs Importações por Setor: {estadoSelecionado}
             </h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={dadosSetores} >
-                <XAxis dataKey="setor" stroke="#ffffff" tick={{fontSize: isSmallerScreen ? 0 : isSmallScreen ? 8 : 10, fill: "#ffffff"}} interval={0} />
+                <XAxis dataKey="setor" stroke="#ffffff" tick={{fontSize: isSmallerScreen ? 0 : isSmallScreen ? 8 : 9, fill: "#ffffff"}} interval={0} />
                 <YAxis stroke="#ffffff" tick={{ fill: "#ffffff"}} domain={[0, 'dataMax']} allowDataOverflow={true} tickFormatter={formatarNumeroEixoY} minTickGap={15}  interval="preserveStartEnd"/>
                 
                 <ChartTooltip formatter={(value: number) => `$ ${value?.toLocaleString('pt-BR')}`}/>
@@ -536,7 +625,7 @@ return (
 
           {/* Gráfico de barras - Exportações vs Importações */}
           {estadoSelecionado && (
-          <div className="md:w-full lg:w-3/12 xl:w-3/12 2xl:w-3/12 mx-auto">
+          <div className="w-1/3 mx-auto">
             <h3 className="text-white mt-6 mb-4 text-lg font-medium">
               Exportações vs Importações: {estadoSelecionado}
             </h3>
