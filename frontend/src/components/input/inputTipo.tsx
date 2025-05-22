@@ -12,7 +12,7 @@ export default function InputTipo({ tipoProcesso, setTipoProcesso }: Props): JSX
 
   return (
     <div className="grid gap-2">
-        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+        <label className="text-sm text-white font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
             Tipo de Processo
         </label>
       <div className="inline-flex rounded-md shadow-sm w-full">

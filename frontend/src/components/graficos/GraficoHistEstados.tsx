@@ -68,8 +68,8 @@ async function buscarHistEstados({ tipo, estados, pais, ncm }: Props) {
 }
 
 const cores = [
-    "#10b981", "#3b82f6", "#f59e0b", "#ef4444",
-    "#8b5cf6", "#ec4899", "#14b8a6", "#f97316",
+    "#10b981", "#3b82f6", "#f59e0b", "#ff6f6f",
+    "#9366fa", "#ec4899", "#14b8a6", "#f97316",
 ];
 
 function formataTitulo(tipo?: string | null, pais?: Pais | null, ncm?: Mercadoria | null) {
@@ -106,7 +106,7 @@ export default function GraficoHistEstados({ tipo, estados, pais, ncm }: Props) 
 
     if (isLoading) {
         return (
-            <div className="p-6 bg-white rounded-lg shadow">
+            <div className="p-6 rounded-lg shadow">
                 <div className="flex justify-center items-center h-64">
                     <svg className="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -118,8 +118,8 @@ export default function GraficoHistEstados({ tipo, estados, pais, ncm }: Props) 
     };
 
     return (
-        <div className="bg-white rounded p-4 w-full max-w-full overflow-x-auto">
-            <h3 className="text-center text-indigo-900 font-semibold mb-2">
+        <div className="bg-transparent rounded p-4 w-full max-w-full overflow-x-auto">
+            <h3 className="text-center text-gray-300 font-semibold mb-2">
                 {titulo}
             </h3>
 
@@ -131,6 +131,7 @@ export default function GraficoHistEstados({ tipo, estados, pais, ncm }: Props) 
                 >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis
+                        stroke="#E0E0E0"
                         dataKey="ds"
                         type="category"
                         tickFormatter={(ds: string) => formatarData(ds)}
@@ -138,8 +139,9 @@ export default function GraficoHistEstados({ tipo, estados, pais, ncm }: Props) 
                         tick={{ fontSize: 12 }}
                     />
                     <YAxis
+                        stroke="#E0E0E0"
                         tickFormatter={formatarValor}
-                        label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10 }}
+                        label={{ value: '$', angle: -90, position: 'insideLeft', stroke: "#E0E0E0", offset: -10 }}
                         tick={{fontSize:11}}
                     />
                     <Tooltip

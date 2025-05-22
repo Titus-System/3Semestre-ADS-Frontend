@@ -135,7 +135,7 @@ export default function GraficoBalancaComercial({ anos, estado, pais, ncm }: Pro
 
     if (loading) {
         return (
-            <div className="p-6 bg-white rounded-lg shadow">
+            <div className="p-6 bg-transparent rounded-lg shadow">
                 <div className="flex justify-center items-center h-64">
                     <svg className="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -157,7 +157,7 @@ export default function GraficoBalancaComercial({ anos, estado, pais, ncm }: Pro
 
     return (
         <div className="rounded-lg p-4 shadow-md w-full h-[500px]">
-            <h3 className="text-center text-indigo-900 font-semibold mb-2">
+            <h3 className="text-center text-gray-300 font-semibold mb-2">
                 {titulo}
             </h3>
             <ResponsiveContainer width="100%" height="90%">
@@ -167,12 +167,14 @@ export default function GraficoBalancaComercial({ anos, estado, pais, ncm }: Pro
                 >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis
+                        stroke="#E0E0E0"
                         dataKey="ds"
                         tickFormatter={(ds: string) => formatarData(ds)}
                         interval={11}
                         tick={{ fontSize: 12 }}
                     />
                     <YAxis
+                        stroke="#E0E0E0"
                         tickFormatter={formatarValor}
                         label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10 }}
                         tick={{fontSize:11}}

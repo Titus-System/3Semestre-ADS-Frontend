@@ -14,7 +14,7 @@ type Props = {
 export default function InfoCardsNcm({ ncm, anos, tipo, estado, pais, transporte, urf }: Props) {
     return (
         ncm ? (
-            <section className="flex flex-col lg:flex-row gap-4 bg-gray-200 rounded p-4 w-full overflow-x-auto">
+            <section className="flex flex-col lg:flex-row gap-4 bg-transparent rounded p-4 w-full overflow-x-auto">
 
                 <InfoGeralNcm
                     ncm = {ncm}
@@ -37,7 +37,7 @@ export default function InfoCardsNcm({ ncm, anos, tipo, estado, pais, transporte
                 />
             </section>
         ) : (
-            <p className="text-center text-gray-600 mt-4">Selecione um NCM para visualizar o gráfico.</p>
+            <p className="text-center text-gray-300 mt-4">Selecione um NCM para visualizar o gráfico.</p>
         )
     );
 }

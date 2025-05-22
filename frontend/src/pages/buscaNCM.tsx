@@ -153,7 +153,7 @@ export default function BuscarNCM() {
                 </button>
             </div>
 
-            <div className="w-full bg-gray-200 rounded-xl overflow-x-auto p-2">
+            <div className="w-full overflow-x-auto p-6 bg-white/10 border border-white/20 backdrop-blur rounded-lg shadow-2xl">
                 <InfoCardsNcm
                     ncm={mercadoria ? parseInt(mercadoria) : null}
                     anos={selectedPeriods}
@@ -164,8 +164,8 @@ export default function BuscarNCM() {
                     urf={urf ? [parseInt(urf)] : undefined}
                 />
                 {mercadoria && !selectedModes.length && !urf.length ? (
-                    <div className="gap-4 bg-gray-200 flex rounded p-4 w-full">
-                        <div className="bg-white flex-1 rounded-lg">
+                    <div className="gap-4 bg-transparent flex rounded p-4 w-full">
+                        <div className="flex-1 rounded-lg">
                             <PainelEstatisticasVlfob
                                 ncm={Number(mercadoria)}
                                 estado={Number(estado)}
@@ -173,7 +173,7 @@ export default function BuscarNCM() {
                             />
                         </div>
                         <br /><br />
-                        <div className="bg-white flex-1 rounded-lg">
+                        <div className="flex-1 rounded-lg">
                             <PainelEstatisticasAuxiliares
                                 ncm={Number(mercadoria)}
                                 estado={Number(estado)}

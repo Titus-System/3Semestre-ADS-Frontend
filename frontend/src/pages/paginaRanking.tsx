@@ -48,7 +48,7 @@ export default function PaginaRanking() {
                         {/* <BotaoBuscar onClick={() => setIniciarRankeamento(true)} isLoading={buscaIsLoading} /> */}
                     </div>
                     <div className="w-full lg:w-3/4 space-y-6">
-                        <div className="bg-white min-h-screen p-4 sm:p-6 rounded-2xl shadow-xl w-full space-y-6 text-white">
+                        <div className="bg-white/10 border border-white/20 backdrop-blur rounded-2xl text-white shadow-lg min-h-screen p-4 sm:p-6 w-full space-y-6">
                             <PainelRankingEstados
                                 tipo={tipoProcesso}
                                 anos={anosSelecionados}

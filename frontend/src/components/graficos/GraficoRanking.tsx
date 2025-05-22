@@ -23,9 +23,9 @@ export default function GraficoRanking({ titulo, ranking, valor_agregado }: Prop
     const color = (() => {
         switch (x_datakey) {
             case "nome_pais":
-                return "rgb(75, 77, 182)";
+                return "rgb(109, 111, 230)";
             case "sigla_estado":
-                return "rgb(29, 124, 70)";
+                return "rgb(32, 174, 94)";
             case "produto_descricao":
                 return "rgb(189, 124, 20)";
             default:
@@ -34,8 +34,8 @@ export default function GraficoRanking({ titulo, ranking, valor_agregado }: Prop
     })();
 
     return (
-        <div className="bg-white rounded p-4 w-full max-w-full overflow-x-auto">
-            <h3 className="text-center text-indigo-900 font-semibold mb-2">
+        <div className="bg-transparent rounded p-4 w-full max-w-full overflow-x-auto">
+            <h3 className="text-center text-gray-300 font-semibold mb-2">
                 {titulo}
             </h3>
             {!ranking?.length && (
@@ -44,13 +44,15 @@ export default function GraficoRanking({ titulo, ranking, valor_agregado }: Prop
             <ResponsiveContainer width="100%" height={400}>
                 <BarChart data={ranking} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <XAxis
+                        stroke="#E0E0E0"
                         dataKey={x_datakey}
                         tickFormatter={(value: string) => value.substring(0, 10)}
                         tick={{ fontSize: 11, }}
                     />
                     <YAxis
+                        stroke="#E0E0E0"
                         tickFormatter={formatarValor}
-                        label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10 }}
+                        label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10, stroke: "#E0E0E0" }}
                         tick={{ fontSize: 11 }}
                     />
                     <Tooltip

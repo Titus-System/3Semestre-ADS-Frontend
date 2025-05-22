@@ -43,7 +43,7 @@ export default function GraficoRegressaoLinearBalanca({ ncm, estado, pais }: Pro
 
     if (loading) {
         return (
-            <div className="p-6 bg-white rounded-lg shadow">
+            <div className="p-6 bg-transparent rounded-lg shadow">
                 <div className="flex justify-center items-center h-64">
                     <svg className="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -58,7 +58,7 @@ export default function GraficoRegressaoLinearBalanca({ ncm, estado, pais }: Pro
     return (
         <div className="w-full max-w-full">
             <h3
-                className="text-lg font-medium mb-2 text-gray-700 cursor-pointer hover:underline"
+                className="text-lg font-medium mb-2 text-gray-300 cursor-pointer hover:underline"
                 onClick={() => setExibirModal(true)}
             >
                 Regressão Linear
@@ -69,15 +69,19 @@ export default function GraficoRegressaoLinearBalanca({ ncm, estado, pais }: Pro
                     <LineChart data={dados} margin={{ top: 20, right: 30, left: 20, bottom: 40 }}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis
+                            stroke="#E0E0E0"
                             dataKey="ds"
+                            // angle={-45}
+                            height={55}
                             type="category"
                             tickFormatter={(ds: string) => formatarData(ds)}
-                            interval={11}
+                            interval={23}
                             tick={{ fontSize: 12 }}
                         />
                         <YAxis
+                        stroke="#E0E0E0"
                         tickFormatter={formatarValor}
-                        label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10 }}
+                        label={{ value: '$', angle: -90, position: 'insideLeft', stroke: "#E0E0E0", offset: -10 }}
                         tick={{fontSize:11}}
                         />
                         <Tooltip
@@ -98,8 +102,8 @@ export default function GraficoRegressaoLinearBalanca({ ncm, estado, pais }: Pro
                                 fill: "red"
                             }}
                         />
-                        <Line type="monotone" dataKey="y_real" stroke="rgb(51, 111, 207)" name="Balança Comercial Real" strokeWidth={2} dot={{ r: 1 }} />
-                        <Line type="monotone" dataKey="y_regressao" stroke="rgb(102, 158, 231)" name="Balança (Regressão)" strokeWidth={2} dot={{ r: 2 }} />
+                        <Line type="monotone" dataKey="y_real" stroke="rgb(124, 207, 255)" name="Balança Comercial Real" strokeWidth={2} dot={{ r: 1 }} />
+                        <Line type="monotone" dataKey="y_regressao" stroke="rgb(143, 141, 255)" name="Balança (Regressão)" strokeWidth={2} dot={{ r: 2 }} />
                     </LineChart>
                 </ResponsiveContainer>
             </div>

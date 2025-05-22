@@ -63,7 +63,7 @@ export default function GraficoRankingEstados({ tipo, anos, pais, ncm, onRanking
 
     if (isLoading) {
         return (
-            <div className="p-6 bg-white rounded-lg shadow">
+            <div className="p-6 rounded-lg shadow">
                 <div className="flex justify-center items-center h-64">
                     <svg className="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>

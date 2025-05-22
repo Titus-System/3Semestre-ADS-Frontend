@@ -29,7 +29,7 @@ export default function PainelRankingEstados({ tipo, anos, pais, ncm }: Props) {
                     onClick={() => setAbaAtiva("ranking")}
                     className={`py-2 px-4 text-sm font-medium ${abaAtiva === "ranking"
                         ? "border-b-2 border-blue-500 text-blue-600"
-                        : "text-gray-600 hover:text-blue-600"
+                        : "text-white hover:text-blue-600"
                         }`}
                 >
                     Ranking
@@ -38,7 +38,7 @@ export default function PainelRankingEstados({ tipo, anos, pais, ncm }: Props) {
                     onClick={() => setAbaAtiva("historico")}
                     className={`py-2 px-4 text-sm font-medium ${abaAtiva === "historico"
                         ? "border-b-2 border-blue-500 text-blue-600"
-                        : "text-gray-600 hover:text-blue-600"
+                        : "text-white hover:text-blue-600"
                         }`}
                 >
                     Histórico

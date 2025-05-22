@@ -84,9 +84,9 @@ export default function InfoGeralNcm({ ncm, anos, tipo, estados, paises, transpo
     const [activeTab, setActiveTab] = useState("geral")
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-5 w-full max-w-full">
-      <h2 className="text-xl font-bold text-gray-800 mb-6 pb-2 border-b">
-        Informações do NCM <span className="text-blue-600">{ncm}</span> : {totalGeral?.produto_descricao}
+    <div className="bg-transparent rounded-lg shadow-md p-5 w-full max-w-full">
+      <h2 className="text-xl font-bold text-white mb-6 pb-2 border-b">
+        Informações do NCM <span className="text-blue-500">{ncm}</span> : {totalGeral?.produto_descricao}
       </h2>
 
       {isLoading && (
@@ -98,9 +98,9 @@ export default function InfoGeralNcm({ ncm, anos, tipo, estados, paises, transpo
       {totalGeral && (
         <div className="space-y-6">
           {/* Card de detalhes do produto */}
-          <div className="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden transition-all duration-200 hover:shadow-md">
-            <div className="bg-gray-100 px-5 py-3 border-b border-gray-200">
-              <h3 className="font-semibold text-gray-800 flex items-center">
+          <div className="bg-transparent rounded-lg border border-gray-200 overflow-hidden transition-all duration-200 hover:shadow-md">
+            <div className="bg-white/20 px-5 py-3 border-b border-gray-200">
+              <h3 className="font-semibold text-white flex items-center">
                 <span className="inline-block w-4 h-4 mr-2 bg-blue-500 rounded-sm"></span>
                 Detalhes do Produto
               </h3>
@@ -108,16 +108,16 @@ export default function InfoGeralNcm({ ncm, anos, tipo, estados, paises, transpo
             <div className="p-5">
               <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <dt className="text-sm font-medium text-gray-500">Descrição do Produto</dt>
-                  <dd className="text-gray-800">{totalGeral.produto_descricao}</dd>
+                  <dt className="text-sm font-medium text-gray-100">Descrição do Produto</dt>
+                  <dd className="text-gray-300">{totalGeral.produto_descricao}</dd>
                 </div>
                 <div className="space-y-1">
-                  <dt className="text-sm font-medium text-gray-500">Descrição SH4</dt>
-                  <dd className="text-gray-800">{totalGeral.sh4_descricao}</dd>
+                  <dt className="text-sm font-medium text-gray-100">Descrição SH4</dt>
+                  <dd className="text-gray-300">{totalGeral.sh4_descricao}</dd>
                 </div>
                 <div className="space-y-1">
-                  <dt className="text-sm font-medium text-gray-500">Código NCM</dt>
-                  <dd className="text-gray-800 font-medium">{ncm}</dd>
+                  <dt className="text-sm font-medium text-gray-100">Código NCM</dt>
+                  <dd className="text-gray-300 font-medium">{ncm}</dd>
                 </div>
               </dl>
             </div>
@@ -128,11 +128,11 @@ export default function InfoGeralNcm({ ncm, anos, tipo, estados, paises, transpo
             {/* Tab navigation */}
             <div className="flex rounded-t-lg overflow-hidden border border-gray-200">
               <button
-                className={`flex-1 py-3 px-4 text-center font-medium transition-all duration-200 relative
+                className={`flex-1 py-3 px-4 text-center transition-all duration-200 relative
               ${
                 activeTab === "geral"
-                  ? "bg-white text-blue-600 shadow-sm"
-                  : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                  ? "bg-white/20 text-white font-bold shadow-sm"
+                  : "bg-transparent font-medium text-blue-200 hover:bg-white/20 hover:font-bold"
               }`}
                 onClick={() => setActiveTab("geral")}
               >
@@ -140,11 +140,11 @@ export default function InfoGeralNcm({ ncm, anos, tipo, estados, paises, transpo
                 {activeTab === "geral" && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500"></span>}
               </button>
               <button
-                className={`flex-1 py-3 px-4 text-center font-medium transition-all duration-200 relative
+                className={`flex-1 py-3 px-4 text-center transition-all duration-200 relative
               ${
                 activeTab === "filtrado"
-                  ? "bg-white text-blue-600 shadow-sm"
-                  : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                  ? "bg-white/20 text-blue-900 shadow-sm font-bold"
+                  : "bg-transparent font-medium text-white hover:bg-white/20 hover:font-bold"
               }`}
                 onClick={() => setActiveTab("filtrado")}
               >
@@ -156,63 +156,63 @@ export default function InfoGeralNcm({ ncm, anos, tipo, estados, paises, transpo
             </div>
 
             {/* Conteúdo das tabs com bordas laterais */}
-            <div className="border-x border-b border-gray-200 rounded-b-lg bg-white p-5">
+            <div className="border-x border-b border-gray-200 rounded-b-lg bg-transparent p-5">
               {/* Tab content for dados gerais */}
               <div
                 className={`transition-opacity duration-300 ${activeTab === "geral" ? "opacity-100" : "opacity-0 hidden"}`}
               >
-                <div className="bg-white rounded-lg overflow-hidden">
+                <div className="bg-transparent rounded-lg overflow-hidden">
                   <div className="mb-4">
-                    <h3 className="font-semibold text-gray-800 flex items-center">
+                    <h3 className="font-semibold text-gray-300 flex items-center">
                       <span className="inline-block w-4 h-4 mr-2 bg-green-500 rounded-sm"></span>
                       Resumo Geral
                     </h3>
-                    <p className="text-sm text-gray-500 mt-1">Dados consolidados de exportação e importação</p>
+                    <p className="text-sm text-gray-400 mt-1">Dados consolidados de exportação e importação</p>
                   </div>
 
                   <div className="overflow-x-auto rounded-lg border border-gray-200">
                     <table className="w-full">
                       <thead>
-                        <tr className="bg-gray-50">
-                          <th className="text-left py-3 px-4 font-semibold text-gray-700 border-b">Métrica</th>
-                          <th className="text-left py-3 px-4 font-semibold text-green-600 border-b">Exportação</th>
-                          <th className="text-left py-3 px-4 font-semibold text-blue-600 border-b">Importação</th>
+                        <tr className="bg-white/5">
+                          <th className="text-left py-3 px-4 font-semibold text-white border-b">Métrica</th>
+                          <th className="text-left py-3 px-4 font-semibold text-green-200 border-b">Exportação</th>
+                          <th className="text-left py-3 px-4 font-semibold text-blue-200 border-b">Importação</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr className="hover:bg-gray-50 transition-colors">
+                        <tr className="hover:bg-white/10 transition-colors">
                           <td className="py-3 px-4 border-b">
-                            <div className="font-medium">Peso Líquido</div>
-                            <div className="text-xs text-gray-500">em kg</div>
+                            <div className="font-medium text-gray-300">Peso Líquido</div>
+                            <div className="text-xs text-gray-400">em kg</div>
                           </td>
-                          <td className="py-3 px-4 border-b text-green-700">
+                          <td className="py-3 px-4 border-b text-green-400">
                             {formatNumber(totalGeral.total_kg_liquido_exp)}
                           </td>
-                          <td className="py-3 px-4 border-b text-blue-700">
+                          <td className="py-3 px-4 border-b text-blue-400">
                             {formatNumber(totalGeral.total_kg_liquido_imp)}
                           </td>
                         </tr>
-                        <tr className="hover:bg-gray-50 transition-colors">
+                        <tr className="hover:bg-white/10 transition-colors">
                           <td className="py-3 px-4 border-b">
-                            <div className="font-medium">Valor FOB</div>
-                            <div className="text-xs text-gray-500">em USD</div>
+                            <div className="font-medium text-gray-300">Valor FOB</div>
+                            <div className="text-xs text-gray-400">em USD</div>
                           </td>
-                          <td className="py-3 px-4 border-b text-green-700">
+                          <td className="py-3 px-4 border-b text-green-400">
                             {formatCurrency(totalGeral.total_valor_fob_exp)}
                           </td>
-                          <td className="py-3 px-4 border-b text-blue-700">
+                          <td className="py-3 px-4 border-b text-blue-400">
                             {formatCurrency(totalGeral.total_valor_fob_imp)}
                           </td>
                         </tr>
-                        <tr className="hover:bg-gray-50 transition-colors">
+                        <tr className="hover:bg-white/10 transition-colors">
                           <td className="py-3 px-4">
-                            <div className="font-medium">Valor Agregado</div>
-                            <div className="text-xs text-gray-500">USD/kg</div>
+                            <div className="font-medium text-gray-300">Valor Agregado</div>
+                            <div className="text-xs text-gray-400">USD/kg</div>
                           </td>
-                          <td className="py-3 px-4 text-green-700 font-medium">
+                          <td className="py-3 px-4 text-green-400 font-medium">
                             {formatCurrency(totalGeral.total_valor_fob_exp / (totalGeral.total_kg_liquido_exp || 1))}
                           </td>
-                          <td className="py-3 px-4 text-blue-700 font-medium">
+                          <td className="py-3 px-4 text-blue-400 font-medium">
                             {formatCurrency(totalGeral.total_valor_agregado_imp)}
                           </td>
                         </tr>
@@ -227,58 +227,58 @@ export default function InfoGeralNcm({ ncm, anos, tipo, estados, paises, transpo
                 className={`transition-opacity duration-300 ${activeTab === "filtrado" ? "opacity-100" : "opacity-0 hidden"}`}
               >
                 {totalFiltrado ? (
-                  <div className="bg-white rounded-lg overflow-hidden">
+                  <div className="bg-transparent rounded-lg overflow-hidden">
                     <div className="mb-4">
-                      <h3 className="font-semibold text-gray-800 flex items-center">
+                      <h3 className="font-semibold text-gray-300 flex items-center">
                         <span className="inline-block w-4 h-4 mr-2 bg-purple-500 rounded-sm"></span>
                         Resumo Filtrado
                       </h3>
-                      <p className="text-sm text-gray-500 mt-1">Dados filtrados conforme seleção</p>
+                      <p className="text-sm text-gray-400 mt-1">Dados filtrados conforme seleção</p>
                     </div>
 
                     <div className="overflow-x-auto rounded-lg border border-gray-200">
                       <table className="w-full">
                         <thead>
-                          <tr className="bg-gray-50">
-                            <th className="text-left py-3 px-4 font-semibold text-gray-700 border-b">Métrica</th>
+                          <tr className="bg-white/10">
+                            <th className="text-left py-3 px-4 font-semibold text-white border-b">Métrica</th>
                             <th className="text-left py-3 px-4 font-semibold text-green-600 border-b">Exportação</th>
                             <th className="text-left py-3 px-4 font-semibold text-blue-600 border-b">Importação</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr className="hover:bg-gray-50 transition-colors">
+                          <tr className="hover:bg-white/10 transition-colors">
                             <td className="py-3 px-4 border-b">
-                              <div className="font-medium">Peso Líquido</div>
-                              <div className="text-xs text-gray-500">em kg</div>
+                              <div className="font-medium text-gray-300">Peso Líquido</div>
+                              <div className="text-xs text-gray-400">em kg</div>
                             </td>
-                            <td className="py-3 px-4 border-b text-green-700">
+                            <td className="py-3 px-4 border-b text-green-400">
                               {formatNumber(totalFiltrado.total_kg_liquido_exp)}
                             </td>
-                            <td className="py-3 px-4 border-b text-blue-700">
+                            <td className="py-3 px-4 border-b text-blue-400">
                               {formatNumber(totalFiltrado.total_kg_liquido_imp)}
                             </td>
                           </tr>
-                          <tr className="hover:bg-gray-50 transition-colors">
+                          <tr className="hover:bg-white/10 transition-colors">
                             <td className="py-3 px-4 border-b">
-                              <div className="font-medium">Valor FOB</div>
-                              <div className="text-xs text-gray-500">em USD</div>
+                              <div className="font-medium text-gray-300">Valor FOB</div>
+                              <div className="text-xs text-gray-400">em USD</div>
                             </td>
-                            <td className="py-3 px-4 border-b text-green-700">
+                            <td className="py-3 px-4 border-b text-green-400">
                               {formatCurrency(totalFiltrado.total_valor_fob_exp)}
                             </td>
-                            <td className="py-3 px-4 border-b text-blue-700">
+                            <td className="py-3 px-4 border-b text-blue-400">
                               {formatCurrency(totalFiltrado.total_valor_fob_imp)}
                             </td>
                           </tr>
-                          <tr className="hover:bg-gray-50 transition-colors">
+                          <tr className="hover:bg-white/10 transition-colors">
                             <td className="py-3 px-4">
-                              <div className="font-medium">Valor Agregado</div>
-                              <div className="text-xs text-gray-500">USD/kg</div>
+                              <div className="font-medium text-gray-300">Valor Agregado</div>
+                              <div className="text-xs text-gray-400">USD/kg</div>
                             </td>
-                            <td className="py-3 px-4 text-green-700 font-medium">
+                            <td className="py-3 px-4 text-green-400 font-medium">
                               {formatCurrency(totalFiltrado.total_valor_agregado_exp)}
                             </td>
-                            <td className="py-3 px-4 text-blue-700 font-medium">
+                            <td className="py-3 px-4 text-blue-400 font-medium">
                               {formatCurrency(totalFiltrado.total_valor_agregado_imp)}
                             </td>
                           </tr>

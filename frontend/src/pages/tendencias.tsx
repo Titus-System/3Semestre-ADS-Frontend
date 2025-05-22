@@ -56,7 +56,7 @@ export default function Previsao() {
 
             <div className="p-8 text-white">
                 <p className="text-white text-sm italic">* Previsões calculadas usando SARIMA</p>
-                <div className="bg-white rounded-lg shadow-md p-6 flex grid gap-6">
+                <div className="bg-white/10 border border-white/20 backdrop-blur rounded-lg shadow-lg p-6 flex grid gap-6">
                     <PainelVlFobVa
                         estado={estadoSelecionado}
                         pais={paisSelecionado}

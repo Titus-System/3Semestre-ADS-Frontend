@@ -57,10 +57,10 @@ export default function GraficoSetoresDistribuicao({ tipo, anos, estado, pais }:
 
     if (isLoading) {
         return (
-            <div className="p-6 bg-white rounded-lg shadow">
+            <div className="p-6 rounded-lg shadow">
                 <div className="flex justify-center items-center h-64">
                     <svg className="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentCo" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
                 </div>
@@ -69,8 +69,8 @@ export default function GraficoSetoresDistribuicao({ tipo, anos, estado, pais }:
     };
 
     return (
-        <div className="bg-white rounded p-4 w-full max-w-full overflow-x-auto">
-            <h3 className="text-center text-indigo-900 font-semibold mb-2">
+        <div className="bg-transparent rounded p-4 w-full max-w-full overflow-x-auto">
+            <h3 className="text-center text-gray-300 font-semibold mb-2">
                 {titulo}
             </h3>
             <div className="flex justify-between items-center mb-2">
@@ -97,9 +97,9 @@ export default function GraficoSetoresDistribuicao({ tipo, anos, estado, pais }:
             </div>
             <ResponsiveContainer width="100%" height={400}>
                 <RadarChart data={dadosSetores} outerRadius="80%" width={730} height={250}>
-                    <Radar name={`Valor FOB ${tipo}`} dataKey={dataKey} stroke="rgb(32, 36, 245)" fill=" #6366f1" fillOpacity={0.8} />
+                    <Radar name={`Valor FOB ${tipo}`} dataKey={dataKey} fill=" #6366f1" fillOpacity={0.8}/>
                     <PolarGrid />
-                    <PolarAngleAxis dataKey="setor" />
+                    <PolarAngleAxis dataKey="setor" stroke="#E0E0E0" />
                     <Tooltip
                         labelFormatter={(label) => `${label.charAt(0).toUpperCase() + label.substring(1, label.length)}`}
                         formatter={(value: number) => `$ ${value?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}

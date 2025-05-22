@@ -59,7 +59,7 @@ export function GraficoRegressaoLinearVlfob({ ncm, estado, pais }: Props) {
 
   if (loading) {
     return (
-      <div className="p-6 bg-white rounded-lg shadow">
+      <div className="p-6 bg-transparent rounded-lg shadow">
         <div className="flex justify-center items-center h-64">
           <svg className="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -74,7 +74,7 @@ export function GraficoRegressaoLinearVlfob({ ncm, estado, pais }: Props) {
   return (
     <div className="w-full max-w-full">
       <h3
-        className="text-lg font-medium mb-2 text-gray-700 cursor-pointer hover:underline"
+        className="text-lg font-medium mb-2 text-gray-300 cursor-pointer hover:underline"
         onClick={() => setExibirModal(true)}
       >
         Regressão Linear
@@ -86,14 +86,16 @@ export function GraficoRegressaoLinearVlfob({ ncm, estado, pais }: Props) {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="ds"
+              stroke="#E0E0E0"
               type="category"
               tickFormatter={(ds: string) => formatarData(ds)}
-              interval={11}
+              interval={23}
               tick={{ fontSize: 12 }}
             />
             <YAxis
+              stroke="#E0E0E0"
               tickFormatter={formatarValor}
-              label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10 }}
+              label={{ value: '$', angle: -90, position: 'insideLeft', stroke: "#E0E0E0", offset: -10 }}
               tick={{ fontSize: 11 }}
             />
             <Tooltip
@@ -114,7 +116,7 @@ export function GraficoRegressaoLinearVlfob({ ncm, estado, pais }: Props) {
                 fill: "red"
               }}
             />
-            <Line type="monotone" dataKey="exp_real" stroke="rgb(18, 148, 1)" name="Exportação Real" strokeWidth={2} dot={{ r: 1 }} />
+            <Line type="monotone" dataKey="exp_real" stroke="rgb(35, 148, 20)" name="Exportação Real" strokeWidth={2} dot={{ r: 1 }} />
             <Line type="monotone" dataKey="exp_regressao" stroke="rgb(61, 156, 66)" name="Exportação (Regressão)" dot={{ r: 1 }} />
             <Line type="monotone" dataKey="imp_real" stroke="rgb(255, 0, 0)" name="Importação Real" strokeWidth={2} dot={{ r: 1 }} />
             <Line type="monotone" dataKey="imp_regressao" stroke="rgb(156, 93, 93)" name="Importação (Regressão)" dot={{ r: 1 }} />

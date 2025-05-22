@@ -265,7 +265,7 @@ export default function GraficoHistNcm({ tipo, ncm, anos, estado, pais, via, urf
 
 
     return (
-        <div className="bg-white rounded-lg p-4 w-full max-w-full overflow-x-auto">
+        <div className="bg-transparent rounded-lg p-4 w-full max-w-full overflow-x-auto">
             {/* <h3 className="text-center text-indigo-900 font-semibold mb-2">
                 Histórico por NCM
             </h3> */}
@@ -301,29 +301,29 @@ export default function GraficoHistNcm({ tipo, ncm, anos, estado, pais, via, urf
                 </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 my-6">
-                <div className="p-4 rounded-lg bg-blue-50 border border-blue-200 shadow-sm">
-                    <h4 className="text-sm text-blue-600 font-medium flex items-center gap-1">
+                <div className="p-4 rounded-lg bg-blue-400/10 border border-blue-200/50 shadow-sm">
+                    <h4 className="text-sm text-blue-200 font-medium flex items-center gap-1">
                         {`${exibicao == 'valor_agregado' ? 'Média de Exportação' : 'Total Exportado'}`}
                     </h4>
-                    <p className="text-xl font-semibold text-blue-900">
+                    <p className="text-xl font-semibold text-blue-600">
                         {exibicao === 'kg_liquido' ? 'KG' : 'US$'} {totalGeral.exp.toLocaleString()}
                     </p>
                 </div>
 
-                <div className="p-4 rounded-lg bg-red-50 border border-red-200 shadow-sm">
-                    <h4 className="text-sm text-red-600 font-medium flex items-center gap-1">
+                <div className="p-4 rounded-lg bg-red-400/10 border border-red-200/50 shadow-sm">
+                    <h4 className="text-sm text-red-200 font-medium flex items-center gap-1">
                         {`${exibicao == 'valor_agregado' ? 'Média de Importação' : 'Total Importado'}`}
                     </h4>
-                    <p className="text-xl font-semibold text-red-900">
+                    <p className="text-xl font-semibold text-red-600">
                         {exibicao === 'kg_liquido' ? 'KG' : 'US$'} {totalGeral.imp.toLocaleString()}
                     </p>
                 </div>
 
-                <div className="p-4 rounded-lg bg-green-50 border border-green-200 shadow-sm">
-                    <h4 className="text-sm text-green-600 font-medium flex items-center gap-1">
+                <div className="p-4 rounded-lg bg-green-400/10 border border-green-200/50 shadow-sm">
+                    <h4 className="text-sm text-green-200 font-medium flex items-center gap-1">
                         Saldo
                     </h4>
-                    <p className={`text-xl font-semibold ${totalGeral.balanca >= 0 ? 'text-green-900' : 'text-red-900'}`}>
+                    <p className={`text-xl font-semibold ${totalGeral.balanca >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                         {exibicao === 'kg_liquido' ? 'KG' : 'US$'} {totalGeral.balanca.toLocaleString()}
                     </p>
                 </div>
@@ -335,12 +335,14 @@ export default function GraficoHistNcm({ tipo, ncm, anos, estado, pais, via, urf
                 >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="data"
+                        stroke="#E0E0E0"
                         tickFormatter={(value: string) => value.substring(0, 10)}
                         tick={{ fontSize: 11, }}
                     />
                     <YAxis
+                        stroke="#E0E0E0"
                         tickFormatter={(value) => `${(value / 1e6)}`}
-                        label={{ value: '$ (Milhões)', angle: -90, position: 'insideLeft', offset: 10 }}
+                        label={{ value: '$ (Milhões)', angle: -90, position: 'insideLeft', stroke: "#E0E0E0", offset: 10 }}
                     />
                     <Tooltip
                         labelFormatter={(label) => `${label}`}

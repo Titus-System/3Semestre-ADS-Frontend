@@ -64,9 +64,9 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
         if (!estatisticasAuxiliares?.sazonalidade?.length) return null;
 
         return (
-            <div className="w-full mt-6">
+            <div className="w-full max-w-full mt-6">
                 <h3
-                    className="text-lg font-medium mb-2 text-gray-700 cursor-pointer hover:underline"
+                    className="text-lg font-medium mb-2 text-gray-300 cursor-pointer hover:underline"
                     onClick={() => setMostrarModalSazonalidade(true)}
                 >
                     Sazonalidade Mensal
@@ -78,11 +78,13 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                             data={estatisticasAuxiliares.sazonalidade}
                             margin={{ top: 10, right: 30, left: 20, bottom: 40 }}
                         >
-                            <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                            <XAxis dataKey="mes" angle={-45} textAnchor="end" height={70} />
+                            <CartesianGrid strokeDasharray="3 3" className="opacity-40" />
+                            <XAxis stroke="#E0E0E0" dataKey="mes" angle={-45} textAnchor="end" height={70} />
                             <YAxis
+                                stroke="#E0E0E0"
                                 tickFormatter={formatarValor}
-                                label={{ value: 'Valor (USD)', angle: -90, position: 'insideLeft', offset: -10 }}
+                                label={{ value: 'Valor (USD)', angle: -90, stroke: "#E0E0E0", position: 'insideLeft', offset: -10 }}
+                                tick={{fontSize:11}}
                             />
                             <Tooltip
                                 formatter={(value: number) => formatarValor(value)}
@@ -90,7 +92,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                                 labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }}
                             />
                             <Legend />
-                            <Bar dataKey="exportacoes" name="Exportações" fill="rgb(15, 116, 2)" radius={[4, 4, 0, 0]} />
+                            <Bar dataKey="exportacoes" name="Exportações" fill="rgb(35, 148, 20)" radius={[4, 4, 0, 0]} />
                             <Bar dataKey="importacoes" name="Importações" fill="rgb(179, 15, 15)" radius={[4, 4, 0, 0]} />
                         </BarChart>
                     </ResponsiveContainer>
@@ -105,7 +107,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
         return (
             <div className="w-full  mt-6">
                 <h3
-                    className="text-lg font-medium mb-2 text-gray-700 cursor-pointer hover:underline"
+                    className="text-lg font-medium mb-2 text-gray-300 cursor-pointer hover:underline"
                     onClick={() => setMostrarModalHhi(true)}
                 >
                     Índice de Concentração (HHI)
@@ -131,6 +133,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
 
                             <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                             <XAxis
+                                stroke="#E0E0E0"
                                 dataKey="mes"
                                 angle={-45}
                                 textAnchor="end"
@@ -142,9 +145,10 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                                 }}
                             />
                             <YAxis
+                                stroke="#E0E0E0"
                                 domain={[0, 1]}
                                 tickFormatter={(value) => value.toFixed(2)}
-                                label={{ value: 'Índice HHI', angle: -90, position: 'insideLeft', offset: -10 }}
+                                label={{ value: 'Índice HHI', angle: -90, stroke: "#E0E0E0", position: 'insideLeft', offset: -10 }}
                             />
                             <Tooltip
                                 formatter={(value: number) => formatarHHI(value)}
@@ -184,15 +188,15 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                 <div className="mt-4 flex flex-wrap gap-4 text-sm text-gray-600">
                     <div className="flex items-center">
                         <span className="inline-block w-3 h-1 bg-red-600 mr-2"></span>
-                        <span>HHI &lt; 0.15: Mercado não concentrado</span>
+                        <span className="text-gray-300">HHI &lt; 0.15: Mercado não concentrado</span>
                     </div>
                     <div className="flex items-center">
                         <span className="inline-block w-3 h-1 bg-red-600 mr-2"></span>
-                        <span>0.15 ≤ HHI ≤ 0.25: Moderadamente concentrado</span>
+                        <span className="text-gray-300">0.15 ≤ HHI ≤ 0.25: Moderadamente concentrado</span>
                     </div>
                     <div className="flex items-center">
                         <span className="inline-block w-3 h-1 bg-red-600 mr-2"></span>
-                        <span>HHI &gt; 0.25: Altamente concentrado</span>
+                        <span className="text-gray-300">HHI &gt; 0.25: Altamente concentrado</span>
                     </div>
                 </div>
             </div>
@@ -229,7 +233,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
 
     if (loading) {
         return (
-            <div className="p-6 bg-white rounded-lg shadow">
+            <div className="p-6 bg-transparent rounded-lg shadow">
                 <div className="flex justify-center items-center h-64">
                     <svg className="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -255,43 +259,43 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
 
     return (
         <div className="rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Análises Estatísticas Auxiliares</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">Análises Estatísticas Auxiliares</h2>
 
             {/* Tabs de navegação */}
             <div className="border-b border-gray-200">
-                <nav className="flex -mb-px">
+                <nav className="grid grid-cols-2 sm:flex -mb-px">
                     <button
                         onClick={() => trocarAba("sazonalidade")}
-                        className={`py-4 px-6 font-medium text-sm ${abaAtiva === "sazonalidade"
+                        className={`py-4 px-0 sm:px-2 md:px-6 font-medium text-xs md:text-sm ${abaAtiva === "sazonalidade"
                             ? "border-b-2 border-blue-500 text-blue-600"
-                            : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            : "text-white hover:text-gray-400 hover:border-gray-300"
                             }`}
                     >
                         Sazonalidade
                     </button>
                     <button
                         onClick={() => trocarAba("concentracao_pais")}
-                        className={`py-4 px-6 font-medium text-sm ${abaAtiva === "concentracao_pais"
+                        className={`py-4 px-0 sm:px-2 md:px-6 font-medium text-xs md:text-sm ${abaAtiva === "concentracao_pais"
                             ? "border-b-2 border-blue-500 text-blue-600"
-                            : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            : "text-white hover:text-gray-400 hover:border-gray-300"
                             }`}
                     >
                         Concentração por país
                     </button>
                     <button
                         onClick={() => trocarAba("concentracao_estado")}
-                        className={`py-4 px-6 font-medium text-sm ${abaAtiva === "concentracao_estado"
+                        className={`py-4 px-0 sm:px-2 md:px-6 font-medium text-xs md:text-sm ${abaAtiva === "concentracao_estado"
                             ? "border-b-2 border-blue-500 text-blue-600"
-                            : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            : "text-white hover:text-gray-400 hover:border-gray-300"
                             }`}
                     >
                         Concentração por estado
                     </button>
                     <button
                         onClick={() => trocarAba("concentracao_ncm")}
-                        className={`py-4 px-6 font-medium text-sm ${abaAtiva === "concentracao_ncm"
+                        className={`py-4 px-0 sm:px-2 md:px-6 font-medium text-xs md:text-sm ${abaAtiva === "concentracao_ncm"
                             ? "border-b-2 border-blue-500 text-blue-600"
-                            : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            : "text-white hover:text-gray-400 hover:border-gray-300"
                             }`}
                     >
                         Concentração por NCM

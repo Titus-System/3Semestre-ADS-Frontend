@@ -16,6 +16,9 @@ import { buscarRankingNcm } from "../services/ncmService";
 import { buscarRankingPaises } from "../services/paisService";
 import { buscaBalancaComercial } from "../services/balancaComercialService";
 import { buscarRankingEstados } from "../services/estadoService";
+import PainelEstatisticasVlfob from "../components/paineis/PainelEstatisticasVlfob";
+import PainelEstatisticasAuxiliares from "../components/paineis/PainelEstatisticasAuxiliaresVlfob";
+import PainelEstatisticasBalancaComercial from "../components/paineis/PainelEstatisticasBalancaComercial";
 import "../index.css"
 
 // Extrai nomes dos estados
@@ -71,11 +74,11 @@ const [dadosEstadoMapa, setDadosEstadoMapa] = useState<
           setIsSmallerScreen(false);
           setIsSmallScreen(false);
         }
-        if (width <= 628) {
+        if (width <= 560) {
           setIsNormalScreen(false)
           setIsSmallerScreen(true);
           setIsSmallScreen(false);
-        } else if (width <= 768) {
+        } else if (width <= 630) {
           setIsNormalScreen(false)
           setIsSmallerScreen(false);
           setIsSmallScreen(true);
@@ -484,7 +487,7 @@ return (
           <div className={`transition-all duration-500 z-[1000] text-sm 
     bg-white/10 text-white shadow-md backdrop-blur border border-white/20 p-3 rounded-lg w-fit
     ${estadoSelecionado 
-      ? "absolute w-fit bottom-[-32%] md:bottom-[-25%] flex flex-col gap-4 p-4 md:pr-2 md:pl-2 md:flex-col md:h-fit md:w-fit md:gap-[1rem] lg:left-[23.5%] lg:flex-row lg:justify-start lg:pr-6 lg:pl-6 lg:items-center lg:gap-2 xl:flex-row xl:justify-between xl:pr-8 xl:pl-8 xl:items-center xl:gap-20"
+      ? "absolute w-fit bottom-[-32%] md:bottom-[-27%] flex flex-col gap-4 p-4 md:pr-2 md:pl-2 md:flex-col md:h-fit md:w-fit md:gap-[1rem] lg:left-[23.5%] lg:flex-row lg:justify-start lg:pr-6 lg:pl-6 lg:items-center lg:gap-2 xl:flex-row xl:justify-between xl:pr-8 xl:pl-8 xl:items-center xl:gap-20"
       : "relative w-fit mt-4 lg:absolute lg:bottom-[-94px] lg:left-2 lg:w-fit"
     }`}
           >
@@ -540,10 +543,11 @@ return (
           </div>
         </div>
 
+      
         {/* Bloco com capital, PIB etc. */}
         {estadoSelecionado && info && (
           <div className={`flex flex-col z-[1000] bg-white/10 border border-white/20 backdrop-blur rounded-lg p-6 text-white shadow-lg text-base transition-all duration-500
-          w-[90%] mt-4
+          w-[90%]
           ${estadoSelecionado ? "block mb-6 lg:mb-0 mt-[6rem] sm:mt-0" : "hidden"}
           lg:absolute lg:right-[0.4%] lg:top-[8.8%] lg:h-2/4 lg:w-[35%] xl:w-[33%]"
         }`}>
@@ -602,45 +606,64 @@ return (
             </div>
           </>
             )} */}
-
-        <div className="flex flex-col lg:flex-row gap-4 justify-between w-full bg-white/10 border border-white/20 backdrop-blur rounded-lg text-white shadow-lg">
+            {estadoSelecionado && (
+        <div className="w-full bg-white/10 border border-white/20 backdrop-blur rounded-lg text-white shadow-lg">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+            <PainelEstatisticasVlfob
+                                        ncm={null}
+                                        estado={codigosEstados[estadoSelecionado as keyof typeof codigosEstados]?.[0]}
+                                        pais={null}
+                                    />
+            <PainelEstatisticasBalancaComercial
+                                        ncm={null}
+                                        estado={codigosEstados[estadoSelecionado as keyof typeof codigosEstados]?.[0]}
+                                        pais={null}
+                                    />  
+            </div>
+            <div className="w-full overflow-x-auto max-w-full">                
+            <PainelEstatisticasAuxiliares
+                                        ncm={null}
+                                        estado={codigosEstados[estadoSelecionado as keyof typeof codigosEstados]?.[0]}
+                                        pais={null}
+                                    />  
+        </div>
+  
           {/* Gráfico de barras - Setores Econômicos */}
-          {estadoSelecionado && (
-          <div className="w-5/12 mx-auto">
+          <div className="flex flex-col lg:flex-row gap-4 justify-between w-full">
+          <div className="w-11/12 lg:w-6/12 mx-auto">
             <h3 className="text-white mt-6 mb-4 text-lg font-medium">
               Exportações vs Importações por Setor: {estadoSelecionado}
             </h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={dadosSetores} >
-                <XAxis dataKey="setor" stroke="#ffffff" tick={{fontSize: isSmallerScreen ? 0 : isSmallScreen ? 8 : 9, fill: "#ffffff"}} interval={0} />
-                <YAxis stroke="#ffffff" tick={{ fill: "#ffffff"}} domain={[0, 'dataMax']} allowDataOverflow={true} tickFormatter={formatarNumeroEixoY} minTickGap={15}  interval="preserveStartEnd"/>
+                <XAxis dataKey="setor" stroke="#E0E0E0" tick={{fontSize: isSmallerScreen ? 0 : isSmallScreen ? 8 : 9, fill: "#ffffff"}} interval={0} />
+                <YAxis stroke="#E0E0E0" tick={{ fill: "#ffffff"}} domain={[0, 'dataMax']} allowDataOverflow={true} tickFormatter={formatarNumeroEixoY} minTickGap={15}  interval="preserveStartEnd"/>
                 
                 <ChartTooltip formatter={(value: number) => `$ ${value?.toLocaleString('pt-BR')}`}/>
-                <Bar dataKey="exportacao" fill="#66bb6a" name="Exportações" />
-                <Bar dataKey="importacao" fill="#42a5f5" name="Importações" />
+                <Bar dataKey="exportacao" fill="rgb(35, 148, 20)" name="Exportações" />
+                <Bar dataKey="importacao" fill="rgb(255, 0, 0)" name="Importações" />
               </BarChart>
             </ResponsiveContainer>
           </div>
-          )}
 
           {/* Gráfico de barras - Exportações vs Importações */}
-          {estadoSelecionado && (
-          <div className="w-1/3 mx-auto">
+          <div className="w-11/12 lg:w-1/3 mx-auto">
             <h3 className="text-white mt-6 mb-4 text-lg font-medium">
               Exportações vs Importações: {estadoSelecionado}
             </h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={dadosFiltrados}>
-                <XAxis dataKey="estado" stroke="#ffffff" />
-                <YAxis stroke="#ffffff" tickFormatter={formatarNumeroEixoY}/>
+                <XAxis dataKey="estado" stroke="#E0E0E0" />
+                <YAxis stroke="#E0E0E0" tickFormatter={formatarNumeroEixoY}/>
                 <ChartTooltip formatter={(value: number) => `$ ${value?.toLocaleString('pt-BR')}`}/>
-                <Bar dataKey="exportacao" fill="#66bb6a" name="Exportações" />
-                <Bar dataKey="importacao" fill="#42a5f5" name="Importações" />
+                <Bar dataKey="exportacao" fill="rgb(35, 148, 20)" name="Exportações" />
+                <Bar dataKey="importacao" fill="rgb(255, 0, 0)" name="Importações" />
               </BarChart>
             </ResponsiveContainer>
           </div>
-          )}
+          </div>
         </div>
+              )}
         </div>
     </div>
   );

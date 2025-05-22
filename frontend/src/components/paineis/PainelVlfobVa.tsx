@@ -18,7 +18,7 @@ export default function PainelVlFobVa({ estado, pais, ncm }: Props) {
                     onClick={() => setAbaAtiva("balanca")}
                     className={`py-2 px-4 text-sm font-medium ${abaAtiva === "balanca"
                         ? "border-b-2 border-blue-500 text-blue-600"
-                        : "text-gray-600 hover:text-blue-600"
+                        : "text-white hover:text-blue-600"
                         }`}
                 >
                     Balança Comercial
@@ -27,7 +27,7 @@ export default function PainelVlFobVa({ estado, pais, ncm }: Props) {
                     onClick={() => setAbaAtiva("valor")}
                     className={`py-2 px-4 text-sm font-medium ${abaAtiva === "valor"
                         ? "border-b-2 border-blue-500 text-blue-600"
-                        : "text-gray-600 hover:text-blue-600"
+                        : "text-white hover:text-blue-600"
                         }`}
                 >
                     Valor Agregado
