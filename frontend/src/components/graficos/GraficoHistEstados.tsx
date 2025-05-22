@@ -159,6 +159,7 @@ export default function GraficoHistEstados({ tipo, estados, pais, ncm }: Props) 
                     <ReferenceLine
                         x="2025-01-01"
                         stroke="red"
+                        strokeWidth={2}
                         strokeDasharray="3 3"
                         label={{
                             value: 'Projeção',

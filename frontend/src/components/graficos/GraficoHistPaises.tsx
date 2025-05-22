@@ -177,6 +177,7 @@ export default function GraficoHistPais({ tipo, paises, ncm, estado, anos }: Pro
                                 index % 5
                                 ]
                             }
+                            strokeWidth={2.5}
                             dot={false}
                         />
                     ))}

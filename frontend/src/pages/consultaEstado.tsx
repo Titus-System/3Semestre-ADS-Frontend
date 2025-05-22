@@ -482,9 +482,9 @@ export default function ConsultaEstado() {
             </MapContainer>
           </div>
           <div className={`transition-all duration-500 z-[1000] text-sm 
-              bg-white/10 text-white shadow-md backdrop-blur border border-white/20 p-3 rounded-lg w-fit
+              bg-white/10 text-white shadow-md backdrop-blur border border-white/20 p-3 rounded-lg w-fit self-start
               ${estadoSelecionado
-              ? "w-fit flex flex-col gap-4 p-4 mb-10 lg:translate-x-[-100.4%]"
+              ? "w-fit flex flex-col gap-4 p-4 mb-10"
               : "relative w-fit lg:absolute lg:bottom-[-94px] lg:left-2 lg:w-fit"
             } `}
           >
@@ -495,7 +495,7 @@ export default function ConsultaEstado() {
             </div>
             <ul
               className={`gap-y-1 gap-x-4 z-10 ${estadoSelecionado
-                ? "grid grid-cols-2 md:flex md:flex-col 2xl:grid grid-cols-2"
+                ? "flex flex-col md:grid grid-cols-2"
                 : "grid grid-cols-1"
                 }`}
             >

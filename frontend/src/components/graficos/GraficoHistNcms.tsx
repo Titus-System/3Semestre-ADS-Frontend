@@ -230,6 +230,7 @@ export default function GraficoHistNcms({ tipo, ncms, anos, estado, pais }: Prop
                                 index % 5
                                 ]
                             }
+                            strokeWidth={2.5}
                             dot={false}
                         />
                     ))}
