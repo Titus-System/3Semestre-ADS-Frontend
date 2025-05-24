@@ -64,81 +64,81 @@ export default function InfoGeral({ anos, ncm, estado, pais, transporte, urf }: 
 
 
     return (
-        <section className="flex flex-col lg:flex-row gap-4 rounded p-4 w-full overflow-x-auto">
-            <div className="bg-white rounded-lg shadow-md p-5 w-full max-w-full">
-                <h2 className="text-xl font-bold text-gray-800 mb-6 pb-2 border-b">
+        <section className="flex flex-col gap-4 rounded p-4 w-full overflow-x-auto">
+            <div className="rounded-lg shadow-xl p-5 w-full max-w-full">
+                <h2 className="text-xl font-bold text-gray-100 mb-6 pb-2 border-b">
                     <span className="inline-block w-4 h-4 mr-2 bg-green-500 rounded-sm"></span>Informações Gerais do Brasil
                 </h2>
 
-                <div className="border-x border-b border-gray-200 rounded-b-lg bg-white p-5">
-                    <p className="text-sm text-gray-500 mt-1">Dados consolidados de exportação e importação</p>
-                    <div className="overflow-x-auto rounded-lg border border-gray-200">
+                <div className="rounded-b-lg">
+                    <p className="text-sm text-gray-400 mt-1">Dados consolidados de exportação e importação</p>
+                    <div className="overflow-x-auto rounded-lg border border-gray-500">
                         <table className="w-full">
-                            <thead>
-                                <tr className="bg-gray-50">
-                                    <th className="text-left py-3 px-4 font-semibold text-gray-700 border-b">Métrica</th>
-                                    <th className="text-left py-3 px-4 font-semibold text-green-600 border-b">Exportação</th>
-                                    <th className="text-left py-3 px-4 font-semibold text-blue-600 border-b">Importação</th>
+                            <thead className="border-b border-gray-500">
+                                <tr className="bg-indigo-950">
+                                    <th className="text-left py-3 px-4 font-semibold text-gray-200">Métrica</th>
+                                    <th className="text-left py-3 px-4 font-semibold text-green-200">Exportação</th>
+                                    <th className="text-left py-3 px-4 font-semibold text-red-200">Importação</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr className="hover:bg-gray-50 transition-colors">
-                                    <td className="py-3 px-4 border-b">
+                                <tr className="hover:bg-indigo-950 transition-colors border-b border-gray-500">
+                                    <td className="py-3 px-4">
                                         <div className="font-medium">Peso Líquido</div>
-                                        <div className="text-xs text-gray-500">em kg</div>
+                                        <div className="text-xs text-gray-400">em kg</div>
                                     </td>
-                                    <td className="py-3 px-4 border-b text-green-700">
+                                    <td className="py-3 px-4 text-green-400">
                                         {formatNumber(totalGeral?.total_kg_exp)} kg
                                     </td>
-                                    <td className="py-3 px-4 border-b text-blue-700">
+                                    <td className="py-3 px-4 text-red-400 hover:text-red-700">
                                         {formatNumber(totalGeral?.total_kg_imp)} kg
                                     </td>
                                 </tr>
-                                <tr className="hover:bg-gray-50 transition-colors">
-                                    <td className="py-3 px-4 border-b">
+                                <tr className="hover:bg-indigo-950 transition-colors border-b border-gray-500">
+                                    <td className="py-3 px-4">
                                         <div className="font-medium">Valor FOB</div>
-                                        <div className="text-xs text-gray-500">em USD</div>
+                                        <div className="text-xs text-gray-400">em USD</div>
                                     </td>
-                                    <td className="py-3 px-4 border-b text-green-700">
+                                    <td className="py-3 px-4 text-green-400">
                                         {formatCurrency(totalGeral?.total_fob_exp)}
                                     </td>
-                                    <td className="py-3 px-4 border-b text-blue-700">
+                                    <td className="py-3 px-4 text-red-400 hover:text-red-700">
                                         {formatCurrency(totalGeral?.total_fob_imp)}
                                     </td>
                                 </tr>
-                                <tr className="hover:bg-gray-50 transition-colors">
-                                    <td className="py-3 px-4 border-b">
+                                <tr className="hover:bg-indigo-950 transition-colors border-b border-gray-500">
+                                    <td className="py-3 px-4">
                                         <div className="font-medium">Valor Agregado</div>
-                                        <div className="text-xs text-gray-500">USD/kg</div>
+                                        <div className="text-xs text-gray-400">USD/kg</div>
                                     </td>
-                                    <td className="py-3 px-4 border-b text-green-700 font-medium">
-                                        {formatCurrency(totalGeral?.valor_agregado_exp)}
+                                    <td className="py-3 px-4 text-green-400 font-medium">
+                                        {formatCurrency(totalGeral?.valor_agregado_exp).replace('US$', '')} US$/kg
                                     </td>
-                                    <td className="py-3 px-4 border-b text-blue-700 font-medium">
+                                    <td className="py-3 px-4 text-red-400 hover:text-red-700 font-medium">
                                         {formatCurrency(totalGeral?.valor_agregado_imp).replace('US$', '')} US$/kg
                                     </td>
                                 </tr>
-                                <tr className="hover:bg-gray-50 transition-colors">
-                                    <td className="py-3 px-4 border-b">
+                                <tr className="hover:bg-indigo-950 transition-colors border-b border-gray-500">
+                                    <td className="py-3 px-4">
                                         <div className="font-medium">Valor Frete</div>
-                                        <div className="text-xs text-gray-500">USD</div>
+                                        <div className="text-xs text-gray-400">USD</div>
                                     </td>
-                                    <td className="py-3 px-4 border-b text-green-700">
+                                    <td className="py-3 px-4 text-green-400">
                                         --
                                     </td>
-                                    <td className="py-3 px-4 border-b text-blue-700">
+                                    <td className="py-3 px-4 text-red-400 hover:text-red-700">
                                         {formatCurrency(totalGeral?.total_valor_frete)}
                                     </td>
                                 </tr>
-                                <tr className="hover:bg-gray-50 transition-colors">
-                                    <td className="py-3 px-4 border-b">
+                                <tr className="hover:bg-indigo-950 transition-colors">
+                                    <td className="py-3 px-4">
                                         <div className="font-medium">Valor Seguro</div>
-                                        <div className="text-xs text-gray-500">USD</div>
+                                        <div className="text-xs text-gray-400">USD</div>
                                     </td>
-                                    <td className="py-3 px-4 border-b text-green-700">
+                                    <td className="py-3 px-4 text-green-400">
                                         --
                                     </td>
-                                    <td className="py-3 px-4 border-b text-blue-700">
+                                    <td className="py-3 px-4 text-red-400 hover:text-red-700">
                                         {formatCurrency(totalGeral?.total_valor_seguro)}
                                     </td>
                                 </tr>
@@ -148,81 +148,81 @@ export default function InfoGeral({ anos, ncm, estado, pais, transporte, urf }: 
                 </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-md p-5 w-full max-w-full">
-                <h2 className="text-xl font-bold text-gray-800 mb-6 pb-2 border-b">
+            <div className="rounded-lg shadow-xl p-5 w-full max-w-full">
+                <h2 className="text-xl font-bold text-gray-100 mb-6 pb-2 border-b">
                     <span className="inline-block w-4 h-4 mr-2 bg-purple-500 rounded-sm"></span>Informações Para os filtros selecionados
                 </h2>
                 <div>
-                    <div className="border-x border-b border-gray-200 rounded-b-lg bg-white p-5">
-                        <p className="text-sm text-gray-500 mt-1">Dados filtrados conforme seleção</p>
-                        <div className="overflow-x-auto rounded-lg border border-gray-200">
+                    <div className="rounded-b-lg">
+                        <p className="text-sm text-gray-400 mt-1">Dados filtrados conforme seleção</p>
+                        <div className="overflow-x-auto rounded-lg border border-gray-500">
                             {totalFiltrado ? (
                                 <table className="w-full">
-                                    <thead>
-                                        <tr className="bg-gray-50">
-                                            <th className="text-left py-3 px-4 font-semibold text-gray-700 border-b">Métrica</th>
-                                            <th className="text-left py-3 px-4 font-semibold text-green-600 border-b">Exportação</th>
-                                            <th className="text-left py-3 px-4 font-semibold text-blue-600 border-b">Importação</th>
+                                    <thead className="border-b border-gray-500">
+                                        <tr className="bg-indigo-950">
+                                            <th className="text-left py-3 px-4 font-semibold text-gray-200">Métrica</th>
+                                            <th className="text-left py-3 px-4 font-semibold text-green-200">Exportação</th>
+                                            <th className="text-left py-3 px-4 font-semibold text-red-200">Importação</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr className="hover:bg-gray-50 transition-colors">
-                                            <td className="py-3 px-4 border-b">
+                                        <tr className="hover:bg-indigo-950 transition-colors border-b border-gray-500">
+                                            <td className="py-3 px-4">
                                                 <div className="font-medium">Peso Líquido</div>
-                                                <div className="text-xs text-gray-500">em kg</div>
+                                                <div className="text-xs text-gray-400">em kg</div>
                                             </td>
-                                            <td className="py-3 px-4 border-b text-green-700">
+                                            <td className="py-3 px-4 text-green-400">
                                                 {formatNumber(totalFiltrado?.total_kg_exp)} kg
                                             </td>
-                                            <td className="py-3 px-4 border-b text-blue-700">
+                                            <td className="py-3 px-4 text-red-400 hover:text-red-700">
                                                 {formatNumber(totalFiltrado?.total_kg_imp)} kg
                                             </td>
                                         </tr>
-                                        <tr className="hover:bg-gray-50 transition-colors">
-                                            <td className="py-3 px-4 border-b">
+                                        <tr className="hover:bg-indigo-950 transition-colors border-b border-gray-500">
+                                            <td className="py-3 px-4">
                                                 <div className="font-medium">Valor FOB</div>
-                                                <div className="text-xs text-gray-500">em USD</div>
+                                                <div className="text-xs text-gray-400">em USD</div>
                                             </td>
-                                            <td className="py-3 px-4 border-b text-green-700">
+                                            <td className="py-3 px-4 text-green-400">
                                                 {formatCurrency(totalFiltrado?.total_fob_exp)}
                                             </td>
-                                            <td className="py-3 px-4 border-b text-blue-700">
+                                            <td className="py-3 px-4 text-red-400 hover:text-red-700">
                                                 {formatCurrency(totalFiltrado?.total_fob_imp)}
                                             </td>
                                         </tr>
-                                        <tr className="hover:bg-gray-50 transition-colors">
-                                            <td className="py-3 px-4 border-b">
+                                        <tr className="hover:bg-indigo-950 transition-colors border-b border-gray-500">
+                                            <td className="py-3 px-4">
                                                 <div className="font-medium">Valor Agregado</div>
-                                                <div className="text-xs text-gray-500">USD/kg</div>
+                                                <div className="text-xs text-gray-400">USD/kg</div>
                                             </td>
-                                            <td className="py-3 px-4 border-b text-green-700 font-medium">
+                                            <td className="py-3 px-4 text-green-400 font-medium">
                                                 {formatCurrency(totalFiltrado?.valor_agregado_exp)}
                                             </td>
-                                            <td className="py-3 px-4 border-b text-blue-700 font-medium">
+                                            <td className="py-3 px-4 text-red-400 hover:text-red-700 font-medium">
                                                 {formatCurrency(totalFiltrado?.valor_agregado_imp).replace('US$', '')} US$/kg
                                             </td>
                                         </tr>
-                                        <tr className="hover:bg-gray-50 transition-colors">
-                                            <td className="py-3 px-4 border-b">
+                                        <tr className="hover:bg-indigo-950 transition-colors border-b border-gray-500">
+                                            <td className="py-3 px-4">
                                                 <div className="font-medium">Valor Frete</div>
-                                                <div className="text-xs text-gray-500">USD</div>
+                                                <div className="text-xs text-gray-400">USD</div>
                                             </td>
-                                            <td className="py-3 px-4 border-b text-green-700">
+                                            <td className="py-3 px-4 text-green-400">
                                                 --
                                             </td>
-                                            <td className="py-3 px-4 border-b text-blue-700">
+                                            <td className="py-3 px-4 text-red-400 hover:text-red-700">
                                                 {formatCurrency(totalFiltrado?.total_valor_frete)}
                                             </td>
                                         </tr>
-                                        <tr className="hover:bg-gray-50 transition-colors">
-                                            <td className="py-3 px-4 border-b">
+                                        <tr className="hover:bg-indigo-950 transition-colors border-b border-gray-500">
+                                            <td className="py-3 px-4">
                                                 <div className="font-medium">Valor Seguro</div>
-                                                <div className="text-xs text-gray-500">USD</div>
+                                                <div className="text-xs text-gray-400">USD</div>
                                             </td>
-                                            <td className="py-3 px-4 border-b text-green-700">
+                                            <td className="py-3 px-4 text-green-400">
                                                 --
                                             </td>
-                                            <td className="py-3 px-4 border-b text-blue-700">
+                                            <td className="py-3 px-4 text-red-400 hover:text-red-700">
                                                 {formatCurrency(totalFiltrado?.total_valor_seguro)}
                                             </td>
                                         </tr>
@@ -230,9 +230,9 @@ export default function InfoGeral({ anos, ncm, estado, pais, transporte, urf }: 
                                 </table>
 
                             ) : (
-                                <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+                                <div className="flex flex-col items-center justify-center py-12 text-gray-400">
                                     <svg
-                                        className="w-12 h-12 text-gray-300 mb-4"
+                                        className="w-12 h-12 text-gray-400 mb-4"
                                         fill="none"
                                         stroke="currentColor"
                                         viewBox="0 0 24 24"
