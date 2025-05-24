@@ -21,44 +21,30 @@ export default function TabelaResultados({ transacoes, tipoProcesso }: TabelaRes
         setSelectedTransacao(transacao);
         setIsModalOpen(true);
     };
-
+    console.log("transacoes: ", transacoes);
     return (
         <>
-            <div className="w-full max-w-5xl overflow-x-auto mt-8">
-                <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden text-sm">
-                    <thead className="bg-gray-900 text-white">
+            <div className="w-full rounded-lg border overflow-x-auto mt-8 mx-auto">
+                <table className="min-w-full bg-indigo-950 border border-white/20 shadow-xl rounded-xl text-sm text-white">
+                    <thead className="bg-indigo-900 text-white">
                         <tr>
-                            <th className="px-4 py-2 text-left">
-                                ID
-                            </th>
-                            <th className="px-4 py-2 text-left">
-                                País
-                            </th>
-                            <th className="px-4 py-2 text-left">
-                                Ano
-                            </th>
-                            <th className="px-4 py-2 text-left">
-                                Tipo
-                            </th>
+                            <th className="px-4 py-3 text-left border-b border-white/10">ID</th>
+                            <th className="px-4 py-3 text-left border-b border-white/10">País</th>
+                            <th className="px-4 py-3 text-left border-b border-white/10">Ano</th>
+                            <th className="px-4 py-3 text-left border-b border-white/10">Tipo</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200">
+                    <tbody className="divide-y divide-white/10">
                         {transacoes.map((transacao) => (
                             <tr
                                 key={transacao.id_transacao}
                                 onClick={() => handleRowClick(transacao)}
-                                className="hover:bg-gray-50 cursor-pointer"
+                                className="hover:bg-indigo-800 transition-colors duration-200 cursor-pointer"
                             >
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {transacao.id_transacao}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {transacao.nome_pais}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {transacao.ano}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <td className="px-6 py-4 whitespace-nowrap">{transacao.id_transacao}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">{transacao.nome_pais}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">{transacao.ano}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">
                                     {tipoProcesso === "exp" ? "Exportação" : "Importação"}
                                 </td>
                             </tr>
@@ -66,6 +52,7 @@ export default function TabelaResultados({ transacoes, tipoProcesso }: TabelaRes
                     </tbody>
                 </table>
             </div>
+
 
             <DetalhesTransacaoModal
                 isOpen={isModalOpen}

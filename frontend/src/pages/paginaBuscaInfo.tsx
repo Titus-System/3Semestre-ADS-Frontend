@@ -1,6 +1,5 @@
 import { useState } from "react";
 import InfoGeral from "../components/info/infoGeral";
-import Transacao from "../models/transacao";
 import { busca_transacoes_por_ncm } from "../services/ncmService";
 import TabelaResultados from "../components/TabelaResultados";
 import PainelEstatisticasVlfob from "../components/paineis/PainelEstatisticasVlfob";
@@ -16,6 +15,11 @@ import InputSh4 from "../components/input/InputSh4";
 import InfoGeralNcm from "../components/ncm/infoGeralNcm";
 import PainelSh4 from "../components/paineis/PainelSh4";
 import InputVias from "../components/input/InputVias";
+import InputUrf from "../components/input/InputUrf";
+import BotaoBuscar from "../components/buttons/BotaoBuscar";
+import Transacao from "../models/transacao";
+
+
 
 export default function PaginaBuscaInfo() {
     const [mercadoriaSelecionada, setMercadoriaSelecionada] = useState<Mercadoria | null>(null);
@@ -58,7 +62,7 @@ export default function PaginaBuscaInfo() {
 
             const modosSelecionados = selectedModes.length > 0 ? selectedModes : undefined;
 
-            const resultados = await busca_transacoes_por_ncm(
+            const resultados: any = await busca_transacoes_por_ncm(
                 ncm,
                 tipoProcesso || "",
                 qtd,
@@ -77,7 +81,7 @@ export default function PaginaBuscaInfo() {
     };
     return (
 
-        <div className="relative z-10 mx-auto from-indigo-900 to-indigo-950 min-h-screen flex items-center justify-center p-4">
+        <div className="relative z-10 mx-auto from-indigo-900 to-indigo-950 flex items-center justify-center p-12">
             <div className="flex flex-col min-w-full space-y-6">
                 <h2 className="text-center text-3xl font-bold text-white mt-10">
                     Consulta de valores e transações
@@ -85,13 +89,16 @@ export default function PaginaBuscaInfo() {
 
                 <div className="flex flex-col lg:flex-row gap-6">
                     <div className="w-full z-10 lg:w-1/4 space-y-4 lg:sticky top-12 self-start">
+                        {/* <h3 className="text-center text-xl font-bold text-white">Filtros:</h3> */}
                         <InputNcm onChange={handleInputNcm} />
                         <InputSh4 onChange={(sh4) => { setSh4(sh4) }} />
                         <InputEstado onChange={handleInputEstado} />
                         <InputPais onChange={handleInputPais} />
                         <InputTipo tipoProcesso={tipoProcesso} setTipoProcesso={setTipoProcesso} />
+                        <InputVias onModaisSelecionados={handleModaisSelecionados} />
+                        <InputUrf onChange={setUrf} />
                         <InputAnos onChange={handleInputAnos} />
-                        <InputVias onModaisSelecionados={handleModaisSelecionados}/>
+                        <BotaoBuscar onClick={buscarTransacoes}/>
                     </div>
                     <div className="w-full lg:w-3/4 space-y-6">
                         <div className="flex flex-col bg-white/10 border border-white/20 backdrop-blur rounded-2xl text-white shadow-lg min-h-screen p-4 sm:p-6 w-full space-y-12">
@@ -101,7 +108,7 @@ export default function PaginaBuscaInfo() {
                                 />
                             )}
                             {sh4 && (
-                                <PainelSh4 sh4={sh4.id_sh4}/>
+                                <PainelSh4 sh4={sh4.id_sh4} />
                             )}
 
                             <InfoGeral
@@ -140,16 +147,19 @@ export default function PaginaBuscaInfo() {
                             ) : (
                                 <p className="text-sm italic">*Estatísticas complementares não disponíveis para os filtros selecionados</p>
                             )}
+                            <div className="w-full overflow-x-auto mx-auto p-4">
+                                <h2 className="text-xl font-semibold text-white mb-4">Registros de maior Valor FOB para os filtros selecionados</h2>
+                                {transacoes.length > 0 ? (
+                                    <TabelaResultados transacoes={transacoes} tipoProcesso={tipoProcesso} />
+                                ) : (
+                                    <div className="text-center text-gray-300 bg-indigo-950 p-6 rounded-lg shadow-inner">
+                                        Nenhuma informação encontrada
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="w-full max-w-5xl overflow-x-auto">
-                {transacoes.length > 0 ? (
-                    <TabelaResultados transacoes={transacoes} tipoProcesso={tipoProcesso} />
-                ) : (
-                    <div>Nenhuma informação encontrada</div>
-                )}
             </div>
         </div>
     );

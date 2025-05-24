@@ -38,51 +38,66 @@ export default function InputVias({ onModaisSelecionados }: SelecionaModalTransp
         onModaisSelecionados(selectedModes);
     }, [selectedModes, onModaisSelecionados]);
 
-    
-    return (
-        <div className="flex flex-col space-y-4">
-            {/* Dropdown para telas menores */}
-            <div className="block">
-                <select
-                    className="bg-white text-gray-900 text-md font-medium p-3 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 h-16 w-full appearance-none pr-10"
-                    style={{
-                        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>')`,
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'right 1rem center',
-                        backgroundSize: '1.5rem',
-                    }}
-                    onChange={(e) => toggleModeSelection(parseInt(e.target.value))}
-                >
-                    <option value="">Selecione um modal</option>
-                    {transportModes.map((mode) => (
-                        <option key={mode.codigo} value={mode.codigo}>
-                            {mode.id.charAt(0).toUpperCase() + mode.id.slice(1)}
-                        </option>
-                    ))}
-                </select>
-            </div>
 
-            {/* Botões para telas maiores */}
-            {/* <div className="hidden md:flex bg-white text-gray-900 font-bold p-3 border border-gray-300 rounded-full shadow-md flex-wrap justify-center w-full gap-10">
-                {transportModes.map((mode) => {
-                    const isSelected = selectedModes.includes(mode.codigo);
-                    return (
-                        <button
-                            key={mode.codigo}
-                            className={`relative group p-4 rounded-full text-xl transition-all duration-200 ${isSelected
-                                ? "bg-gray-900 text-white border-2 border-white"
-                                : "text-gray-700 hover:bg-gray-200"
-                                }`}
-                            onClick={() => toggleModeSelection(mode.codigo)}
+    return (
+        <div className="grid gap-2">
+            <label htmlFor="Defina a via de transporte: " className="text-sm text-white font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                Defina a via de transporte:
+            </label>
+            {/* Dropdown para telas menores */}
+
+            <div className="relative">
+                <div className="flex items-center">
+                    <div className="relative w-full">
+                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                            {/* Globe Icon */}
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                                <path d="M2 12h20"></path>
+                            </svg>
+                        </div>
+                        <select
+                            className="w-full h-12 pl-10 pr-10 py-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-300"
+                            onChange={(e) => toggleModeSelection(parseInt(e.target.value))}
                         >
-                            {mode.icon}
-                            <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-                                {mode.id.charAt(0).toUpperCase() + mode.id.slice(1)}
-                            </span>
-                        </button>
-                    );
-                })}
-            </div> */}
+                            <option value="">Selecione um modal</option>
+                            {transportModes.map((mode) => (
+                                <option key={mode.codigo} value={mode.codigo}>
+                                    {mode.id.charAt(0).toUpperCase() + mode.id.slice(1)}
+                                </option>
+                            ))}
+                        </select>
+                        {/* <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="m7 15 5 5 5-5"></path>
+                                <path d="m7 9 5-5 5 5"></path>
+                            </svg>
+                        </div> */}
+
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
