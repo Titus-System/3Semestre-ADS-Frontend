@@ -7,8 +7,11 @@ import PainelEstatisticasAuxiliares from "../components/paineis/PainelEstatistic
 import PainelEstatisticasBalancaComercial from "../components/paineis/PainelEstatisticasBalancaComercial"
 import PainelEstatisticasVlfob from "../components/paineis/PainelEstatisticasVlfob"
 import InputNcm from "../components/input/inputNcm"
-import { Mercadoria } from "../models/interfaces"
+import { Mercadoria, Sh4 } from "../models/interfaces"
 import PainelVlFobVa from "../components/paineis/PainelVlfobVa"
+import PainelSh4 from "../components/paineis/PainelSh4"
+import InputSh4 from "../components/input/InputSh4"
+import PainelTendencias from "../components/paineis/PainelTendencias"
 
 interface Estado {
     id_estado: number
@@ -24,6 +27,9 @@ export default function Previsao() {
     const [estadoSelecionado, setEstadoSelecionado] = useState<Estado | null>(null)
     const [paisSelecionado, setPaisSelecionado] = useState<Pais | null>(null)
     const [mercadoria, setMercadoriaSelecionada] = useState<Mercadoria | null>(null)
+    const [sh4, setSh4] = useState<Sh4 | null>(null);
+
+
     useEffect(() => {
         setEstadoSelecionado(null)
         setPaisSelecionado(null)
@@ -51,17 +57,28 @@ export default function Previsao() {
                             setMercadoriaSelecionada(mercadoria)
                         }}
                     />
+
+                    <InputSh4
+                        onChange={(sh4) => {
+                            setSh4(sh4)
+                        }}
+                    />
                 </div>
             </div>
 
             <div className="p-8 text-white">
                 <p className="text-white text-sm italic">* Previsões calculadas usando SARIMA</p>
                 <div className="bg-white/10 border border-white/20 backdrop-blur rounded-lg shadow-lg p-6 flex grid gap-6">
-                    <PainelVlFobVa
+                    <PainelTendencias 
                         estado={estadoSelecionado}
                         pais={paisSelecionado}
                         ncm={mercadoria}
                     />
+                    {/* <PainelVlFobVa
+                        estado={estadoSelecionado}
+                        pais={paisSelecionado}
+                        ncm={mercadoria}
+                    /> */}
 
                     <div className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-2 gap-6">
                         <PainelEstatisticasVlfob
@@ -81,6 +98,11 @@ export default function Previsao() {
                         />
                     </div>
                 </div>
+                {/* <div>
+                    {sh4 && (
+                        <PainelSh4 sh4={sh4?.id_sh4} />
+                    )}
+                </div> */}
             </div>
         </div>
     )

@@ -9,6 +9,7 @@ import GraficoSetoresDistribuicao from "../components/graficos/GraficoSetoresDis
 import PainelRankingEstados from "../components/paineis/PainelRankingEstados";
 import PainelRankingPais from "../components/paineis/PainelRankingPais";
 import PainelRankingNcm from "../components/paineis/PainelRankingNcm";
+import PainelRankingSh4 from "../components/paineis/PainelRankingSh4";
 
 
 export default function PaginaRanking() {
@@ -62,6 +63,12 @@ export default function PaginaRanking() {
                                 ncm={mercadoriaSelecionada}
                             />
                             <PainelRankingNcm
+                                tipo={tipoProcesso}
+                                anos={anosSelecionados}
+                                estado={estadoSelecionado}
+                                pais={paisSelecionado}
+                            />
+                            <PainelRankingSh4
                                 tipo={tipoProcesso}
                                 anos={anosSelecionados}
                                 estado={estadoSelecionado}

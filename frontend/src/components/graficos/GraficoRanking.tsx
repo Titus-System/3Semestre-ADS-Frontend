@@ -17,6 +17,7 @@ export default function GraficoRanking({ titulo, ranking, valor_agregado }: Prop
         if ("nome_pais" in item) return "nome_pais";
         if ("sigla_estado" in item) return "sigla_estado";
         if ("produto_descricao" in item) return "produto_descricao";
+        if ("sh4_descricao" in item) return "sh4_descricao"
         return "";
     })();
 
@@ -28,6 +29,8 @@ export default function GraficoRanking({ titulo, ranking, valor_agregado }: Prop
                 return "rgb(32, 174, 94)";
             case "produto_descricao":
                 return "rgb(189, 124, 20)";
+            case "sh4_descricao":
+                return "rgb(175, 20, 189)"
             default:
                 return "#ffffff";
         }

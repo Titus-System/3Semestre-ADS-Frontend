@@ -176,3 +176,44 @@ export async function buscarRegressaoLinearBalanca(ncm?: number | null, estado?:
 export async function buscarAnalisesEstatisticasAuxiliaresVlfob(ncm?: number | null, estado?: number | null, pais?: number | null) {
     return baseBuscaEstatVlFob('exp', estado, pais, 'estatisticas_auxiliares_vlfob', ncm)
 }
+
+
+export async function buscarTendenciaDashboard(estado?: number | null, pais?: number | null, ncm?: number | null, sh4?: string | null) {
+    try {
+        const baseUrl = "http://localhost:5000";
+        let rota = "busca_tendencias_dashboard"
+        // sh4 ? rota = "/busca_tendencias_sh4" : rota = "/busca_tendencias_dashboard"
+        const url = new URL(`${baseUrl}/${rota}`);
+        if (sh4) {
+            url.searchParams.append("sh4", sh4.toString())
+        } else if (ncm) {
+            url.searchParams.append("ncm", ncm?.toString());
+        }
+        if (estado) {
+            url.searchParams.append("estado", estado?.toString());
+        }
+        if (pais) {
+            url.searchParams.append("pais", pais.toString());
+        }
+
+        const response = await fetch(url.toString(), {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
+        const data = await response.json();
+
+        if (response.status == 200) {
+            console.log(`tendenciaDashboard: `, data.resposta);
+            return data.resposta;
+        } else {
+            throw new Error(data.error || "Erro desconhecido");
+        }
+
+    } catch (error) {
+        console.error("Erro ao acessar servidor:", error);
+        return { 'error': error }
+    }
+}

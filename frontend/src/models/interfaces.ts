@@ -37,13 +37,13 @@ export interface RankingPais {
 export type RankingPaises = RankingPais[];
 
 export interface RankingEstado {
-  id_estado: number;
-  sigla_estado: string;
-  nome_estado: string;
-  total_valor_fob: number;
-  total_kg_liquido: number;
-  total_valor_agregado: number;
-  total_registros: number;
+    id_estado: number;
+    sigla_estado: string;
+    nome_estado: string;
+    total_valor_fob: number;
+    total_kg_liquido: number;
+    total_valor_agregado: number;
+    total_registros: number;
 }
 
 export type RankingEstados = RankingEstado[];
@@ -75,4 +75,9 @@ export interface NcmHist {
     total_registros: number,
     total_valor_agregado: number,
     total_valor_fob: number
+}
+
+export interface Sh4 {
+    id_sh4: string,
+    descricao: string
 }
