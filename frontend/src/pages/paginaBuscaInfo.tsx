@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InfoGeral from "../components/info/infoGeral";
 import { busca_transacoes_por_ncm } from "../services/ncmService";
 import TabelaResultados from "../components/TabelaResultados";
@@ -16,8 +16,8 @@ import InfoGeralNcm from "../components/ncm/infoGeralNcm";
 import PainelSh4 from "../components/paineis/PainelSh4";
 import InputVias from "../components/input/InputVias";
 import InputUrf from "../components/input/InputUrf";
-import BotaoBuscar from "../components/buttons/BotaoBuscar";
-import Transacao from "../models/transacao";
+import GraficoHistNcm from "../components/ncm/GraficoHistNcm";
+// import Transacao from "../models/transacao";
 
 
 
@@ -46,39 +46,43 @@ export default function PaginaBuscaInfo() {
 
     const [selectedModes, setSelectedModes] = useState<number[]>([]);
     const [urf, setUrf] = useState("");
-    const [transacoes, setTransacoes] = useState<Transacao[]>([]);
+    const [transacoes, setTransacoes] = useState<any[]>([]);
 
     const handleModaisSelecionados = (modais: number[]) => {
         setSelectedModes(modais);
     };
 
-    const buscarTransacoes = async () => {
-        try {
-            const ncm = mercadoriaSelecionada ? mercadoriaSelecionada.id_ncm : 0;
-            const qtd = undefined;
-            const paisDestino = paisSelecionado?.id_pais;
-            const estadoDestino = estadoSelecionado?.id_estado;
-            const urfSelecionada = urf ? [parseInt(urf)] : undefined;
+    useEffect(() => {
+        const buscarTransacoes = async () => {
+            try {
+                const ncm = mercadoriaSelecionada ? mercadoriaSelecionada.id_ncm : 0;
+                const qtd = undefined;
+                const paisDestino = paisSelecionado?.id_pais;
+                const estadoDestino = estadoSelecionado?.id_estado;
+                const urfSelecionada = urf ? [parseInt(urf)] : undefined;
 
-            const modosSelecionados = selectedModes.length > 0 ? selectedModes : undefined;
+                const modosSelecionados = selectedModes.length > 0 ? selectedModes : undefined;
 
-            const resultados: any = await busca_transacoes_por_ncm(
-                ncm,
-                tipoProcesso || "",
-                qtd,
-                anosSelecionados ? anosSelecionados : undefined,
-                undefined,
-                paisDestino ? [paisDestino] : undefined,
-                estadoDestino ? [estadoDestino] : undefined,
-                modosSelecionados,
-                urfSelecionada
-            );
+                const resultados: any = await busca_transacoes_por_ncm(
+                    ncm,
+                    tipoProcesso || "exp",
+                    qtd,
+                    anosSelecionados ? anosSelecionados : undefined,
+                    undefined,
+                    paisDestino ? [paisDestino] : undefined,
+                    estadoDestino ? [estadoDestino] : undefined,
+                    modosSelecionados,
+                    urfSelecionada
+                );
 
-            setTransacoes(resultados);
-        } catch (err) {
-            console.error("Erro ao buscar transações", err);
-        }
-    };
+                setTransacoes(resultados);
+            } catch (err) {
+                console.error("Erro ao buscar transações", err);
+            }
+        };
+        buscarTransacoes();
+    }, [mercadoriaSelecionada, paisSelecionado, estadoSelecionado, urf, selectedModes, anosSelecionados]);
+
     return (
 
         <div className="relative z-10 mx-auto from-indigo-900 to-indigo-950 flex items-center justify-center p-12">
@@ -98,19 +102,10 @@ export default function PaginaBuscaInfo() {
                         <InputVias onModaisSelecionados={handleModaisSelecionados} />
                         <InputUrf onChange={setUrf} />
                         <InputAnos onChange={handleInputAnos} />
-                        <BotaoBuscar onClick={buscarTransacoes}/>
+                        {/* <BotaoBuscar onClick={buscarTransacoes}/> */}
                     </div>
                     <div className="w-full lg:w-3/4 space-y-6">
                         <div className="flex flex-col bg-white/10 border border-white/20 backdrop-blur rounded-2xl text-white shadow-lg min-h-screen p-4 sm:p-6 w-full space-y-12">
-                            {mercadoriaSelecionada && (
-                                <InfoGeralNcm
-                                    ncm={mercadoriaSelecionada ? mercadoriaSelecionada.id_ncm : null}
-                                />
-                            )}
-                            {sh4 && (
-                                <PainelSh4 sh4={sh4.id_sh4} />
-                            )}
-
                             <InfoGeral
                                 anos={anosSelecionados ? anosSelecionados : undefined}
                                 ncm={mercadoriaSelecionada ? [mercadoriaSelecionada.id_ncm] : undefined}
@@ -119,12 +114,41 @@ export default function PaginaBuscaInfo() {
                                 urf={urf ? [parseInt(urf)] : undefined}
                                 transporte={selectedModes}
                             />
-                            <PainelTendencias
-                                estado={estadoSelecionado}
-                                pais={paisSelecionado}
-                                ncm={mercadoriaSelecionada}
-                                sh4={sh4}
-                            />
+                            
+                            {mercadoriaSelecionada && (
+                                <>
+                                    <InfoGeralNcm
+                                        ncm={mercadoriaSelecionada ? mercadoriaSelecionada.id_ncm : null}
+                                        anos={anosSelecionados ? anosSelecionados : undefined}
+                                        estados={estadoSelecionado ? [estadoSelecionado.id_estado] : undefined}
+                                        paises={paisSelecionado ? [paisSelecionado.id_pais] : undefined}
+                                        transporte={selectedModes}
+                                        urf={urf ? [Number(urf)] : undefined}
+                                    />
+
+                                    <GraficoHistNcm
+                                        tipo={tipoProcesso}
+                                        ncm={mercadoriaSelecionada.id_ncm}
+                                        anos={anosSelecionados}
+                                        estado={estadoSelecionado ? estadoSelecionado.id_estado : null}
+                                        pais={paisSelecionado ? paisSelecionado.id_pais : null}
+                                        via={selectedModes}
+                                        urf={urf ? [Number(urf)] : null}
+                                    />
+                                </>
+                            )}
+                            {!selectedModes.length && !urf.length && !sh4 && !mercadoriaSelecionada ? (
+                                <PainelTendencias
+                                    estado={estadoSelecionado}
+                                    pais={paisSelecionado}
+                                    ncm={mercadoriaSelecionada}
+                                    sh4={sh4}
+                                />
+                            ) : ( <p></p> )}
+                            {sh4 && (
+                                <PainelSh4 sh4={sh4.id_sh4} />
+                            )}
+
                             {!selectedModes.length && !urf.length && !sh4 ? (
                                 <div className="gap-4 flex flex-col rounded p-4 w-full">
                                     <div className="rounded-lg">
@@ -153,7 +177,8 @@ export default function PaginaBuscaInfo() {
                                     <TabelaResultados transacoes={transacoes} tipoProcesso={tipoProcesso} />
                                 ) : (
                                     <div className="text-center text-gray-300 bg-indigo-950 p-6 rounded-lg shadow-inner">
-                                        Nenhuma informação encontrada
+                                        Nenhuma informação encontrada para os filtros selecionados.
+                                        Escolha outro NCM para buscar os registros.
                                     </div>
                                 )}
                             </div>

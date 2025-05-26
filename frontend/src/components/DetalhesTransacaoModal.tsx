@@ -37,7 +37,7 @@ export default function DetalhesTransacaoModal({ isOpen, onClose, transacao }: D
     if (!isOpen) return null;
 
     return (
-<div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50">
+<div className="absolute fixed inset-0 min-h-screen bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50">
   <div
     ref={modalRef}
     className="bg-indigo-950 border border-white/20 rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl text-white"
