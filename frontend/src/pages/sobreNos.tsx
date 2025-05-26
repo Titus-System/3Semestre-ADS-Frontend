@@ -13,7 +13,7 @@ export default function HomePage() {
       <div className="relative h-[800px] flex flex-col items-center justify-center text-center overflow-hidden">
 
         {/* Imagem de fundo com opacidade geral */}
-        <div className="absolute inset-0 bg-[url('/background.jpg')] bg-cover bg-center opacity-40 z-0"></div>
+        <div className="absolute inset-0 bg-[url('/img-sub.jpg')] bg-cover bg-center opacity-40 z-0"></div>
 
         {/* Gradientes superior e inferior */}
         <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#11114e] to-transparent z-10"></div>
@@ -165,45 +165,19 @@ export default function HomePage() {
             </button>
           </form>
 
-          <h2 className="flex items-center justify-center gap-3 text-white text-2xl md:text-3xl font-semibold mb-6 mt-20 text-center">
-            <FaGlobe className="text-white/50" size={28} /> Acesse as redes sociais
+          {/* <!-- Informações de Contato --> */}
+           <h2 className="flex items-center justify-center gap-3 text-white text-2xl md:text-3xl font-semibold mb-6 mt-20 text-center">
+            <FaGlobe className="text-white/50" size={28} /> Acesse nossas redes sociais
           </h2>
-          <div className="bg-white/10 backdrop-blur-md p-6 md:p-10 rounded-2xl grid grid-cols-1 md:grid-cols-1 gap-6 max-w-4xl w-full h-[150px]">
-            <div className="flex space-x-20 md:space-x-40 items-center justify-center">
-              <a
-                href="mailto:agatha.wei@gmail.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white/50 hover:text-white/70 text-[40px] md:text-[50px]"
-                aria-label="Email"
-              >
-                <FaEnvelope />
-              </a>
-
-              <a
-                href="https://github.com/Titus-System"  
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white/50 hover:text-white/70 text-[40px] md:text-[50px]"
-                aria-label="GitHub"
-              >
-                <FaGithub />
-              </a>
-
-              <a
-                href="https://www.instagram.com/titus_systems" 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white/50 hover:text-white/70 text-[40px] md:text-[50px]"
-                aria-label="Instagram"
-              >
-                <FaInstagram />
-              </a>
-            </div>
-
-          </div>
+        <div className="mt-12 bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-xl text-center space-y-4 mb-64">
+          <h2 className="text-2xl font-semibold text-white">Acesse nossas Redes sociais</h2>
+          <p><span className="font-bold text-white">Email:</span> <a href="mailto: titussystemsenterprise@gmail.com" className="text-white/50 hover:underline hover:text-[#d72c38" target="_newtab">Titussystemsenterprise@gmail.com</a></p>
+          <p><span className="font-bold text-white">Instagram:</span> <a href="https://www.instagram.com/agatha_wei070/" className="text-white/50 hover:underline hover:text-[#d72c38" target="_blank">@Titus_systems</a></p>
+          <p><span className="font-bold text-white">GitHub:</span> <a href="https://github.com/Titus-System" className="text-white/50 hover:underline hover:text-[#d72c38" target="_blank">Titus Systems</a></p>
         </div>
+
       </div>
-    </div>
+      </div>
+      </div>
   );
 }
