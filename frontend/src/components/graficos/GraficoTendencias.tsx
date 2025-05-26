@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine } from 'recharts';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, LegendProps } from 'recharts';
 import { buscarTendenciaDashboard} from '../../services/tendenciaServices';
 import { formatarValor } from '../../utils/formatarValor';
 import { formatarData } from '../../utils/formatarData';
@@ -110,6 +110,25 @@ export default function GraficoTendencias({ ncm, sh4, estado, pais }: Props) {
     if (loading) {
         return (<Loading />);
     }
+
+    const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
+    return (
+    <div className="w-full flex justify-center mt-1">
+          <ul className="flex flex-row gap-3">
+            {payload?.map((entry, index) => (
+              <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
+                <span
+                  className="inline-block w-3 h-3 rounded-full mr-2"
+                  style={{ backgroundColor: entry.color }}
+                />
+                <span>{entry.value}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        );
+      };
+
     return (
         <div className="bg-transparent rounded-lg p-4 w-full max-w-full overflow-x-auto">
             <div className="flex justify-between items-center mb-2">
@@ -207,7 +226,7 @@ export default function GraficoTendencias({ ncm, sh4, estado, pais }: Props) {
                         labelFormatter={(label) => `${label}`}
                         formatter={(value: number) => `${value?.toLocaleString('pt-BR')}`}
                     />
-                    <Legend />
+                    <Legend content={<CustomLegend fontSize={16} />} />
 
                     <Line
                         key={`${lineKey}_exp`}

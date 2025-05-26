@@ -1,8 +1,8 @@
 import { useRef, useState, useEffect } from "react";
 import { FaSpinner } from 'react-icons/fa';
-import { MapContainer, GeoJSON, TileLayer } from "react-leaflet";
+import { MapContainer, GeoJSON, TileLayer, ZoomControl } from "react-leaflet";
 import { GeoJSON as LeafletGeoJSON } from "leaflet";
-import { BarChart, Bar, XAxis, YAxis, Tooltip as ChartTooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip as ChartTooltip, ResponsiveContainer, TooltipProps, Tooltip } from "recharts";
 import type { FeatureCollection } from "geojson";
 import type { Layer, LeafletMouseEvent } from "leaflet";
 import L from "leaflet";
@@ -417,6 +417,38 @@ export default function ConsultaEstado() {
     });
   };
 
+  const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="flex flex-col gap-2 bg-white text-black p-2 rounded shadow-md border border-gray-300">
+        {payload.map((entry, index) => {
+          const name = entry.name;
+          const value = entry.value;
+
+          const formattedValue =
+            name === 'Exportações' || name === 'Importações'
+              ? `$ ${value?.toLocaleString('pt-BR')}`
+              : value;
+
+          let textColor = "text-black"; // cor padrão
+
+          if (name === "Exportações") textColor = "text-green-600";
+          else if (name === "Importações") textColor = "text-red-600";
+          else if (name === "Setor") textColor = "text-blue-900";
+
+          return (
+            <p key={index} className={`text-base font-medium ${textColor}`}>
+              {name}: {formattedValue}
+            </p>
+          );
+        })}
+      </div>
+    );
+  }
+
+  return null;
+};
+
 
   return (
     <div className="p-8 mt-10 relative z-10">
@@ -433,28 +465,34 @@ export default function ConsultaEstado() {
         {/* NOVA DIV agrupando mapa, legenda e bloco com capital/PIB */}
         <div className={`relative w-full flex flex-col items-center ${estadoSelecionado ? "justify-center md:flex-col" : " "}`}>
           <div
-            className={`relative w-full mb-28  map-wrapper transition-all duration-500 ${estadoSelecionado ? "lg:translate-x-[-23.4%]" : ""
+            className={`relative mb-26  map-wrapper transition-all duration-500 ${estadoSelecionado ? "lg:translate-x-[-42.4%] w-10/12 lg:w-8/12" : "mb-4 w-10/12 lg:w-8/12"
               }`}
-            style={{ height: "81vh" }}
+            style={{ height: "80vh" }}
           >
             {loading && (
               <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center z-[999] bg-transparent flex-col">
                 <FaSpinner className="animate-spin text-blue-500 text-5xl" />
-                <p className="mt-3">Carregando cores para o mapa...</p>
+                <p className="mt-3 text-center">Carregando cores para o mapa...</p>
               </div>
             )}
             <MapContainer
               center={[-14.235, -51.9253]}
               zoom={4}
-              scrollWheelZoom={false}
-              dragging={false}
+              minZoom={3}
+              maxZoom={8}
+              scrollWheelZoom={true}
+              dragging={true}
               zoomControl={false}
-              doubleClickZoom={false}
+              doubleClickZoom={true}
               boxZoom={false}
               keyboard={false}
-              style={{ height: "100%", backgroundColor: "transparent" }}
-              className="h-full"
+              style={{ height: "100%", width: '100%', backgroundColor: "transparent" }}
+              className= {`h-full ${estadoSelecionado ? "" : "" }`}
             >
+              <div className="absolute">
+                <ZoomControl position="topright" />
+              </div>
+
               <TileLayer
                 url="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAkcBT2Od3Y4AAAAASUVORK5CYII="
                 attribution=""
@@ -481,17 +519,17 @@ export default function ConsultaEstado() {
               />
             </MapContainer>
           </div>
-          <div className={`transition-all duration-500 z-[1000] text-sm 
-              bg-white/10 text-white shadow-md backdrop-blur border border-white/20 p-3 rounded-lg w-fit self-start
+          <div className={`transition-all duration-500 z-[1000]
+              bg-white/10 text-white shadow-md backdrop-blur border border-white/20 p-2 sm:p-3 rounded-lg w-fit self-start
               ${estadoSelecionado
-              ? "w-fit flex flex-col gap-4 p-4 mb-10"
+              ? "w-fit flex flex-col gap-4 p-4 mb-0 lg:mb-10 mt-5"
               : "relative w-fit lg:absolute lg:bottom-[-94px] lg:left-2 lg:w-fit"
             } `}
           >
             <div className={`flex flex-col mr-2`}>
-              <h4 className="font-semibold mb-1 whitespace-nowrap">Legenda - Balança Comercial</h4>
+              <h4 className="font-semibold mb-1 whitespace-nowrap text-xs sm:text-sm">Legenda - Balança Comercial</h4>
               <hr className="border-0 h-[1px] w-full bg-[linear-gradient(to_right,#d5b8e8_50%,transparent_100%)]" />
-              <p className={`opacity-75 mt-1 whitespace-nowrap ${estadoSelecionado ? "" : "mb-4"}`}>Cálculo: exportações / importações</p>
+              <p className={`opacity-75 mt-1 whitespace-nowrap text-xs sm:text-sm ${estadoSelecionado ? "" : "mb-4"}`}>Cálculo: exportações / importações</p>
             </div>
             <ul
               className={`gap-y-1 gap-x-4 z-10 ${estadoSelecionado
@@ -504,7 +542,7 @@ export default function ConsultaEstado() {
                   className="inline-block w-4 h-4 rounded mt-[0.25rem] shrink-0"
                   style={{ backgroundColor: "#28965A" }}
                 ></span>
-                <span className="break-words whitespace-normal leading-snug">
+                <span className="break-words whitespace-normal leading-snug text-xs sm:text-sm">
                   Desempenho positivo
                 </span>
               </li>
@@ -513,7 +551,7 @@ export default function ConsultaEstado() {
                   className="inline-block w-4 h-4 rounded mt-[0.25rem] shrink-0"
                   style={{ backgroundColor: "#F57C00" }}
                 ></span>
-                <span className="break-words whitespace-normal leading-snug">
+                <span className="break-words whitespace-normal leading-snug text-xs sm:text-sm">
                   Alerta
                 </span>
               </li>
@@ -522,7 +560,7 @@ export default function ConsultaEstado() {
                   className="inline-block w-4 h-4 rounded mt-[0.25rem] shrink-0"
                   style={{ backgroundColor: "#F9C846" }}
                 ></span>
-                <span className="break-words whitespace-normal leading-snug">
+                <span className="break-words whitespace-normal leading-snug text-xs sm:text-sm">
                   Neutro
                 </span>
               </li>
@@ -531,7 +569,7 @@ export default function ConsultaEstado() {
                   className="inline-block w-4 h-4 rounded mt-[0.25rem] shrink-0"
                   style={{ backgroundColor: "#D64045" }}
                 ></span>
-                <span className="break-keep whitespace-normal leading-snug">
+                <span className="break-keep whitespace-normal leading-snug text-xs sm:text-sm">
                   Desempenho negativo
                 </span>
               </li>
@@ -543,8 +581,8 @@ export default function ConsultaEstado() {
           {estadoSelecionado && info && (
             <div className={`flex flex-col z-[1000] bg-white/10 border border-white/20 backdrop-blur rounded-lg p-6 text-white shadow-lg text-base transition-all duration-500
           w-[90%]
-          ${estadoSelecionado ? "block mb-6 lg:mb-0 mt-[6rem]" : "hidden"}
-          lg:absolute lg:right-[0.4%] lg:top-[8.8%] lg:h-2/4 lg:w-[35%] xl:w-[33%]"
+          ${estadoSelecionado ? "block mb-6 lg:mb-0 mt-[4rem] lg:mt-[6rem]" : "hidden"}
+          lg:absolute lg:right-[0.4%] lg:top-[4.5%] lg:h-2/4 lg:w-[35%] xl:w-[33%]"
         }`}>
               <div className="mb-3">
                 <h3 className="text-lg sm:text-xl font-bold mb-2">{info.estado}</h3>
@@ -626,24 +664,26 @@ export default function ConsultaEstado() {
             {/* Gráfico de barras - Setores Econômicos */}
             <div className="flex flex-col lg:flex-row gap-4 justify-between w-full">
               <div className="w-11/12 lg:w-6/12 mx-auto">
-                <h3 className="text-white mt-6 mb-4 text-lg font-medium">
+                <h3 className="text-white mt-5 mb-0 sm:mb-5 text-xl font-semibold">
                   Exportações vs Importações por Setor: {estadoSelecionado}
                 </h3>
+                <p className="block mb-5 text-white/60 sm:hidden sm:mb-0">(Clique para visualizar detalhes)</p>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={dadosSetores} >
                     <XAxis dataKey="setor" stroke="#E0E0E0" tick={{ fontSize: isSmallerScreen ? 0 : isSmallScreen ? 8 : 9, fill: "#ffffff" }} interval={0} />
                     <YAxis stroke="#E0E0E0" tick={{ fill: "#ffffff" }} domain={[0, 'dataMax']} allowDataOverflow={true} tickFormatter={formatarNumeroEixoY} minTickGap={15} interval="preserveStartEnd" />
 
-                    <ChartTooltip formatter={(value: number) => `$ ${value?.toLocaleString('pt-BR')}`} />
-                    <Bar dataKey="exportacao" fill="rgb(35, 148, 20)" name="Exportações" />
-                    <Bar dataKey="importacao" fill="rgb(255, 0, 0)" name="Importações" />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Bar dataKey="setor" fill="rgb(12, 10, 121)" name="Setor"/>
+                    <Bar dataKey="exportacao" fill="rgb(35, 148, 20)" name="Exportações" radius={[4, 4, 0, 0]}/>
+                    <Bar dataKey="importacao" fill="rgb(255, 0, 0)" name="Importações" radius={[4, 4, 0, 0]}/>
                   </BarChart>
                 </ResponsiveContainer>
               </div>
 
               {/* Gráfico de barras - Exportações vs Importações */}
               <div className="w-11/12 lg:w-1/3 mx-auto">
-                <h3 className="text-white mt-6 mb-4 text-lg font-medium">
+                <h3 className="text-white mt-5 mb-5 text-xl font-semibold">
                   Exportações vs Importações: {estadoSelecionado}
                 </h3>
                 <ResponsiveContainer width="100%" height={300}>
@@ -651,8 +691,8 @@ export default function ConsultaEstado() {
                     <XAxis dataKey="estado" stroke="#E0E0E0" />
                     <YAxis stroke="#E0E0E0" tickFormatter={formatarNumeroEixoY} />
                     <ChartTooltip formatter={(value: number) => `$ ${value?.toLocaleString('pt-BR')}`} />
-                    <Bar dataKey="exportacao" fill="rgb(35, 148, 20)" name="Exportações" />
-                    <Bar dataKey="importacao" fill="rgb(255, 0, 0)" name="Importações" />
+                    <Bar dataKey="exportacao" fill="rgb(35, 148, 20)" name="Exportações" radius={[4, 4, 0, 0]}/>
+                    <Bar dataKey="importacao" fill="rgb(255, 0, 0)" name="Importações" radius={[4, 4, 0, 0]}/>
                   </BarChart>
                 </ResponsiveContainer>
               </div>

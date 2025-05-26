@@ -1,4 +1,4 @@
-import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, LegendProps } from "recharts";
 import Loading from "../loading";
 import { useEffect, useState } from "react";
 import { Estado, Pais, Sh4 } from "../../models/interfaces";
@@ -142,6 +142,23 @@ export default function GraficoHistSh4({tipo, sh4s, anos, estado, pais}:Props) {
         );
     };
 
+    const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
+            return (
+            <div className="w-full flex justify-center mt-1">
+                  <ul className="flex flex-row gap-3">
+                    {payload?.map((entry, index) => (
+                      <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
+                        <span
+                          className="inline-block w-3 h-3 rounded-full mr-2"
+                          style={{ backgroundColor: entry.color }}
+                        />
+                        <span>{entry.value}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                );
+              };
 
     return (
         <div className="bg-transparent rounded p-4 w-full max-w-full overflow-x-auto">
@@ -193,7 +210,7 @@ export default function GraficoHistSh4({tipo, sh4s, anos, estado, pais}:Props) {
                         labelClassName=''
                         labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
                     />
-                    <Legend />
+                    <Legend content={<CustomLegend fontSize={16} />} />
                     {idsSh4.map((id:any, index:any) => (
                         <Line
                             key={id}

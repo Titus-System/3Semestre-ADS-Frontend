@@ -10,6 +10,7 @@ import {
     Tooltip,
     XAxis,
     YAxis,
+    LegendProps
 } from "recharts";
 import { formatarValor } from "../../utils/formatarValor";
 
@@ -168,6 +169,23 @@ export default function GraficoHistNcms({ tipo, ncms, anos, estado, pais }: Prop
         );
     };
 
+    const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
+        return (
+        <div className="w-full flex justify-center mt-1">
+              <ul className="flex flex-row gap-3">
+                {payload?.map((entry, index) => (
+                  <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
+                    <span
+                      className="inline-block w-3 h-3 rounded-full mr-2"
+                      style={{ backgroundColor: entry.color }}
+                    />
+                    <span>{entry.value}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            );
+          };
 
     return (
         <div className="bg-transparent rounded p-4 w-full max-w-full overflow-x-auto">
@@ -219,7 +237,7 @@ export default function GraficoHistNcms({ tipo, ncms, anos, estado, pais }: Prop
                         labelClassName=''
                         labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
                     />
-                    <Legend />
+                    <Legend content={<CustomLegend fontSize={16} />} />
                     {idsNcm.map((id, index) => (
                         <Line
                             key={id}

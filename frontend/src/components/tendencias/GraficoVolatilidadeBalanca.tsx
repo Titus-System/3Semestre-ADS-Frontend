@@ -8,7 +8,8 @@ import {
     Tooltip,
     Legend,
     ResponsiveContainer,
-    ReferenceLine
+    ReferenceLine,
+    LegendProps
 } from "recharts";
 import { buscarVolatilidadeBalancaComercial } from "../../services/tendenciaServices";
 import { formatarData } from "../../utils/formatarData";
@@ -25,6 +26,24 @@ export default function GraficoVolatilidadeBalanca({ ncm, estado, pais }: Props)
     const [volatilidade, setVolatilidade] = useState<any[]>([]);
     const [exibirModal, setExibirModal] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [fontSizeX, setFontSizeX] = useState(12);
+    const [intervalX, setIntervalX] = useState(23);
+    const [strokeWidth, setStrokeWidth] = useState(2);
+    const [legendFontSize, setLegendFontSize] = useState(14);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setFontSizeX(window.innerWidth < 370 ? 10 : window.innerWidth < 580 ? 11 : 12);
+            setIntervalX(window.innerWidth < 323 ? 71 : window.innerWidth < 540 ? 46 : 23);
+            setStrokeWidth(window.innerWidth < 400 ? 1 : 2);
+            setLegendFontSize(window.innerWidth < 305 ? 10 : window.innerWidth < 640 ? 12 : 14);
+        };
+
+        handleResize(); // Executa no carregamento
+        window.addEventListener("resize", handleResize); // Escuta mudanças de tamanho
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     useEffect(() => {
         async function fetchVolatilidade() {
@@ -69,6 +88,25 @@ export default function GraficoVolatilidadeBalanca({ ncm, estado, pais }: Props)
     };
     if (!volatilidade || volatilidade.length === 0)
         return <p>Nenhum dado de volatilidade disponível.</p>;
+
+    const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
+            return (
+            <div className="w-full flex justify-center">
+                  <ul className="flex flex-col gap-y-1 sm:flex-row sm:gap-x-3 lg:flex-col lg:gap-y-1 2xl:flex-row 2xl:gap-x-3">
+                    {payload?.map((entry, index) => (
+                      <li key={`item-${index}`} className="flex items-center" style={{ fontSize }}>
+                        <span
+                          className="inline-block w-3 h-3 rounded-full mr-2"
+                          style={{ backgroundColor: entry.color }}
+                        />
+                        <span>{entry.value}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                );
+              };
+
     return (
         <div className="w-full max-w-full" style={{ width: "100%", height: 400 }}>
             <h3
@@ -79,15 +117,15 @@ export default function GraficoVolatilidadeBalanca({ ncm, estado, pais }: Props)
             </h3>
             {exibirModal && <ModalVolatilidade onClose={() => setExibirModal(false)} />}
             <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={volatilidade} margin={{ top: 20, right: 30, left: 20, bottom: 40 }}>
+                <LineChart data={volatilidade} margin={{ top: 20, right: 20, left: 0, bottom: 40 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="ds"
                         height={55}
                         stroke="#E0E0E0"
                         type="category"
                         tickFormatter={(ds: string) => formatarData(ds)}
-                        interval={23}
-                        tick={{ fontSize: 12 }}
+                        interval={intervalX}
+                        tick={{ fontSize: fontSizeX }}
                     />
                     <YAxis
                         stroke="#E0E0E0"
@@ -96,7 +134,7 @@ export default function GraficoVolatilidadeBalanca({ ncm, estado, pais }: Props)
                         tick={{fontSize:11}}
                     />
                     <Tooltip labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }} />
-                    <Legend />
+                    <Legend content={<CustomLegend fontSize={legendFontSize} />} />
                     <ReferenceLine
                         x="2025-01-01"
                         stroke="red"
@@ -106,10 +144,12 @@ export default function GraficoVolatilidadeBalanca({ ncm, estado, pais }: Props)
                             position: "top",
                             angle: 0,
                             fontSize: 12,
-                            fill: "red"
+                            fill: "red",
+                            fontWeight: 700
                         }}
+                        strokeWidth={2}
                     />
-                    <Line type="monotone" dataKey="volatilidade" stroke="rgb(124, 207, 255)" name="Volatilidade Balança Comercial" strokeWidth={2} dot={{ r: 1 }} />
+                    <Line type="monotone" dataKey="volatilidade" stroke="rgb(124, 207, 255)" name="Volatilidade Balança Comercial" strokeWidth={strokeWidth} dot={{ r: 1 }} />
                 </LineChart>
             </ResponsiveContainer>
         </div>

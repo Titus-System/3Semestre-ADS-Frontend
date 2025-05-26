@@ -195,8 +195,10 @@ export default function GraficoBalancaComercial({ anos, estado, pais, ncm }: Pro
                             position: "top",
                             angle: 0,
                             fontSize: 12,
-                            fill: "red"
+                            fill: "red",
+                            fontWeight: 700
                         }}
+                        strokeWidth={2}
                     />
 
                     {/* Linhas exportação */}

@@ -1,4 +1,4 @@
-import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis, LegendProps } from "recharts";
 import { RankingEstados, RankingNcms, RankingPaises } from "../../models/interfaces"
 import { formatarValor } from "../../utils/formatarValor";
 
@@ -36,6 +36,24 @@ export default function GraficoRanking({ titulo, ranking, valor_agregado }: Prop
         }
     })();
 
+    const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
+        return (
+        <div className="w-full flex justify-center mt-1">
+              <ul className="flex flex-row gap-3">
+                {payload?.map((entry, index) => (
+                  <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
+                    <span
+                      className="inline-block w-3 h-3 rounded-full mr-2"
+                      style={{ backgroundColor: entry.color }}
+                    />
+                    <span>{entry.value}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            );
+          };
+
     return (
         <div className="bg-transparent rounded p-4 w-full max-w-full overflow-x-auto">
             <h3 className="text-center text-gray-300 font-semibold mb-2">
@@ -65,7 +83,7 @@ export default function GraficoRanking({ titulo, ranking, valor_agregado }: Prop
                         labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
                     />
                     <Bar dataKey={bar_datakey} fill={color} name="$" />
-                    <Legend />
+                    <Legend content={<CustomLegend fontSize={16} />} />
                 </BarChart>
             </ResponsiveContainer>
         </div>

@@ -80,7 +80,7 @@ export default function Previsao() {
                         ncm={mercadoria}
                     /> */}
 
-                    <div className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-2 gap-6">
+                    <div className="flex flex-row gap-6">
                         <PainelEstatisticasVlfob
                             ncm={mercadoria?.id_ncm}
                             estado={estadoSelecionado?.id_estado}
@@ -91,12 +91,14 @@ export default function Previsao() {
                             estado={estadoSelecionado?.id_estado}
                             pais={paisSelecionado?.id_pais}
                         />
+                        </div>
+                        <div className="w-full">
                         <PainelEstatisticasAuxiliares
                             ncm={mercadoria?.id_ncm}
                             estado={estadoSelecionado?.id_estado}
                             pais={paisSelecionado?.id_pais}
                         />
-                    </div>
+                        </div>
                 </div>
                 {/* <div>
                     {sh4 && (

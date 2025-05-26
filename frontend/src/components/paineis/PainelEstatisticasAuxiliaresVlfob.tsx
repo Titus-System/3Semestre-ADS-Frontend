@@ -5,7 +5,7 @@ import {
     Tooltip, Legend, ResponsiveContainer,
     AreaChart,
     ReferenceLine,
-    Area
+    Area, LegendProps
 } from "recharts";
 import Hhi from "../modais/hhi";
 import Sazonalidade from "../modais/sazonalidade";
@@ -64,6 +64,24 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
     const renderizarGraficoSazonalidade = () => {
         if (!estatisticasAuxiliares?.sazonalidade?.length) return null;
 
+    const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
+        return (
+        <div className="w-full flex justify-center mt-1">
+              <ul className="flex flex-row gap-3">
+                {payload?.map((entry, index) => (
+                  <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
+                    <span
+                      className="inline-block w-3 h-3 rounded-full mr-2"
+                      style={{ backgroundColor: entry.color }}
+                    />
+                    <span>{entry.value}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            );
+          };
+
         return (
             <div className="w-full max-w-full mt-6">
                 <h3
@@ -92,7 +110,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                                 labelFormatter={(label) => `Mês: ${label}`}
                                 labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }}
                             />
-                            <Legend />
+                            <Legend content={<CustomLegend fontSize={16} />} />
                             <Bar dataKey="exportacoes" name="Exportações" fill="rgb(35, 148, 20)" radius={[4, 4, 0, 0]} />
                             <Bar dataKey="importacoes" name="Importações" fill="rgb(179, 15, 15)" radius={[4, 4, 0, 0]} />
                         </BarChart>
@@ -105,6 +123,23 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
     const graficoConcentracao = (dadosConcentracao?: any) => {
         if (!dadosConcentracao?.length) return null;
         console.log("dadosConcentracao: ", dadosConcentracao)
+        const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
+        return (
+        <div className="w-full flex justify-center mt-1">
+              <ul className="flex flex-row gap-3">
+                {payload?.map((entry, index) => (
+                  <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
+                    <span
+                      className="inline-block w-3 h-3 rounded-full mr-2"
+                      style={{ backgroundColor: entry.color }}
+                    />
+                    <span>{entry.value}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            );
+          };
         return (
             <div className="w-full  mt-6">
                 <h3
@@ -156,7 +191,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                                 labelFormatter={(label) => `Período: ${label}`}
                                 labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
                             />
-                            <Legend />
+                            <Legend content={<CustomLegend fontSize={16} />} />
 
                             <Area
                                 type="monotone"

@@ -356,7 +356,7 @@ export default function GraficoHistNcm({ tipo, ncm, anos, estado, pais, via, urf
                             key={id}
                             type="monotone"
                             dataKey={id}
-                            stroke={id.includes('_exp') ? ' #007bff' : 'rgb(207, 9, 9)'}
+                            stroke={id.includes('_exp') ? 'rgb(74, 161, 255)' : 'rgb(234, 65, 65)'}
                             strokeWidth={2}
                             dot={false}
                             name={id.replace('_exp', ' (Exp)').replace('_imp', ' (Imp)')}
@@ -365,7 +365,7 @@ export default function GraficoHistNcm({ tipo, ncm, anos, estado, pais, via, urf
                     <Line
                         type="monotone"
                         dataKey="balanca"
-                        stroke="rgb(170, 111, 22)"
+                        stroke="rgb(201, 142, 54)"
                         strokeWidth={2}
                         dot={false}
                         name="Balança Comercial"
