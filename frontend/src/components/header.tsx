@@ -26,7 +26,7 @@ export default function Header() {
                         <ul className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6">
 
                             <li>
-                                <a href="/" className="hover:underline text-sm sm:text-base">Home</a>
+                                <a href="/" className="text-sm sm:text-base font-semibold hover:text-[#d72c38]">Home</a>
                             </li>
 
 
@@ -34,11 +34,11 @@ export default function Header() {
                             <button
                                 onClick={() => setDropdownOpen(!dropdownOpen)}
                                 className="flex items-center gap-2 text-sm sm:text-base font-semibold transition-colors duration-300
-                                hover:text-blue-800 focus:outline-none cursor-pointer"
+                                hover:text-[#d72c38] focus:outline-none cursor-pointer"
                             >
                                 Funcionalidades
                                 <svg
-                                className={`w-4 h-4 text-blue-800 transition-transform duration-300 ${
+                                className={`w-4 h-4 text-[#d72c38] transition-transform duration-300 ${
                                     dropdownOpen ? "rotate-180" : ""
                                 }`}
                                 fill="none"
@@ -80,7 +80,7 @@ export default function Header() {
 
 
                             <li>
-                                <a href="/sobreNos" className="hover:underline text-sm sm:text-base">Sobre Nós</a>
+                                <a href="/sobreNos" className="text-sm sm:text-base font-semibold hover:text-[#d72c38]">Sobre Nós</a>
                             </li>
                         </ul>
                     </nav>

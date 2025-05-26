@@ -1,14 +1,15 @@
+// import WaveSection from "../components/WaveSection";
 export default function HomePage() {
     return (
         <div className="relative">
             <div className="relative h-[800px] flex flex-col items-center justify-center text-center overflow-hidden">
 
                 {/* Imagem de fundo com opacidade geral */}
-                <div className="absolute inset-0 bg-[url('/background.jpg')] bg-cover bg-center opacity-40 z-0"></div>
+                <div className="absolute inset-0 bg-[url('/img-sub.jpg')] bg-cover bg-center opacity-40 z-0"></div>
 
                   {/* Gradientes superior e inferior */}
-                  <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#11114e] to-transparent z-10"></div>
-                <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#11114e] to-transparent z-10"></div>
+                  <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#11114e] to-transparent z-10"></div>
+                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#11114e] to-transparent z-10"></div>
 
                 {/* Conteúdo principal */}
                 <div className="relative z-20 max-w-4xl px-4">
@@ -21,6 +22,8 @@ export default function HomePage() {
                     </p>
                 </div>
             </div>
+
+            {/* <WaveSection /> */}
 
             {/* Container funcional */}
             <div className="relative z-20 mt-[-100px] flex flex-col items-center px-4">
