@@ -120,7 +120,7 @@ export default function HomePage() {
           </h2>
 
           <form
-            action="https://formspree.io/f/mkgjajzy"
+            action="https://formspree.io/f/mjkwdrgy"
             method="POST"
             className="bg-white/10 backdrop-blur-md p-6 md:p-10 rounded-2xl grid gap-6 w-full"
           >
