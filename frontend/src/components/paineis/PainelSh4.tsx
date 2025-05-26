@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import GraficoTendenciasSh4 from "../graficos/GraficoTendenciasSh4";
 import { buscaSh4Info } from "../../services/shService";
 
-type Props = {
-    sh4: string
+interface Props {
+    sh4: string;
+    estado?: number;
+    pais?: number;
 }
 
 interface Sh4Info {
@@ -12,7 +14,7 @@ interface Sh4Info {
   ncm: number[];
 }
 
-export default function PainelSh4({ sh4 }: Props) {
+export default function PainelSh4({ sh4, estado, pais }: Props) {
     if (!sh4) {
         return
     }
@@ -75,6 +77,8 @@ export default function PainelSh4({ sh4 }: Props) {
             </div>
             <GraficoTendenciasSh4
                 sh4={sh4}
+                estado={estado}
+                pais={pais}
             />
         </div>
     );

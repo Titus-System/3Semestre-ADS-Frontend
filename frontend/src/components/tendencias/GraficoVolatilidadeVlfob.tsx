@@ -160,7 +160,7 @@ export function GraficoVolatilidadeVlfob({ ncm, estado, pais }: Props) {
                         strokeWidth={2}
                         />
                         <Line type="monotone" dataKey="volatilidade_exp" stroke="rgb(18, 148, 1)" name="Volatilidade Exportação" strokeWidth={strokeWidth} dot={{ r: 1 }} />
-                        <Line type="monotone" dataKey="volatilidade_imp" stroke="rgb(255, 0, 0)" name="Volatilidade Importação" strokeWidth={strokeWidth} dot={{ r: 1 }} />
+                        <Line type="monotone" dataKey="volatilidade_imp" stroke="rgb(179, 15, 15)" name="Volatilidade Importação" strokeWidth={strokeWidth} dot={{ r: 1 }} />
                     </LineChart>
                 </ResponsiveContainer>
 

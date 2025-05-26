@@ -169,7 +169,7 @@ export function GraficoCrescimentoMensalVlfob({ ncm, estado, pais }: Props) {
                     <Line
                         type="monotone"
                         dataKey="crescimento_imp"
-                        stroke=" rgb(255, 0, 0)"
+                        stroke=" rgb(179, 15, 15)"
                         name="Crescimento Importação (%)"
                         strokeWidth={strokeWidth} dot={{ r: 1 }}
                     />

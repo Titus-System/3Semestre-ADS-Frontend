@@ -1,8 +1,8 @@
 export default function ModalVolatilidade({ onClose }: { onClose: () => void }) {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="fixed inset-50 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-xl relative">
-        <h2 className="text-2xl font-semibold mb-4">⚡ O que é Volatilidade?</h2>
+        <h2 className="text-2xl text-black font-semibold mb-4">⚡ O que é Volatilidade?</h2>
 
         <p className="mb-3 text-gray-700">
           A <strong>Volatilidade</strong> é uma medida que mostra o quanto os valores da balança comercial variam ao longo do tempo. Ela indica a estabilidade ou instabilidade das suas exportações e importações.

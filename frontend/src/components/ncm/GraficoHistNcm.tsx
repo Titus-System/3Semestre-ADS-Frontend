@@ -11,6 +11,8 @@ import {
     XAxis,
     YAxis,
 } from "recharts";
+import { formatarValor } from "../../utils/formatarValor";
+import { formatarData } from "../../utils/formatarData";
 
 type Props = {
     tipo: 'exp' | 'imp' | null
@@ -336,13 +338,15 @@ export default function GraficoHistNcm({ tipo, ncm, anos, estado, pais, via, urf
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="data"
                         stroke="#E0E0E0"
-                        tickFormatter={(value: string) => value.substring(0, 10)}
-                        tick={{ fontSize: 11, }}
+                        tickFormatter={formatarData}
+                        interval={23}
+                        tick={{ fontSize: 11}}
                     />
                     <YAxis
                         stroke="#E0E0E0"
-                        tickFormatter={(value) => `${(value / 1e6)}`}
-                        label={{ value: '$ (Milhões)', angle: -90, position: 'insideLeft', stroke: "#E0E0E0", offset: 10 }}
+                        tickFormatter={formatarValor}
+                        label={{ value: '$', angle: -90, position: 'insideLeft', stroke: "#E0E0E0", offset: -10 }}
+                        tick={{fontSize:11}}
                     />
                     <Tooltip
                         labelFormatter={(label) => `${label}`}

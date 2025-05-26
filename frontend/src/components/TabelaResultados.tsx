@@ -24,7 +24,7 @@ export default function TabelaResultados({ transacoes, tipoProcesso }: TabelaRes
     console.log("transacoes: ", transacoes);
     return (
         <>
-            <div className="w-full rounded-lg border overflow-x-auto mt-8 mx-auto">
+            <div className="relative w-full rounded-lg border overflow-x-auto mt-8 mx-auto">
                 <table className="min-w-full bg-indigo-950 border border-white/20 shadow-xl rounded-xl text-sm text-white">
                     <thead className="bg-indigo-900 text-white">
                         <tr>
@@ -51,14 +51,12 @@ export default function TabelaResultados({ transacoes, tipoProcesso }: TabelaRes
                         ))}
                     </tbody>
                 </table>
+                <DetalhesTransacaoModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    transacao={selectedTransacao}
+                />
             </div>
-
-
-            <DetalhesTransacaoModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                transacao={selectedTransacao}
-            />
         </>
     );
 } 

@@ -157,7 +157,7 @@ export function GraficoRegressaoLinearVlfob({ ncm, estado, pais }: Props) {
             />
             <Line type="monotone" dataKey="exp_real" stroke="rgb(35, 148, 20)" name="Exportação Real" strokeWidth={strokeWidth} dot={{ r: 1 }} />
             <Line type="monotone" dataKey="exp_regressao" stroke="rgb(38, 104, 42)" name="Exportação (Regressão)" dot={{ r: 1 }} />
-            <Line type="monotone" dataKey="imp_real" stroke="rgb(255, 0, 0)" name="Importação Real" strokeWidth={strokeWidth} dot={{ r: 1 }} />
+            <Line type="monotone" dataKey="imp_real" stroke="rgb(179, 15, 15)" name="Importação Real" strokeWidth={strokeWidth} dot={{ r: 1 }} />
             <Line type="monotone" dataKey="imp_regressao" stroke="rgb(156, 93, 93)" name="Importação (Regressão)" dot={{ r: 1 }} />
           </LineChart>
         </ResponsiveContainer>

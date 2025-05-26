@@ -36,7 +36,7 @@ export default function PaginaRanking() {
         <div className="relative z-10 mx-auto from-indigo-900 to-indigo-950 min-h-screen flex items-center justify-center p-4">
             <div className="flex flex-col min-w-full space-y-6">
                 <h2 className="text-center text-3xl font-bold text-white mt-10">
-                    Comparações gerais de Estados e Países
+                    Rankeamentos
                 </h2>
 
                 <div className="flex flex-col lg:flex-row gap-6">

@@ -676,7 +676,7 @@ export default function ConsultaEstado() {
                     <Tooltip content={<CustomTooltip />} />
                     <Bar dataKey="setor" fill="rgb(12, 10, 121)" name="Setor"/>
                     <Bar dataKey="exportacao" fill="rgb(35, 148, 20)" name="Exportações" radius={[4, 4, 0, 0]}/>
-                    <Bar dataKey="importacao" fill="rgb(255, 0, 0)" name="Importações" radius={[4, 4, 0, 0]}/>
+                    <Bar dataKey="importacao" fill="rgb(179, 15, 15)" name="Importações" radius={[4, 4, 0, 0]}/>
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -692,7 +692,7 @@ export default function ConsultaEstado() {
                     <YAxis stroke="#E0E0E0" tickFormatter={formatarNumeroEixoY} />
                     <ChartTooltip formatter={(value: number) => `$ ${value?.toLocaleString('pt-BR')}`} />
                     <Bar dataKey="exportacao" fill="rgb(35, 148, 20)" name="Exportações" radius={[4, 4, 0, 0]}/>
-                    <Bar dataKey="importacao" fill="rgb(255, 0, 0)" name="Importações" radius={[4, 4, 0, 0]}/>
+                    <Bar dataKey="importacao" fill="rgb(179, 15, 15)" name="Importações" radius={[4, 4, 0, 0]}/>
                   </BarChart>
                 </ResponsiveContainer>
               </div>

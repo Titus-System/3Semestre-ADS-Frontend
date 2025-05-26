@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { formatCurrency, formatNumber } from "../../utils/formatarValor";
 import { buscaInfoGeral } from "../../services/apiServices";
+import Loading from "../loading";
 
 type Props = {
     anos?: number[],
@@ -31,6 +32,7 @@ async function buscaInfo({ anos, ncm, estado, pais, transporte, urf }: Props) {
 }
 
 export default function InfoGeral({ anos, ncm, estado, pais, transporte, urf }: Props) {
+    const [loading, setLoading] = useState<boolean>(false);
     const [totalGeral, setTotalGeral] = useState({
         total_fob_exp: 0,
         total_kg_exp: 0,
@@ -43,8 +45,10 @@ export default function InfoGeral({ anos, ncm, estado, pais, transporte, urf }: 
         valor_agregado_imp: 0
     });
     const [totalFiltrado, setTotalFiltrado] = useState<any>(null);
+    const [abaAtiva, setAbaAtiva] = useState<"brasil" | "filtros">("brasil");
 
     useEffect(() => {
+        setLoading(true);
         const buscaTotal = async () => {
             const info_geral = await buscaInfo({});
             setTotalGeral(info_geral);
@@ -60,8 +64,12 @@ export default function InfoGeral({ anos, ncm, estado, pais, transporte, urf }: 
         } else {
             setTotalFiltrado(null);
         }
+        setLoading(false);
     }, [ncm, anos, estado, pais, transporte, urf]);
-    const [abaAtiva, setAbaAtiva] = useState<"brasil" | "filtros">("brasil");
+
+    if (loading) {
+        <Loading/>
+    }
 
     return (
         <section className="flex flex-col gap-4 p-4 w-full overflow-x-auto rounded-lg shadow-lg ">
