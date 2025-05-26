@@ -9,6 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
   ReferenceLine,
+  LegendProps
 } from "recharts";
 import { buscarRegressaoLinearVlfob } from "../../services/tendenciaServices";
 import { formatarData } from "../../utils/formatarData";
@@ -22,9 +23,29 @@ type Props = {
 };
 
 export function GraficoRegressaoLinearVlfob({ ncm, estado, pais }: Props) {
+
   const [dados, setDados] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [exibirModal, setExibirModal] = useState(false);
+  const [fontSizeX, setFontSizeX] = useState(12);
+  const [intervalX, setIntervalX] = useState(23);
+  const [strokeWidth, setStrokeWidth] = useState(2);
+  const [legendFontSize, setLegendFontSize] = useState(16);
+
+  useEffect(() => {
+        const handleResize = () => {
+            setFontSizeX(window.innerWidth < 387 ? 10 : window.innerWidth < 510 ? 11 : 12);
+            setIntervalX(window.innerWidth < 315 ? 70 : window.innerWidth < 370 ? 42 : window.innerWidth < 482 ? 35 : 23);
+            setStrokeWidth(window.innerWidth < 400 ? 1 : 2);
+            setLegendFontSize(window.innerWidth < 305 ? 10 : window.innerWidth < 640 ? 12 : 14);
+        };
+
+        handleResize(); // Executa no carregamento
+        window.addEventListener("resize", handleResize); // Escuta mudanças de tamanho
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
@@ -71,8 +92,26 @@ export function GraficoRegressaoLinearVlfob({ ncm, estado, pais }: Props) {
   };
   if (!dados || dados.length === 0) return <p>Nenhum dado disponível.</p>;
 
+  const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
+    return (
+    <div className="w-full flex justify-center mt-1">
+          <ul className="flex flex-col sm:grid sm:grid-cols-2 gap-y-1">
+            {payload?.map((entry, index) => (
+              <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
+                <span
+                  className="inline-block w-3 h-3 rounded-full mr-2"
+                  style={{ backgroundColor: entry.color }}
+                />
+                <span>{entry.value}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        );
+      };
+
   return (
-    <div className="w-full max-w-full">
+    <div className="flex flex-col w-full max-w-full justify-center">
       <h3
         className="text-lg font-medium mb-2 text-gray-300 cursor-pointer hover:underline"
         onClick={() => setExibirModal(true)}
@@ -80,17 +119,17 @@ export function GraficoRegressaoLinearVlfob({ ncm, estado, pais }: Props) {
         Regressão Linear
       </h3>
       {exibirModal && <ModalRegressaoLinear onClose={() => setExibirModal(false)} />}
-      <div className="h-[400px]">
+      <div className="flex h-[400px]">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={dados} margin={{ top: 20, right: 30, left: 20, bottom: 40 }}>
+          <LineChart data={dados} margin={{ top: 20, right: 20, left: 0, bottom: 40 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="ds"
               stroke="#E0E0E0"
               type="category"
               tickFormatter={(ds: string) => formatarData(ds)}
-              interval={23}
-              tick={{ fontSize: 12 }}
+              interval={intervalX}
+              tick={{ fontSize: fontSizeX }}
             />
             <YAxis
               stroke="#E0E0E0"
@@ -103,7 +142,7 @@ export function GraficoRegressaoLinearVlfob({ ncm, estado, pais }: Props) {
               formatter={(value: number) => `$ ${value.toLocaleString('pt-BR', { maximumFractionDigits: 2 })}`}
               labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
             />
-            <Legend />
+            <Legend content={<CustomLegend fontSize={legendFontSize} />} />
             <ReferenceLine
               x="2025-01-01"
               stroke="red"
@@ -116,9 +155,9 @@ export function GraficoRegressaoLinearVlfob({ ncm, estado, pais }: Props) {
                 fill: "red"
               }}
             />
-            <Line type="monotone" dataKey="exp_real" stroke="rgb(35, 148, 20)" name="Exportação Real" strokeWidth={2} dot={{ r: 1 }} />
-            <Line type="monotone" dataKey="exp_regressao" stroke="rgb(61, 156, 66)" name="Exportação (Regressão)" dot={{ r: 1 }} />
-            <Line type="monotone" dataKey="imp_real" stroke="rgb(255, 0, 0)" name="Importação Real" strokeWidth={2} dot={{ r: 1 }} />
+            <Line type="monotone" dataKey="exp_real" stroke="rgb(35, 148, 20)" name="Exportação Real" strokeWidth={strokeWidth} dot={{ r: 1 }} />
+            <Line type="monotone" dataKey="exp_regressao" stroke="rgb(38, 104, 42)" name="Exportação (Regressão)" dot={{ r: 1 }} />
+            <Line type="monotone" dataKey="imp_real" stroke="rgb(179, 15, 15)" name="Importação Real" strokeWidth={strokeWidth} dot={{ r: 1 }} />
             <Line type="monotone" dataKey="imp_regressao" stroke="rgb(156, 93, 93)" name="Importação (Regressão)" dot={{ r: 1 }} />
           </LineChart>
         </ResponsiveContainer>

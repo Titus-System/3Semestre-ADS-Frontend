@@ -1,3 +1,5 @@
+import Transacao from "../models/transacao";
+
 export async function busca_transacoes_por_ncm(
     ncm: number,
     tipo: string,
@@ -8,7 +10,7 @@ export async function busca_transacoes_por_ncm(
     estados?: number[],
     vias?: number[],
     urfs?: number[]
-): Promise<any> {
+): Promise<Transacao[]> {
     try {
         // Constrói a URL com parâmetros de query
         const url = new URL('http://localhost:5000/busca_transacoes_por_ncm');

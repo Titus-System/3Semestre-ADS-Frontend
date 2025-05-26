@@ -183,7 +183,7 @@ export default function BuscarNCM() {
                     </div>
 
                 ) : (
-                    <p className="text-sm italic">*Estatísticas complementares não disponíveis para os filtros selecionados</p>
+                    <p className="text-sm text-white/30 italic">*Estatísticas complementares não disponíveis para os filtros selecionados</p>
                 )}
             </div>
 

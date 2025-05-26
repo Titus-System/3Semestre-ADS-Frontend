@@ -1,4 +1,4 @@
-import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, LegendProps } from "recharts";
 import { buscarHistoricoPais } from "../../services/paisService";
 import { useEffect, useState } from "react";
 import { Estado, Mercadoria, Pais } from "../../models/interfaces";
@@ -137,6 +137,24 @@ export default function GraficoHistPais({ tipo, paises, ncm, estado, anos }: Pro
         );
     };
 
+    const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
+        return (
+        <div className="w-full flex justify-center mt-1">
+              <ul className="flex flex-row gap-3">
+                {payload?.map((entry, index) => (
+                  <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
+                    <span
+                      className="inline-block w-3 h-3 rounded-full mr-2"
+                      style={{ backgroundColor: entry.color }}
+                    />
+                    <span>{entry.value}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            );
+          };
+
     return (
         <div className="bg-transparent rounded p-4 w-full max-w-full overflow-x-auto">
             <h3 className="text-center text-gray-300 font-semibold mb-2">
@@ -166,7 +184,7 @@ export default function GraficoHistPais({ tipo, paises, ncm, estado, anos }: Pro
                         labelClassName=''
                         labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
                     />
-                    <Legend     />
+                    <Legend content={<CustomLegend fontSize={16} />} />
                     {paisNomes.map((nome_pais, index) => (
                         <Line
                             key={nome_pais}
@@ -177,6 +195,7 @@ export default function GraficoHistPais({ tipo, paises, ncm, estado, anos }: Pro
                                 index % 5
                                 ]
                             }
+                            strokeWidth={2.5}
                             dot={false}
                         />
                     ))}

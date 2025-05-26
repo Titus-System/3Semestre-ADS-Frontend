@@ -1,41 +1,22 @@
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, LegendProps } from "recharts";
+import Loading from "../loading";
 import { useEffect, useState } from "react";
-import { Estado, Mercadoria, NcmHist, Pais } from "../../models/interfaces";
-import { buscarNcmHist } from "../../services/ncmService";
-import {
-    CartesianGrid,
-    Legend,
-    Line,
-    LineChart,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
-    LegendProps
-} from "recharts";
+import { Estado, Pais, Sh4 } from "../../models/interfaces";
 import { formatarValor } from "../../utils/formatarValor";
+import { buscaHistSh4 } from "../../services/shService";
+
 
 type Props = {
     tipo: 'exp' | 'imp' | null
-    ncms: Mercadoria[] | null;
+    sh4s: Sh4[] | null;
     anos: number[] | null;
     estado: Estado | null;
     pais: Pais | null
 };
 
-interface HistNCMs {
-    data: string;
-    dados: {
-        descricao: string;
-        id_ncm: number;
-        total_kg_liquido: number;
-        total_registros: number;
-        total_valor_agregado: number;
-        total_valor_fob: number;
-    }[];
-}[];
 
 function formataTitulo(tipo?: string | null, pais?: Pais | null, estado?: Estado | null) {
-    let titulo = `Histórico dos NCMs que foram mais ${tipo ? tipo : 'exp'}ortados`
+    let titulo = `Histórico dos SH4s que foram mais ${tipo ? tipo : 'exp'}ortados`
     if (estado) {
         titulo = `${titulo} por ${estado.sigla}`
     }
@@ -49,24 +30,21 @@ function formataTitulo(tipo?: string | null, pais?: Pais | null, estado?: Estado
     return titulo
 }
 
-async function callBuscarNcmHist(
+async function callBuscarSh4Hist(
     tipo: "exp" | "imp" | null,
-    ncmList: number[],
-    anos: number[] | null,
+    sh4List: string[],
     pais: number | null,
-    estado: number | null
+    estado: number | null,
+    anos?: number[]
 ) {
-    const dados = await buscarNcmHist(
+    const dados = await buscaHistSh4(
         tipo ? tipo : "exp",
-        ncmList,
-        anos ? anos : [],
-        [],
-        pais ? [pais] : [],
-        estado ? [estado] : [],
-        [],
-        []
+        sh4List,
+        pais ? [pais] : undefined,
+        estado ? [estado] : undefined,
+        anos ? anos :undefined
     );
-    const dadosConvertidos = dados.map((item: NcmHist) => ({
+    const dadosConvertidos = dados.map((item: any) => ({
         ...item,
         total_valor_fob: Number(item.total_valor_fob),
         total_kg_liquido: Number(item.total_kg_liquido),
@@ -75,7 +53,7 @@ async function callBuscarNcmHist(
     return dadosConvertidos;
 }
 
-async function formatarDadosNcmHist(dados: any[]): Promise<HistNCMs[]> {
+async function formatarDadosSh4Hist(dados: any[]): Promise<any[]> {
     const dadosAgrupados: Record<string, any[]> = {};
 
     dados.forEach((item) => {
@@ -89,7 +67,7 @@ async function formatarDadosNcmHist(dados: any[]): Promise<HistNCMs[]> {
 
         dadosAgrupados[data].push({
             descricao: item.descricao,
-            id_ncm: item.id_ncm,
+            id_sh4: item.id_sh4,
             total_kg_liquido: item.total_kg_liquido,
             total_registros: item.total_registros,
             total_valor_agregado: item.total_valor_agregado,
@@ -97,7 +75,7 @@ async function formatarDadosNcmHist(dados: any[]): Promise<HistNCMs[]> {
         });
     });
 
-    const dadosFormatados: HistNCMs[] = Object.keys(dadosAgrupados)
+    const dadosFormatados: any[] = Object.keys(dadosAgrupados)
         .sort()
         .map((data) => ({
             data,
@@ -107,28 +85,30 @@ async function formatarDadosNcmHist(dados: any[]): Promise<HistNCMs[]> {
     return dadosFormatados;
 }
 
-export default function GraficoHistNcms({ tipo, ncms, anos, estado, pais }: Props) {
-    const [histNcmData, setHistNcmData] = useState<HistNCMs[] | null>(null);
+
+export default function GraficoHistSh4({tipo, sh4s, anos, estado, pais}:Props) {
+    const [histSh4Data, setHistSh4Data] = useState<any[] | null>(null);
     const [titulo, setTitulo] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         setLoading(true);
-        if (ncms && Array.isArray(ncms)) {
-            const ncmsList = ncms.slice(0, 5).map((item: Mercadoria) => item.id_ncm);
+        if (sh4s && Array.isArray(sh4s)) {
+            const sh4sList = sh4s.slice(0, 5).map((item: Sh4) => item.id_sh4);
 
             const fetchHistNcm = async () => {
                 try {
-                    const result = await formatarDadosNcmHist(
-                        await callBuscarNcmHist(tipo, ncmsList, anos, pais ? pais.id_pais : null, estado ? estado.id_estado : null)
+                    const result = await formatarDadosSh4Hist(
+                        await callBuscarSh4Hist(tipo, sh4sList, pais ? pais.id_pais : null, estado ? estado.id_estado : null)
                     );
-                    setHistNcmData(result);
+                    console.log("histSh4Data: ", result)    
+                    setHistSh4Data(result);
                 } catch (error) {
                     console.error("Erro ao obter histNcm:", error);
                 }
             };
 
-            if (ncmsList.length > 0) {
+            if (sh4sList.length > 0) {
                 fetchHistNcm();
             }
         } else {
@@ -136,56 +116,49 @@ export default function GraficoHistNcms({ tipo, ncms, anos, estado, pais }: Prop
         }
         setTitulo(formataTitulo(tipo, pais, estado));
         setLoading(false);
-    }, [tipo, ncms, anos, estado, pais]);
+    }, [tipo, sh4s, anos, estado, pais]);
 
 
     const [mostrarAgregado, setMostrarAgregado] = useState(false);
 
-    const dadosGrafico = histNcmData?.map((item) => {
+    const dadosGrafico = histSh4Data?.map((item) => {
         const ponto: any = { data: item.data };
-        item.dados.forEach((ncm) => {
+        item.dados.forEach((sh4:any) => {
             if (mostrarAgregado) {
-                ponto[ncm.id_ncm] = ncm.total_valor_agregado
+                ponto[sh4.id_sh4] = sh4.total_valor_agregado
             } else {
-                ponto[ncm.id_ncm] = ncm.total_valor_fob;
+                ponto[sh4.id_sh4] = sh4.total_valor_fob;
             }
         });
         return ponto;
     }) || [];
 
-    const idsNcm = histNcmData?.[0]?.dados.map((ncm) => ncm.id_ncm) || [];
+    const idsSh4 = histSh4Data?.[0]?.dados.map((sh4:any) => sh4.id_sh4) || [];
 
 
     if (loading) {
         return (
-            <div className="p-6 rounded-lg shadow">
-                <div className="flex justify-center items-center h-64">
-                    <svg className="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                </div>
-            </div>
+            <Loading/>
         );
     };
 
     const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
-        return (
-        <div className="w-full flex justify-center mt-1">
-              <ul className="flex flex-row gap-3">
-                {payload?.map((entry, index) => (
-                  <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
-                    <span
-                      className="inline-block w-3 h-3 rounded-full mr-2"
-                      style={{ backgroundColor: entry.color }}
-                    />
-                    <span>{entry.value}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            );
-          };
+            return (
+            <div className="w-full flex justify-center mt-1">
+                  <ul className="flex flex-row gap-3">
+                    {payload?.map((entry, index) => (
+                      <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
+                        <span
+                          className="inline-block w-3 h-3 rounded-full mr-2"
+                          style={{ backgroundColor: entry.color }}
+                        />
+                        <span>{entry.value}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                );
+              };
 
     return (
         <div className="bg-transparent rounded p-4 w-full max-w-full overflow-x-auto">
@@ -229,7 +202,7 @@ export default function GraficoHistNcms({ tipo, ncms, anos, estado, pais }: Prop
                         stroke="#E0E0E0"
                         tickFormatter={formatarValor}
                         label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10, stroke: "#E0E0E0" }}
-                        tick={{fontSize:11}}
+                        tick={{ fontSize: 11 }}
                     />
                     <Tooltip
                         labelFormatter={(label) => `${label}`}
@@ -238,11 +211,11 @@ export default function GraficoHistNcms({ tipo, ncms, anos, estado, pais }: Prop
                         labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
                     />
                     <Legend content={<CustomLegend fontSize={16} />} />
-                    {idsNcm.map((id, index) => (
+                    {idsSh4.map((id:any, index:any) => (
                         <Line
                             key={id}
                             type="monotone"
-                            dataKey={id.toString()}
+                            dataKey={id}
                             stroke={
                                 ["#82ca9d", "#3b82f6", "rgb(245, 158, 11)", "rgb(255, 111, 111)", "#9366fa"][
                                 index % 5

@@ -59,8 +59,8 @@ export default function Header() {
                                 >
                                 {[
                                     { href: "/consulta_estado", label: "Análise de Estados" },
-                                    { href: "/buscaNCM", label: "Busca por NCM" },
-                                    { href: "/paginaRanking", label: "Comparação geral de Estados e Países" },
+                                    { href: "/info", label: "Busca de Informações" },
+                                    { href: "/paginaRanking", label: "Rankeamento" },
                                     { href: "/previsao", label: "Previsão de Tendências" },
                                 ].map(({ href, label }) => (
                                     <li key={href}>

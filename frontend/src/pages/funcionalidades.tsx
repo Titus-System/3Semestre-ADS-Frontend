@@ -13,16 +13,21 @@ export default function Funcionalidades() {
                 {/* Conteúdo */}
                 <div className="relative z-20 max-w-3xl px-4">
                     <h1 className="text-white text-4xl md:text-5xl font-bold">
-                    Funcionalidades
+                        Funcionalidades
                     </h1>
                     <p className="text-white text-md md:text-lg mt-6 leading-relaxed">
-                    O que oferecemos a você?
+                        O que oferecemos a você?
                     </p>
                 </div>
             </div>
 
             {/* Botões de funcionalidades */}
             <div className="flex flex-col items-center gap-6 mt-40 mb-[300px] max-w-2xl w-full mx-auto px-4">
+                <a href="/info" className="w-full">
+                    <button className="w-full h-16 rounded-full px-10 py-4 bg-[#0A0A37] text-white hover:bg-[#34538D] text-xl font-semibold">
+                        Consulta de valores e transações
+                    </button>
+                </a>
                 <a href="/consulta_estado" className="w-full">
                     <button className="w-full h-16 rounded-full px-10 py-4 bg-[#0A0A37] text-white hover:bg-[#34538D] text-xl font-semibold">
                         Análise de Estados
@@ -37,7 +42,7 @@ export default function Funcionalidades() {
                     <button className="w-full h-16 rounded-full px-10 py-4 bg-[#0A0A37] text-white hover:bg-[#34538D] text-xl font-semibold">
                         Comparação geral de Estados e Paises
                     </button>
-                </a> 
+                </a>
                 <a href="/previsao" className="w-full">
                     <button className="w-full h-16 rounded-full px-10 py-4 bg-[#0A0A37] text-white hover:bg-[#34538D] text-xl font-semibold">
                         Previsão de Tendências

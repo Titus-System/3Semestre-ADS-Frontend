@@ -1,4 +1,4 @@
-import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis, LegendProps } from "recharts";
 import { RankingEstados, RankingNcms, RankingPaises } from "../../models/interfaces"
 import { formatarValor } from "../../utils/formatarValor";
 
@@ -17,6 +17,7 @@ export default function GraficoRanking({ titulo, ranking, valor_agregado }: Prop
         if ("nome_pais" in item) return "nome_pais";
         if ("sigla_estado" in item) return "sigla_estado";
         if ("produto_descricao" in item) return "produto_descricao";
+        if ("sh4_descricao" in item) return "sh4_descricao"
         return "";
     })();
 
@@ -28,10 +29,30 @@ export default function GraficoRanking({ titulo, ranking, valor_agregado }: Prop
                 return "rgb(32, 174, 94)";
             case "produto_descricao":
                 return "rgb(189, 124, 20)";
+            case "sh4_descricao":
+                return "rgb(175, 20, 189)"
             default:
                 return "#ffffff";
         }
     })();
+
+    const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
+        return (
+        <div className="w-full flex justify-center mt-1">
+              <ul className="flex flex-row gap-3">
+                {payload?.map((entry, index) => (
+                  <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
+                    <span
+                      className="inline-block w-3 h-3 rounded-full mr-2"
+                      style={{ backgroundColor: entry.color }}
+                    />
+                    <span>{entry.value}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            );
+          };
 
     return (
         <div className="bg-transparent rounded p-4 w-full max-w-full overflow-x-auto">
@@ -62,7 +83,7 @@ export default function GraficoRanking({ titulo, ranking, valor_agregado }: Prop
                         labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
                     />
                     <Bar dataKey={bar_datakey} fill={color} name="$" />
-                    <Legend />
+                    <Legend content={<CustomLegend fontSize={16} />} />
                 </BarChart>
             </ResponsiveContainer>
         </div>

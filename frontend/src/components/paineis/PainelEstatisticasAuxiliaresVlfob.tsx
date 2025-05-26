@@ -5,11 +5,12 @@ import {
     Tooltip, Legend, ResponsiveContainer,
     AreaChart,
     ReferenceLine,
-    Area
+    Area, LegendProps
 } from "recharts";
 import Hhi from "../modais/hhi";
 import Sazonalidade from "../modais/sazonalidade";
 import { formatarValor } from "../../utils/formatarValor";
+import Loading from "../loading";
 
 type Props = {
     ncm?: number | null;
@@ -63,6 +64,24 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
     const renderizarGraficoSazonalidade = () => {
         if (!estatisticasAuxiliares?.sazonalidade?.length) return null;
 
+    const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
+        return (
+        <div className="w-full flex justify-center mt-1">
+              <ul className="flex flex-row gap-3">
+                {payload?.map((entry, index) => (
+                  <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
+                    <span
+                      className="inline-block w-3 h-3 rounded-full mr-2"
+                      style={{ backgroundColor: entry.color }}
+                    />
+                    <span>{entry.value}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            );
+          };
+
         return (
             <div className="w-full max-w-full mt-6">
                 <h3
@@ -91,7 +110,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                                 labelFormatter={(label) => `Mês: ${label}`}
                                 labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }}
                             />
-                            <Legend />
+                            <Legend content={<CustomLegend fontSize={16} />} />
                             <Bar dataKey="exportacoes" name="Exportações" fill="rgb(35, 148, 20)" radius={[4, 4, 0, 0]} />
                             <Bar dataKey="importacoes" name="Importações" fill="rgb(179, 15, 15)" radius={[4, 4, 0, 0]} />
                         </BarChart>
@@ -104,6 +123,23 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
     const graficoConcentracao = (dadosConcentracao?: any) => {
         if (!dadosConcentracao?.length) return null;
         console.log("dadosConcentracao: ", dadosConcentracao)
+        const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
+        return (
+        <div className="w-full flex justify-center mt-1">
+              <ul className="flex flex-row gap-3">
+                {payload?.map((entry, index) => (
+                  <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
+                    <span
+                      className="inline-block w-3 h-3 rounded-full mr-2"
+                      style={{ backgroundColor: entry.color }}
+                    />
+                    <span>{entry.value}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            );
+          };
         return (
             <div className="w-full  mt-6">
                 <h3
@@ -155,7 +191,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                                 labelFormatter={(label) => `Período: ${label}`}
                                 labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
                             />
-                            <Legend />
+                            <Legend content={<CustomLegend fontSize={16} />} />
 
                             <Area
                                 type="monotone"
@@ -233,14 +269,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
 
     if (loading) {
         return (
-            <div className="p-6 bg-transparent rounded-lg shadow">
-                <div className="flex justify-center items-center h-64">
-                    <svg className="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                </div>
-            </div>
+            <Loading/>
         );
     }
 

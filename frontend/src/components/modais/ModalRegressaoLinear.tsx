@@ -1,8 +1,8 @@
 export default function ModalRegressaoLinear({ onClose }: { onClose: () => void }) {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="fixed inset-50 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-xl relative">
-        <h2 className="text-2xl font-semibold mb-4">📉 O que é Regressão Linear?</h2>
+        <h2 className="text-2xl text-black font-semibold mb-4">📉 O que é Regressão Linear?</h2>
 
         <p className="mb-3 text-gray-700">
           A <strong>Regressão Linear</strong> é uma técnica estatística usada para identificar a relação entre duas variáveis: uma variável independente (nesse caso, o tempo) e uma variável dependente (como a balança comercial, por exemplo).

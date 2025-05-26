@@ -11,6 +11,8 @@ import {
     XAxis,
     YAxis,
 } from "recharts";
+import { formatarValor } from "../../utils/formatarValor";
+import { formatarData } from "../../utils/formatarData";
 
 type Props = {
     tipo: 'exp' | 'imp' | null
@@ -336,13 +338,15 @@ export default function GraficoHistNcm({ tipo, ncm, anos, estado, pais, via, urf
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="data"
                         stroke="#E0E0E0"
-                        tickFormatter={(value: string) => value.substring(0, 10)}
-                        tick={{ fontSize: 11, }}
+                        tickFormatter={formatarData}
+                        interval={23}
+                        tick={{ fontSize: 11}}
                     />
                     <YAxis
                         stroke="#E0E0E0"
-                        tickFormatter={(value) => `${(value / 1e6)}`}
-                        label={{ value: '$ (Milhões)', angle: -90, position: 'insideLeft', stroke: "#E0E0E0", offset: 10 }}
+                        tickFormatter={formatarValor}
+                        label={{ value: '$', angle: -90, position: 'insideLeft', stroke: "#E0E0E0", offset: -10 }}
+                        tick={{fontSize:11}}
                     />
                     <Tooltip
                         labelFormatter={(label) => `${label}`}
@@ -356,7 +360,7 @@ export default function GraficoHistNcm({ tipo, ncm, anos, estado, pais, via, urf
                             key={id}
                             type="monotone"
                             dataKey={id}
-                            stroke={id.includes('_exp') ? ' #007bff' : 'rgb(207, 9, 9)'}
+                            stroke={id.includes('_exp') ? 'rgb(74, 161, 255)' : 'rgb(234, 65, 65)'}
                             strokeWidth={2}
                             dot={false}
                             name={id.replace('_exp', ' (Exp)').replace('_imp', ' (Imp)')}
@@ -365,7 +369,7 @@ export default function GraficoHistNcm({ tipo, ncm, anos, estado, pais, via, urf
                     <Line
                         type="monotone"
                         dataKey="balanca"
-                        stroke="rgb(170, 111, 22)"
+                        stroke="rgb(201, 142, 54)"
                         strokeWidth={2}
                         dot={false}
                         name="Balança Comercial"

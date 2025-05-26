@@ -108,16 +108,16 @@ export default function InfoGeralNcm({ ncm, anos, tipo, estados, paises, transpo
             <div className="p-5">
               <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <dt className="text-sm font-medium text-gray-100">Descrição do Produto</dt>
-                  <dd className="text-gray-300">{totalGeral.produto_descricao}</dd>
+                  <dt className="text-sm font-medium text-white">Descrição do Produto</dt>
+                  <dd className="text-gray-200">{totalGeral.produto_descricao}</dd>
                 </div>
                 <div className="space-y-1">
-                  <dt className="text-sm font-medium text-gray-100">Descrição SH4</dt>
-                  <dd className="text-gray-300">{totalGeral.sh4_descricao}</dd>
+                  <dt className="text-sm font-medium text-white">Descrição SH4</dt>
+                  <dd className="text-gray-200">{totalGeral.sh4_descricao}</dd>
                 </div>
                 <div className="space-y-1">
-                  <dt className="text-sm font-medium text-gray-100">Código NCM</dt>
-                  <dd className="text-gray-300 font-medium">{ncm}</dd>
+                  <dt className="text-sm font-medium text-white">Código NCM</dt>
+                  <dd className="text-gray-200 font-medium">{ncm}</dd>
                 </div>
               </dl>
             </div>
@@ -132,7 +132,7 @@ export default function InfoGeralNcm({ ncm, anos, tipo, estados, paises, transpo
               ${
                 activeTab === "geral"
                   ? "bg-white/20 text-white font-bold shadow-sm"
-                  : "bg-transparent font-medium text-blue-200 hover:bg-white/20 hover:font-bold"
+                  : "bg-transparent font-medium text-gray-100 hover:bg-white/20 hover:font-bold"
               }`}
                 onClick={() => setActiveTab("geral")}
               >
@@ -143,8 +143,8 @@ export default function InfoGeralNcm({ ncm, anos, tipo, estados, paises, transpo
                 className={`flex-1 py-3 px-4 text-center transition-all duration-200 relative
               ${
                 activeTab === "filtrado"
-                  ? "bg-white/20 text-blue-900 shadow-sm font-bold"
-                  : "bg-transparent font-medium text-white hover:bg-white/20 hover:font-bold"
+                  ? "bg-white/20 text-white shadow-sm font-bold"
+                  : "bg-transparent font-medium text-gray-100 hover:bg-white/20 hover:font-bold"
               }`}
                 onClick={() => setActiveTab("filtrado")}
               >
@@ -163,11 +163,11 @@ export default function InfoGeralNcm({ ncm, anos, tipo, estados, paises, transpo
               >
                 <div className="bg-transparent rounded-lg overflow-hidden">
                   <div className="mb-4">
-                    <h3 className="font-semibold text-gray-300 flex items-center">
+                    <h3 className="font-semibold text-white flex items-center">
                       <span className="inline-block w-4 h-4 mr-2 bg-green-500 rounded-sm"></span>
                       Resumo Geral
                     </h3>
-                    <p className="text-sm text-gray-400 mt-1">Dados consolidados de exportação e importação</p>
+                    <p className="text-sm text-gray-200 mt-1">Dados consolidados de exportação e importação</p>
                   </div>
 
                   <div className="overflow-x-auto rounded-lg border border-gray-200">
@@ -175,44 +175,44 @@ export default function InfoGeralNcm({ ncm, anos, tipo, estados, paises, transpo
                       <thead>
                         <tr className="bg-white/5">
                           <th className="text-left py-3 px-4 font-semibold text-white border-b">Métrica</th>
-                          <th className="text-left py-3 px-4 font-semibold text-green-200 border-b">Exportação</th>
-                          <th className="text-left py-3 px-4 font-semibold text-blue-200 border-b">Importação</th>
+                          <th className="text-left py-3 px-4 font-semibold text-green-100 border-b">Exportação</th>
+                          <th className="text-left py-3 px-4 font-semibold text-blue-100 border-b">Importação</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr className="hover:bg-white/10 transition-colors">
                           <td className="py-3 px-4 border-b">
-                            <div className="font-medium text-gray-300">Peso Líquido</div>
-                            <div className="text-xs text-gray-400">em kg</div>
+                            <div className="font-medium text-white">Peso Líquido</div>
+                            <div className="text-xs text-gray-300">em kg</div>
                           </td>
-                          <td className="py-3 px-4 border-b text-green-400">
+                          <td className="py-3 px-4 border-b text-green-300">
                             {formatNumber(totalGeral.total_kg_liquido_exp)}
                           </td>
-                          <td className="py-3 px-4 border-b text-blue-400">
+                          <td className="py-3 px-4 border-b text-blue-300">
                             {formatNumber(totalGeral.total_kg_liquido_imp)}
                           </td>
                         </tr>
                         <tr className="hover:bg-white/10 transition-colors">
                           <td className="py-3 px-4 border-b">
-                            <div className="font-medium text-gray-300">Valor FOB</div>
-                            <div className="text-xs text-gray-400">em USD</div>
+                            <div className="font-medium text-white">Valor FOB</div>
+                            <div className="text-xs text-gray-300">em USD</div>
                           </td>
-                          <td className="py-3 px-4 border-b text-green-400">
+                          <td className="py-3 px-4 border-b text-green-300">
                             {formatCurrency(totalGeral.total_valor_fob_exp)}
                           </td>
-                          <td className="py-3 px-4 border-b text-blue-400">
+                          <td className="py-3 px-4 border-b text-blue-300">
                             {formatCurrency(totalGeral.total_valor_fob_imp)}
                           </td>
                         </tr>
                         <tr className="hover:bg-white/10 transition-colors">
                           <td className="py-3 px-4">
-                            <div className="font-medium text-gray-300">Valor Agregado</div>
-                            <div className="text-xs text-gray-400">USD/kg</div>
+                            <div className="font-medium text-white">Valor Agregado</div>
+                            <div className="text-xs text-gray-300">USD/kg</div>
                           </td>
-                          <td className="py-3 px-4 text-green-400 font-medium">
+                          <td className="py-3 px-4 text-green-300 font-medium">
                             {formatCurrency(totalGeral.total_valor_fob_exp / (totalGeral.total_kg_liquido_exp || 1))}
                           </td>
-                          <td className="py-3 px-4 text-blue-400 font-medium">
+                          <td className="py-3 px-4 text-blue-300 font-medium">
                             {formatCurrency(totalGeral.total_valor_agregado_imp)}
                           </td>
                         </tr>
@@ -229,56 +229,56 @@ export default function InfoGeralNcm({ ncm, anos, tipo, estados, paises, transpo
                 {totalFiltrado ? (
                   <div className="bg-transparent rounded-lg overflow-hidden">
                     <div className="mb-4">
-                      <h3 className="font-semibold text-gray-300 flex items-center">
+                      <h3 className="font-semibold text-white flex items-center">
                         <span className="inline-block w-4 h-4 mr-2 bg-purple-500 rounded-sm"></span>
                         Resumo Filtrado
                       </h3>
-                      <p className="text-sm text-gray-400 mt-1">Dados filtrados conforme seleção</p>
+                      <p className="text-sm text-gray-200 mt-1">Dados filtrados conforme seleção</p>
                     </div>
 
                     <div className="overflow-x-auto rounded-lg border border-gray-200">
                       <table className="w-full">
                         <thead>
-                          <tr className="bg-white/10">
+                          <tr className="bg-white/5">
                             <th className="text-left py-3 px-4 font-semibold text-white border-b">Métrica</th>
-                            <th className="text-left py-3 px-4 font-semibold text-green-600 border-b">Exportação</th>
-                            <th className="text-left py-3 px-4 font-semibold text-blue-600 border-b">Importação</th>
+                            <th className="text-left py-3 px-4 font-semibold text-green-100 border-b">Exportação</th>
+                            <th className="text-left py-3 px-4 font-semibold text-blue-100 border-b">Importação</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr className="hover:bg-white/10 transition-colors">
                             <td className="py-3 px-4 border-b">
-                              <div className="font-medium text-gray-300">Peso Líquido</div>
-                              <div className="text-xs text-gray-400">em kg</div>
+                              <div className="font-medium text-white">Peso Líquido</div>
+                              <div className="text-xs text-gray-300">em kg</div>
                             </td>
-                            <td className="py-3 px-4 border-b text-green-400">
+                            <td className="py-3 px-4 border-b text-green-300">
                               {formatNumber(totalFiltrado.total_kg_liquido_exp)}
                             </td>
-                            <td className="py-3 px-4 border-b text-blue-400">
+                            <td className="py-3 px-4 border-b text-blue-300">
                               {formatNumber(totalFiltrado.total_kg_liquido_imp)}
                             </td>
                           </tr>
                           <tr className="hover:bg-white/10 transition-colors">
                             <td className="py-3 px-4 border-b">
-                              <div className="font-medium text-gray-300">Valor FOB</div>
-                              <div className="text-xs text-gray-400">em USD</div>
+                              <div className="font-medium text-white">Valor FOB</div>
+                              <div className="text-xs text-gray-300">em USD</div>
                             </td>
-                            <td className="py-3 px-4 border-b text-green-400">
+                            <td className="py-3 px-4 border-b text-green-300">
                               {formatCurrency(totalFiltrado.total_valor_fob_exp)}
                             </td>
-                            <td className="py-3 px-4 border-b text-blue-400">
+                            <td className="py-3 px-4 border-b text-blue-300">
                               {formatCurrency(totalFiltrado.total_valor_fob_imp)}
                             </td>
                           </tr>
                           <tr className="hover:bg-white/10 transition-colors">
                             <td className="py-3 px-4">
-                              <div className="font-medium text-gray-300">Valor Agregado</div>
-                              <div className="text-xs text-gray-400">USD/kg</div>
+                              <div className="font-medium text-white">Valor Agregado</div>
+                              <div className="text-xs text-gray-300">USD/kg</div>
                             </td>
-                            <td className="py-3 px-4 text-green-400 font-medium">
+                            <td className="py-3 px-4 text-green-300 font-medium">
                               {formatCurrency(totalFiltrado.total_valor_agregado_exp)}
                             </td>
-                            <td className="py-3 px-4 text-blue-400 font-medium">
+                            <td className="py-3 px-4 text-blue-300 font-medium">
                               {formatCurrency(totalFiltrado.total_valor_agregado_imp)}
                             </td>
                           </tr>

@@ -9,6 +9,7 @@ import GraficoSetoresDistribuicao from "../components/graficos/GraficoSetoresDis
 import PainelRankingEstados from "../components/paineis/PainelRankingEstados";
 import PainelRankingPais from "../components/paineis/PainelRankingPais";
 import PainelRankingNcm from "../components/paineis/PainelRankingNcm";
+import PainelRankingSh4 from "../components/paineis/PainelRankingSh4";
 
 
 export default function PaginaRanking() {
@@ -35,7 +36,7 @@ export default function PaginaRanking() {
         <div className="relative z-10 mx-auto from-indigo-900 to-indigo-950 min-h-screen flex items-center justify-center p-4">
             <div className="flex flex-col min-w-full space-y-6">
                 <h2 className="text-center text-3xl font-bold text-white mt-10">
-                    Comparações gerais de Estados e Países
+                    Rankeamentos
                 </h2>
 
                 <div className="flex flex-col lg:flex-row gap-6">
@@ -45,34 +46,54 @@ export default function PaginaRanking() {
                         <InputPais onChange={handleInputPais} />
                         <InputTipo tipoProcesso={tipoProcesso} setTipoProcesso={setTipoProcesso} />
                         <InputAnos onChange={handleInputAnos} />
-                        {/* <BotaoBuscar onClick={() => setIniciarRankeamento(true)} isLoading={buscaIsLoading} /> */}
                     </div>
                     <div className="w-full lg:w-3/4 space-y-6">
-                        <div className="bg-white/10 border border-white/20 backdrop-blur rounded-2xl text-white shadow-lg min-h-screen p-4 sm:p-6 w-full space-y-6">
-                            <PainelRankingEstados
-                                tipo={tipoProcesso}
-                                anos={anosSelecionados}
-                                pais={paisSelecionado}
-                                ncm={mercadoriaSelecionada}
-                            />
-                            <PainelRankingPais
-                                tipo={tipoProcesso}
-                                anos={anosSelecionados}
-                                estado={estadoSelecionado}
-                                ncm={mercadoriaSelecionada}
-                            />
-                            <PainelRankingNcm
-                                tipo={tipoProcesso}
-                                anos={anosSelecionados}
-                                estado={estadoSelecionado}
-                                pais={paisSelecionado}
-                            />
-                            <GraficoSetoresDistribuicao
-                                tipo={tipoProcesso ? tipoProcesso : 'exp'}
-                                anos={anosSelecionados}
-                                pais={paisSelecionado}
-                                estado={estadoSelecionado}
-                            />
+                        <div className="flex flex-col bg-white/10 border border-white/20 backdrop-blur rounded-2xl text-white shadow-lg min-h-screen p-4 sm:p-6 w-full space-y-12">
+                            <div className="">
+                                <h3 className="text-left pl-4 text-xl font-bold mt-2 mb-0">Rankeamento de estados</h3>
+                                <PainelRankingEstados
+                                    tipo={tipoProcesso}
+                                    anos={anosSelecionados}
+                                    pais={paisSelecionado}
+                                    ncm={mercadoriaSelecionada}
+                                />
+                            </div>
+                            <div className="">
+                                <h3 className="text-left pl-4 text-xl font-bold mt-2 mb-0">Rankeamento de países</h3>
+                                <PainelRankingPais
+                                    tipo={tipoProcesso}
+                                    anos={anosSelecionados}
+                                    estado={estadoSelecionado}
+                                    ncm={mercadoriaSelecionada}
+                                />
+                            </div>
+                            <div className="">
+                                <h3 className="text-left pl-4 text-xl font-bold mt-2 mb-0">Rankeamento de NCM</h3>
+                                <PainelRankingNcm
+                                    tipo={tipoProcesso}
+                                    anos={anosSelecionados}
+                                    estado={estadoSelecionado}
+                                    pais={paisSelecionado}
+                                />
+                            </div>
+                            <div className="">
+                                <h3 className="text-left pl-4 text-xl font-bold mt-2 mb-0">Rankeamento de SH4</h3>
+                                <PainelRankingSh4
+                                    tipo={tipoProcesso}
+                                    anos={anosSelecionados}
+                                    estado={estadoSelecionado}
+                                    pais={paisSelecionado}
+                                />
+                            </div>
+                            <div className="">
+                                <h3 className="text-left pl-4 text-xl font-bold mt-2 mb-0">Rankeamento de setores</h3>
+                                <GraficoSetoresDistribuicao
+                                    tipo={tipoProcesso ? tipoProcesso : 'exp'}
+                                    anos={anosSelecionados}
+                                    pais={paisSelecionado}
+                                    estado={estadoSelecionado}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>

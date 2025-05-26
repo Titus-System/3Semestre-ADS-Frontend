@@ -4,9 +4,9 @@ type Props = {
 
 export default function Hhi({ onClose }: Props) {
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="fixed inset-50 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-xl relative">
-                <h2 className="text-2xl font-semibold mb-4">📊 O que é o Índice HHI?</h2>
+                <h2 className="text-2xl text-black font-semibold mb-4">📊 O que é o Índice HHI?</h2>
 
                 <p className="mb-3 text-gray-700">
                     O <strong>Índice de Herfindahl-Hirschman (HHI)</strong> é uma métrica usada para medir o grau de concentração de mercado. No comércio internacional, ele ajuda a identificar se as <strong>exportações</strong> ou <strong>importações</strong> estão distribuídas entre vários parceiros ou concentradas em poucos.

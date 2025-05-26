@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { buscarRegressaoLinearBalanca } from "../../services/tendenciaServices";
-import { CartesianGrid, Legend, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { CartesianGrid, Legend, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis, LegendProps } from "recharts";
 import { formatarData } from "../../utils/formatarData";
 import ModalRegressaoLinear from "../modais/ModalRegressaoLinear";
 import { formatarValor } from "../../utils/formatarValor";
@@ -15,6 +15,24 @@ export default function GraficoRegressaoLinearBalanca({ ncm, estado, pais }: Pro
     const [dados, setDados] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [exibirModal, setExibirModal] = useState(false);
+    const [fontSizeX, setFontSizeX] = useState(12);
+    const [legendFontSize, setLegendFontSize] = useState(14);
+    const [strokeWidth, setStrokeWidth] = useState(2);
+    const [intervalX, setIntervalX] = useState(23);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setFontSizeX(window.innerWidth < 387 ? 10 : window.innerWidth < 510 ? 11 : 12);
+            setLegendFontSize(window.innerWidth < 305 ? 10 : window.innerWidth < 640 ? 12 : 14);
+            setStrokeWidth(window.innerWidth < 400 ? 1 : 2);
+            setIntervalX(window.innerWidth < 315 ? 60 : window.innerWidth < 370 ? 42 : window.innerWidth < 482 ? 35 : 23);
+        };
+
+        handleResize(); // Executa no carregamento
+        window.addEventListener("resize", handleResize); // Escuta mudanças de tamanho
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     useEffect(() => {
         async function fetchData() {
@@ -55,6 +73,24 @@ export default function GraficoRegressaoLinearBalanca({ ncm, estado, pais }: Pro
     };
     if (!dados || dados.length === 0) return <p>Nenhum dado disponível.</p>;
 
+    const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
+            return (
+            <div className="w-full flex justify-center">
+                  <ul className="flex flex-col gap-y-1 sm:flex-row sm:gap-x-3 lg:flex-col lg:gap-y-1 2xl:flex-row 2xl:gap-x-3">
+                    {payload?.map((entry, index) => (
+                      <li key={`item-${index}`} className="flex items-center" style={{ fontSize }}>
+                        <span
+                          className="inline-block w-3 h-3 rounded-full mr-2"
+                          style={{ backgroundColor: entry.color }}
+                        />
+                        <span>{entry.value}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                );
+              };
+
     return (
         <div className="w-full max-w-full">
             <h3
@@ -66,7 +102,7 @@ export default function GraficoRegressaoLinearBalanca({ ncm, estado, pais }: Pro
             {exibirModal && <ModalRegressaoLinear onClose={() => setExibirModal(false)} />}
             <div className="h-[400px]">
                 <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={dados} margin={{ top: 20, right: 30, left: 20, bottom: 40 }}>
+                    <LineChart data={dados} margin={{ top: 20, right: 20, left: 0, bottom: 40 }}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis
                             stroke="#E0E0E0"
@@ -75,8 +111,8 @@ export default function GraficoRegressaoLinearBalanca({ ncm, estado, pais }: Pro
                             height={55}
                             type="category"
                             tickFormatter={(ds: string) => formatarData(ds)}
-                            interval={23}
-                            tick={{ fontSize: 12 }}
+                            interval={intervalX}
+                            tick={{ fontSize: fontSizeX }}
                         />
                         <YAxis
                         stroke="#E0E0E0"
@@ -89,7 +125,7 @@ export default function GraficoRegressaoLinearBalanca({ ncm, estado, pais }: Pro
                             formatter={(value: number) => `$ ${value.toLocaleString('pt-BR', { maximumFractionDigits: 2 })}`}
                             labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }}
                         />
-                        <Legend />
+                        <Legend content={<CustomLegend fontSize={legendFontSize} />} />
                         <ReferenceLine
                             x="2025-01-01"
                             stroke="red"
@@ -102,8 +138,8 @@ export default function GraficoRegressaoLinearBalanca({ ncm, estado, pais }: Pro
                                 fill: "red"
                             }}
                         />
-                        <Line type="monotone" dataKey="y_real" stroke="rgb(124, 207, 255)" name="Balança Comercial Real" strokeWidth={2} dot={{ r: 1 }} />
-                        <Line type="monotone" dataKey="y_regressao" stroke="rgb(143, 141, 255)" name="Balança (Regressão)" strokeWidth={2} dot={{ r: 2 }} />
+                        <Line type="monotone" dataKey="y_real" stroke="rgb(124, 207, 255)" name="Balança Comercial Real" strokeWidth={strokeWidth} dot={{ r: 1 }} />
+                        <Line type="monotone" dataKey="y_regressao" stroke="rgb(143, 141, 255)" name="Balança (Regressão)" strokeWidth={strokeWidth} dot={{ r: 2 }} />
                     </LineChart>
                 </ResponsiveContainer>
             </div>
