@@ -1,6 +1,6 @@
 export async function buscaPaisPorNome(nome:string){
     try {
-        const baseUrl = import.meta.env.VITE_BACKEND_URL;
+        const baseUrl = "http://localhost:5000";
         
         const url = new URL(`${baseUrl}/pesquisa_pais_por_nome`);
         url.searchParams.append('nome', nome);
@@ -22,8 +22,8 @@ export async function buscaPaisPorNome(nome:string){
         }
     } catch (error) {
         console.error("Erro ao acessar servidor:", error);
-        alert(error instanceof Error ? error.message : 'Erro desconhecido');
-        throw error;
+        // alert(error instanceof Error ? error.message : 'Erro desconhecido');
+        // throw error;
     }
 }
 
@@ -78,8 +78,8 @@ export async function buscarRankingPaises(
 
     } catch (error) {
         console.error("Erro ao acessar servidor:", error);
-        alert(error instanceof Error ? error.message : 'Erro desconhecido');
-        throw error;
+        // alert(error instanceof Error ? error.message : 'Erro desconhecido');
+        // throw error;
     }
 }
 
@@ -126,8 +126,8 @@ export async function buscarHistoricoPais(
         }
     } catch (error) {
         console.error("Erro ao acessar servidor:", error);
-        alert(error instanceof Error ? error.message : 'Erro desconhecido');
-        throw error;
+        // alert(error instanceof Error ? error.message : 'Erro desconhecido');
+        // throw error;
     }
 }
 
@@ -169,7 +169,7 @@ export async function buscaPaisExpImpInfo(
 
     } catch (error) {
         console.error("Erro ao acessar servidor:", error);
-        alert(error instanceof Error ? error.message : 'Erro desconhecido');
-        throw error;
+        // alert(error instanceof Error ? error.message : 'Erro desconhecido');
+        // throw error;
     }
 }

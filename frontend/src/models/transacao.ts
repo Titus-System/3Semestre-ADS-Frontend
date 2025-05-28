@@ -1,5 +1,6 @@
 export default interface Transacao {
     ano: number;
+    id_pais:number;
     id_transacao: number;
     kg_liquido: number;
     mercadoria: string;

@@ -121,7 +121,7 @@ export default function ComparacaoEstados() {
         : 0;
 
     return (
-        <div className="relative flex flex-col items-center min-h-screen bg-transparent p-4 sm:p-6">
+        <div className="relative z-10 flex flex-col items-center min-h-screen bg-transparent p-4 sm:p-6">
             <div className="w-full max-w-[1200px] mx-auto">
                 <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mt-6 mb-4 text-center">
                     Comparação dos Estados
