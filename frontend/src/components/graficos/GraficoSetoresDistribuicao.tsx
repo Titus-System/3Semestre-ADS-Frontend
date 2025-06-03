@@ -1,7 +1,8 @@
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer, Tooltip } from "recharts";
+import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from "recharts";
 import { Estado, Pais } from "../../models/interfaces";
 import { useEffect, useState } from "react";
 import { buscaInfoSetores } from "../../services/setoresService";
+import Loading from "../loading";
 
 
 type Props = {
@@ -11,8 +12,8 @@ type Props = {
     pais?: Pais | null
 }
 
-function formataTitulo(tipo?: string | null, pais?: Pais | null, estado?:Estado|null) {
-    if (!tipo) {tipo = 'exp'}
+function formataTitulo(tipo?: string | null, pais?: Pais | null, estado?: Estado | null) {
+    if (!tipo) { tipo = 'exp' }
     let titulo = `Distribuição das ${tipo}ortações ${estado ? `por ${estado.sigla}` : ``}`
     if (pais) {
         if (tipo == 'imp') {
@@ -27,29 +28,34 @@ function formataTitulo(tipo?: string | null, pais?: Pais | null, estado?:Estado|
 export default function GraficoSetoresDistribuicao({ tipo, anos, estado, pais }: Props) {
     const [dadosSetores, setDadosSetores] = useState<any>();
     const [mostrarAgregado, setMostrarAgregado] = useState(false);
-    const [dataKey, setDataKey] = useState(tipo ? `VL_FOB_${tipo.toUpperCase()}` : 'VL_FOB_EXP')
+    const [dataKey, setDataKey] = useState(tipo ? `valor_fob_${tipo}` : 'valor_fob_exp')
     const [titulo, setTitulo] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
 
     useEffect(() => {
         const executarBusca = async () => {
             setIsLoading(true);
-            const dados = await buscaInfoSetores(anos ? anos : null, pais ? pais.id_pais : null, estado ? estado.sigla : null)
-            setDadosSetores(dados);
+            const dados = await buscaInfoSetores(anos ? anos : null, pais ? pais.id_pais : null, estado ? estado.id_estado : null)
+            const dadosConvertidos = dados.map((item: any) => ({
+                ...item,
+                valor_fob_exp: Number(item.valor_fob_exp),
+                valor_fob_imp: Number(item.valor_fob_imp),
+                valor_agregado_exp: Number(item.valor_agregado_exp),
+                valor_agregado_imp: Number(item.valor_agregado_imp),
+            }));
+            setDadosSetores(dadosConvertidos);
             setTitulo(formataTitulo(tipo, pais, estado));
             setIsLoading(false);
         };
         executarBusca();
     }, [tipo, anos, estado, pais]);
 
-
     useEffect(() => {
         const mudaDataKey = async () => {
             if (mostrarAgregado) {
                 setDataKey(tipo ? `valor_agregado_${tipo}` : 'valor_agregado_exp');
             } else {
-                setDataKey(`VL_FOB_${tipo ? tipo.toUpperCase() : 'EXP'}`);
+                setDataKey(`valor_fob_${tipo ? tipo : 'exp'}`);
             }
         };
         mudaDataKey();
@@ -57,17 +63,13 @@ export default function GraficoSetoresDistribuicao({ tipo, anos, estado, pais }:
 
     if (isLoading) {
         return (
-            <div className="p-6 rounded-lg shadow">
-                <div className="flex justify-center items-center h-64">
-                    <svg className="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentCo" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                </div>
-            </div>
+            <Loading />
         );
     };
-
+    const valores = dadosSetores?.map((item: any) => item[dataKey]) || [];
+    const maxValor = Math.max(...valores);
+    const padding = maxValor * 0.1; // adiciona 10% para respiro visual
+    const limiteSuperior = maxValor + padding;
     return (
         <div className="bg-transparent rounded p-4 w-full max-w-full overflow-x-auto">
             <h3 className="text-center text-gray-300 font-semibold mb-2">
@@ -78,8 +80,8 @@ export default function GraficoSetoresDistribuicao({ tipo, anos, estado, pais }:
                     <button
                         onClick={() => setMostrarAgregado(false)}
                         className={`px-4 py-1 rounded-md text-sm border transition ${!mostrarAgregado
-                                ? 'bg-indigo-600 text-white border-indigo-600'
-                                : 'bg-white text-indigo-600 border-indigo-300 hover:border-indigo-600'
+                            ? 'bg-indigo-600 text-white border-indigo-600'
+                            : 'bg-white text-indigo-600 border-indigo-300 hover:border-indigo-600'
                             }`}
                     >
                         {`Valor FOB ${tipo}`}
@@ -87,8 +89,8 @@ export default function GraficoSetoresDistribuicao({ tipo, anos, estado, pais }:
                     <button
                         onClick={() => setMostrarAgregado(true)}
                         className={`px-4 py-1 rounded-md text-sm border transition ${mostrarAgregado
-                                ? 'bg-indigo-600 text-white border-indigo-600'
-                                : 'bg-white text-indigo-600 border-indigo-300 hover:border-indigo-600'
+                            ? 'bg-indigo-600 text-white border-indigo-600'
+                            : 'bg-white text-indigo-600 border-indigo-300 hover:border-indigo-600'
                             }`}
                     >
                         {`Valor Agregado ${tipo}`}
@@ -96,18 +98,34 @@ export default function GraficoSetoresDistribuicao({ tipo, anos, estado, pais }:
                 </div>
             </div>
             <ResponsiveContainer width="100%" height={400}>
-                <RadarChart data={dadosSetores} outerRadius="80%" width={730} height={250}>
-                    <Radar name={`Valor FOB ${tipo}`} dataKey={dataKey} fill=" #6366f1" fillOpacity={0.8}/>
+                <RadarChart data={dadosSetores} outerRadius="80%">
                     <PolarGrid />
                     <PolarAngleAxis dataKey="setor" stroke="#E0E0E0" />
+                    <PolarRadiusAxis
+                        angle={30}
+                        domain={[0, limiteSuperior]}
+                        tick={false}
+                    />
+                    <Radar
+                        name={`Valor FOB ${tipo}`}
+                        dataKey={dataKey}
+                        fill="#6366f1"
+                        fillOpacity={0.8}
+                    />
                     <Tooltip
-                        labelFormatter={(label) => `${label.charAt(0).toUpperCase() + label.substring(1, label.length)}`}
-                        formatter={(value: number) => `$ ${value?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-                        labelClassName=''
-                        labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }}
+                        labelFormatter={(label) =>
+                            `${label.charAt(0).toUpperCase()}${label.slice(1)}`
+                        }
+                        formatter={(value: number) =>
+                            `$ ${value?.toLocaleString('pt-BR', {
+                                maximumFractionDigits: 2
+                            })}`
+                        }
+                        labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
                     />
                 </RadarChart>
             </ResponsiveContainer>
+
         </div>
     )
 }

@@ -71,7 +71,7 @@ export default function GraficoTendencias({ ncm, sh4, estado, pais }: Props) {
 
     useEffect(() => {
         if (dadosGrafico.length > 0) {
-            const limite = new Date('2024-12-01');
+            const limite = new Date('2025-04-01');
 
             const totais = dadosGrafico
                 .filter(item => new Date(item.data) <= limite)
@@ -259,7 +259,7 @@ export default function GraficoTendencias({ ncm, sh4, estado, pais }: Props) {
 
                     )}
                     <ReferenceLine
-                        x="2025-01-01"
+                        x="2025-05-01"
                         stroke="red"
                         strokeDasharray="3 3"
                         label={{

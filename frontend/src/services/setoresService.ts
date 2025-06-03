@@ -27,7 +27,7 @@ export async function buscaPaisPorNome(nome:string){
     }
 }
 
-export async function buscaInfoSetores(anos:number[]|null, pais:number|null, estado:string|null) {
+export async function buscaInfoSetores(anos:number[]|null, pais:number|null, estado:number|null) {
     try {
         const baseUrl = "http://localhost:5000";
         
@@ -36,7 +36,7 @@ export async function buscaInfoSetores(anos:number[]|null, pais:number|null, est
             url.searchParams.append('pais', pais.toString());
         }
         if(estado) {
-            url.searchParams.append('estado_sigla', estado);
+            url.searchParams.append('estado', estado.toString());
         }
         if(anos){
             const appendListParams = (paramName: string, values?: number[]) => {
