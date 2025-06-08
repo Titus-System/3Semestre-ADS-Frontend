@@ -144,7 +144,7 @@ export function GraficoRegressaoLinearVlfob({ ncm, estado, pais }: Props) {
             />
             <Legend content={<CustomLegend fontSize={legendFontSize} />} />
             <ReferenceLine
-              x="2025-01-01"
+              x="2025-05-01"
               stroke="red"
               strokeDasharray="3 3"
               label={{

@@ -170,15 +170,15 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                             <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                             <XAxis
                                 stroke="#E0E0E0"
-                                dataKey="mes"
+                                dataKey="ano"
                                 angle={-45}
                                 textAnchor="end"
                                 height={70}
                                 interval={"preserveStartEnd"}
-                                tickFormatter={(value) => {
-                                    const partes = value.split("-");
-                                    return `${partes[0]}-${partes[1]}`;
-                                }}
+                                // tickFormatter={(value) => {
+                                //     const partes = value.split("-");
+                                //     return `${partes[0]}-${partes[1]}`;
+                                // }}
                             />
                             <YAxis
                                 stroke="#E0E0E0"
