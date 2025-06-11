@@ -225,6 +225,7 @@ export default function GraficoTendencias({ ncm, sh4, estado, pais }: Props) {
                     <Tooltip
                         labelFormatter={(label) => `${label}`}
                         formatter={(value: number) => `${value?.toLocaleString('pt-BR')}`}
+                        labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }}
                     />
                     <Legend content={<CustomLegend fontSize={16} />} />
 

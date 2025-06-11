@@ -76,8 +76,10 @@ async function buscarHistEstados({ tipo, estados, pais, ncm }: Props) {
     const dados = await buscarHistoricoEstado(
         tipo ? tipo : "exp",
         ids_estados,
+        ncm ? [ncm.id_ncm] : [],
+        undefined,
+        undefined,
         pais ? [pais.id_pais] : [],
-        ncm ? [ncm.id_ncm] : []
     );
 
     const dadosConvertidos = dados.map((item: any) => ({
