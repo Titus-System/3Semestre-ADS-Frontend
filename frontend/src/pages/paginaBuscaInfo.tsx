@@ -4,7 +4,7 @@ import { busca_transacoes_por_ncm } from "../services/ncmService";
 import TabelaResultados from "../components/TabelaResultados";
 import PainelEstatisticasVlfob from "../components/paineis/PainelEstatisticasVlfob";
 import PainelEstatisticasAuxiliares from "../components/paineis/PainelEstatisticasAuxiliaresVlfob";
-import { Estado, Mercadoria, Pais, Sh4 } from "../models/interfaces";
+import { Estado, Mercadoria, Pais, Sh4, Urf } from "../models/interfaces";
 import InputNcm from "../components/input/inputNcm";
 import InputEstado from "../components/input/inputEstado";
 import InputPais from "../components/input/inputPais";
@@ -45,7 +45,7 @@ export default function PaginaBuscaInfo() {
 
 
     const [selectedModes, setSelectedModes] = useState<number[]>([]);
-    const [urf, setUrf] = useState("");
+    const [urf, setUrf] = useState<Urf | null>(null);
     const [transacoes, setTransacoes] = useState<any[]>([]);
 
     const handleModaisSelecionados = (modais: number[]) => {
@@ -59,7 +59,7 @@ export default function PaginaBuscaInfo() {
                 const qtd = undefined;
                 const paisDestino = paisSelecionado?.id_pais;
                 const estadoDestino = estadoSelecionado?.id_estado;
-                const urfSelecionada = urf ? [parseInt(urf)] : undefined;
+                const urfSelecionada = urf ? [urf.id_urf] : undefined;
 
                 const modosSelecionados = selectedModes.length > 0 ? selectedModes : undefined;
 
@@ -111,7 +111,7 @@ export default function PaginaBuscaInfo() {
                                 ncm={mercadoriaSelecionada ? [mercadoriaSelecionada.id_ncm] : undefined}
                                 estado={estadoSelecionado ? [estadoSelecionado.id_estado] : undefined}
                                 pais={paisSelecionado ? [paisSelecionado.id_pais] : undefined}
-                                urf={urf ? [parseInt(urf)] : undefined}
+                                urf={urf ? [urf.id_urf] : undefined}
                                 transporte={selectedModes}
                             />
                             
@@ -137,7 +137,7 @@ export default function PaginaBuscaInfo() {
                                     />
                                 </>
                             )}
-                            {!selectedModes.length && !urf.length && !sh4 && !mercadoriaSelecionada ? (
+                            {!selectedModes.length && !urf && !mercadoriaSelecionada ? (
                                 <PainelTendencias
                                     estado={estadoSelecionado}
                                     pais={paisSelecionado}
@@ -149,7 +149,7 @@ export default function PaginaBuscaInfo() {
                                 <PainelSh4 sh4={sh4.id_sh4} />
                             )}
 
-                            {!selectedModes.length && !urf.length && !sh4 ? (
+                            {!selectedModes.length && !urf && !sh4 ? (
                                 <div className="gap-4 flex flex-col rounded p-4 w-full">
                                     <div className="rounded-lg">
                                         <PainelEstatisticasVlfob

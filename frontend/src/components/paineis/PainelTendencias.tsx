@@ -11,13 +11,6 @@ type Props = {
 }
 
 export default function PainelTendencias({ estado, pais, ncm, sh4 }: Props) {
-    const [exibicao, setExibicao] = useState<string>('valor_fob');
-    const [resumo, setResumo] = useState<any>(null);
-    const [dadosGrafico, setDadosGrafico] = useState<any[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-
-
-
     return (
         <div className="">
             {sh4 ? (

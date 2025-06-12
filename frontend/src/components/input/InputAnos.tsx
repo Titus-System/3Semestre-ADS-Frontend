@@ -5,7 +5,7 @@ interface InputAnosProps {
 }
 
 export default function InputAnos({ onChange }: InputAnosProps): JSX.Element {
-  const anos: number[] = Array.from({ length: 2024 - 2014 + 1 }, (_, i) => 2014 + i);
+  const anos: number[] = Array.from({ length: 2025 - 2014 + 1 }, (_, i) => 2014 + i);
   const [selectedYears, setSelectedYears] = useState<number[]>([]);
   const [lastClicked, setLastClicked] = useState<number | null>(null);
   const [expanded, setExpanded] = useState<boolean>(false);
