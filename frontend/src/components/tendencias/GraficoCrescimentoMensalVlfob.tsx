@@ -30,13 +30,15 @@ export function GraficoCrescimentoMensalVlfob({ ncm, estado, pais }: Props) {
     const [strokeWidth, setStrokeWidth] = useState(2);
     const [intervalX, setIntervalX] = useState(23);
     const [legendFontSize, setLegendFontSize] = useState(14);
+    const [modalFontSize, setModalFontSize] = useState(14);
 
      useEffect(() => {
         const handleResize = () => {
+            setModalFontSize(window.innerWidth < 288 ? 9 : window.innerWidth < 325 ? 10 : window.innerWidth < 342 ? 11 : window.innerWidth < 368 ? 12 : window.innerWidth < 440 ? 13 : 14);
             setFontSizeX(window.innerWidth < 387 ? 10 : window.innerWidth < 510 ? 11 : 12);
             setStrokeWidth(window.innerWidth < 400 ? 1 : 2);
             setIntervalX(window.innerWidth < 319 ? 71 : window.innerWidth < 392 ? 47 : window.innerWidth < 528 ? 35 : 23);
-            setLegendFontSize(window.innerWidth < 305 ? 10 : window.innerWidth < 640 ? 12 : 14);
+            setLegendFontSize(window.innerWidth < 265 ? 10 : window.innerWidth < 305 ? 11 : window.innerWidth < 640 ? 13 : 14);
         };
 
         handleResize(); // Executa no carregamento
@@ -136,9 +138,11 @@ export function GraficoCrescimentoMensalVlfob({ ncm, estado, pais }: Props) {
                     <Tooltip
                         labelFormatter={(label) => `Data: ${formatarData(label as string)}`}
                         formatter={(value: any) => `${value.toFixed(2)}%`}
-                        labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }}
+                        labelStyle={{ color: ' #1e40af', fontWeight: 'bold', fontSize: modalFontSize}}
+                        itemStyle={{ fontSize: modalFontSize }}
+
                     />
-                    <Legend content={<CustomLegend fontSize={legendFontSize} />} />
+                    <Legend content={<CustomLegend fontSize={legendFontSize} />} wrapperStyle={{ width: '100%', display: 'flex', justifyContent: 'center' }} />
                     <ReferenceLine
                         x="2025-05-01"
                         stroke="red"
@@ -157,14 +161,14 @@ export function GraficoCrescimentoMensalVlfob({ ncm, estado, pais }: Props) {
                         type="monotone"
                         dataKey="crescimento_exp"
                         stroke="rgb(18, 148, 1)"
-                        name="Crescimento Exportação (%)"
+                        name="Crescimento Exportação"
                         strokeWidth={strokeWidth} dot={{ r: 1 }}
                     />
                     <Line
                         type="monotone"
                         dataKey="crescimento_imp"
                         stroke=" rgb(179, 15, 15)"
-                        name="Crescimento Importação (%)"
+                        name="Crescimento Importação"
                         strokeWidth={strokeWidth} dot={{ r: 1 }}
                     />
                 </LineChart>

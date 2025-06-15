@@ -11,12 +11,13 @@ type Props = {
 
 export default function PainelEstatisticasBalancaComercial({ ncm, estado, pais }: Props) {
     const [abaAtiva, setAbaAtiva] = useState("regressao");
-
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 445);
     const [isSmallScreen, setIsSmallScreen] = useState(false);
     
     useEffect(() => {
     const handleResize = () => {
-            setIsSmallScreen(window.innerWidth <= 380);
+        setIsMobile(window.innerWidth < 445);
+        setIsSmallScreen(window.innerWidth <= 380);
     };
     
     handleResize(); // Verifica no primeiro render
@@ -30,31 +31,25 @@ export default function PainelEstatisticasBalancaComercial({ ncm, estado, pais }
             <h3 className="text-xl text-white font-semibold mb-4">Análises estatísticas de Balança Comercial</h3>
 
             {/* Abas */}
-            <div className="flex border-b mb-4">
+            <div className={`flex mb-4 ${isMobile ? "flex-col space-y-2" : "border-b"}`}>
                 <button
                     onClick={() => setAbaAtiva("regressao")}
-                    className={`py-2 ${isSmallScreen ? "px-1" : "px-2 sm:px-4"} ${isSmallScreen ? "text-xs" : "text-sm"} font-medium ${abaAtiva === "regressao"
-                        ? "border-b-2 border-blue-500 text-blue-600"
-                        : "text-white hover:text-gray-400"
-                        }`}
+                    className={`py-2 font-medium text-sm ${isSmallScreen ? "px-1" : "px-2 sm:px-4"} ${isMobile ? "px-3 shadow-md rounded-md" : ""} ${abaAtiva === "regressao"
+                        ? isMobile ? "text-white bg-indigo-950" : "border-b-2 border-blue-500 text-blue-600" : isMobile ? "bg-indigo-600/10 text-white" : "text-white hover:text-gray-400"}`}
                 >
                     Regressão Linear
                 </button>
                 <button
                     onClick={() => setAbaAtiva("volatilidade")}
-                    className={`py-2 ${isSmallScreen ? "px-1" : "px-2 sm:px-4"} ${isSmallScreen ? "text-xs" : "text-sm"} font-medium ${abaAtiva === "volatilidade"
-                        ? "border-b-2 border-blue-500 text-blue-600"
-                        : "text-white hover:text-gray-400"
-                        }`}
+                    className={`py-2 font-medium text-sm ${isSmallScreen ? "px-1" : "px-2 sm:px-4"} ${isMobile ? "px-3 shadow-md rounded-md" : ""} ${abaAtiva === "volatilidade"
+                        ? isMobile ? "text-white bg-indigo-950" : "border-b-2 border-blue-500 text-blue-600" : isMobile ? "bg-indigo-600/10 text-white" : "text-white hover:text-gray-400"}`}
                 >
                     Volatilidade
                 </button>
                 <button
                     onClick={() => setAbaAtiva("crescimento")}
-                    className={`py-2 ${isSmallScreen ? "px-1" : "px-2 sm:px-4"} ${isSmallScreen ? "text-xs" : "text-sm"} font-medium ${abaAtiva === "crescimento"
-                        ? "border-b-2 border-blue-500 text-blue-600"
-                        : "text-white hover:text-gray-400"
-                        }`}
+                    className={`py-2 font-medium text-sm ${isSmallScreen ? "px-1" : "px-2 sm:px-4"} ${isMobile ? "px-3 shadow-md rounded-md" : ""} ${abaAtiva === "crescimento"
+                        ? isMobile ? "text-white bg-indigo-950" : "border-b-2 border-blue-500 text-blue-600" : isMobile ? "bg-indigo-600/10 text-white" : "text-white hover:text-gray-400"}`}
                 >
                     Crescimento Mensal
                 </button>

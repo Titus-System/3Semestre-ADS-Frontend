@@ -7,6 +7,7 @@ import {
     ReferenceLine,
     Area, LegendProps
 } from "recharts";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Hhi from "../modais/hhi";
 import Sazonalidade from "../modais/sazonalidade";
 import { formatarValor } from "../../utils/formatarValor";
@@ -23,9 +24,50 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
     const [abaAtiva, setAbaAtiva] = useState<string>("sazonalidade");
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 445);
     const [mostrarModalHhi, setMostrarModalHhi] = useState(false);
     const [mostrarModalSazonalidade, setMostrarModalSazonalidade] = useState(false);
+
+    const [intervalX, setIntervalX] = useState(0);
+    const [isSmallScreen, setIsSmallScreen] = useState(false);
+    const [legendFontSize, setLegendFontSize] = useState(14); 
+    const [modalFontSizeHI, setModalFontSizeHI] = useState(14);
+    const [modalFontSizeSazo, setModalFontSizeSazo] = useState(14);
+
+    useEffect(() => {
+    const handleResize = () => {
+        setModalFontSizeSazo(window.innerWidth < 500 ? 13 : 14);
+        setModalFontSizeHI(window.innerWidth < 273 ? 8 : window.innerWidth < 290 ? 9 : window.innerWidth < 304 ? 10 : window.innerWidth < 320 ? 11 : window.innerWidth < 342 ? 12 : window.innerWidth < 386 ? 13 : 14);
+        setIntervalX(window.innerWidth < 560 ? 0 : window.innerWidth < 695 ? 1 : 0);
+        setIsMobile(window.innerWidth < 445);
+        setLegendFontSize(window.innerWidth < 265 ? 10 : window.innerWidth < 305 ? 11 : window.innerWidth < 640 ? 13 : 14);
+    };
+    
+    handleResize(); 
+    window.addEventListener("resize", handleResize);
+    
+    return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+
+        useEffect(() => {
+            const handleResize = () => setIsSmallScreen(window.innerWidth < 560);
+            handleResize(); 
+            window.addEventListener("resize", handleResize);
+            return () => window.removeEventListener("resize", handleResize);
+        }, []);
+
+        // Função para scroll, sem usar useRef, acessando DOM via id
+        const scrollGrafico = (direction: "left" | "right") => {
+            const container = document.getElementById("grafico-scroll-container");
+            if (container) {
+            const scrollAmount = 250;
+            container.scrollBy({
+                left: direction === "left" ? -scrollAmount : scrollAmount,
+                behavior: "smooth",
+            });
+            }
+        };
 
 
     useEffect(() => {
@@ -67,7 +109,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
     const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
         return (
         <div className="w-full flex justify-center mt-1">
-              <ul className="flex flex-row gap-3">
+              <ul className="flex flex-col gap-y-1 sm:flex-row sm:gap-3 lg:flex-col lg:gap-y-1 2xl:flex-row 2xl:gap-x-3">
                 {payload?.map((entry, index) => (
                   <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
                     <span
@@ -91,14 +133,94 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                     Sazonalidade Mensal
                 </h3>
                 {mostrarModalSazonalidade && <Sazonalidade onClose={() => setMostrarModalSazonalidade(false)} />}
+                {isSmallScreen ? (
+                        <div className="relative">
+                        <button
+                            onClick={() => scrollGrafico("left")}
+                            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full shadow z-10"
+                            aria-label="Scroll Left"
+                        >
+                            <FaChevronLeft />
+                        </button>
+                        <button
+                            onClick={() => scrollGrafico("right")}
+                            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full shadow z-10"
+                            aria-label="Scroll Right"
+                        >
+                            <FaChevronRight />
+                        </button>
+
+                        <div id="grafico-scroll-container" className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
+                            <div className="w-[800px] h-[400px] min-w-[800px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart
+                                data={estatisticasAuxiliares.sazonalidade}
+                                margin={{ top: 22, right: 12, left: 0, bottom: 8 }}
+                                >
+                                <CartesianGrid strokeDasharray="3 3" className="opacity-40" />
+                                <XAxis
+                                    stroke="#E0E0E0"
+                                    dataKey="mes"
+                                    angle={-45}
+                                    textAnchor="end"
+                                    height={70}
+                                    interval={intervalX}
+                                />
+                                <YAxis
+                                    stroke="#E0E0E0"
+                                    tickFormatter={formatarValor}
+                                    label={{
+                                    value: "Valor (USD)",
+                                    angle: -90,
+                                    stroke: "#E0E0E0",
+                                    position: "insideLeft",
+                                    offset: -10,
+                                    }}
+                                    tick={{ fontSize: 11 }}
+                                />
+                                <Tooltip
+                                    formatter={(value: number) => formatarValor(value)}
+                                    labelFormatter={(label) => `Mês: ${label}`}
+                                    labelStyle={{ color: "#1e40af", fontWeight: "bold", fontSize: modalFontSizeSazo }}
+                                    itemStyle={{ fontSize: modalFontSizeSazo }}
+                                />
+                                {/* <Legend content={<CustomLegend fontSize={16} />} /> */}
+                                <Bar
+                                    dataKey="exportacoes"
+                                    name="Exportações"
+                                    fill="rgb(35, 148, 20)"
+                                    radius={[4, 4, 0, 0]}
+                                />
+                                <Bar
+                                    dataKey="importacoes"
+                                    name="Importações"
+                                    fill="rgb(179, 15, 15)"
+                                    radius={[4, 4, 0, 0]}
+                                />
+                                </BarChart>
+                            </ResponsiveContainer>
+                            </div>
+                        </div>
+                    <div className="mb-2 mt-6">
+                        <CustomLegend
+                            payload={[
+                                { value: "Exportações", color: "rgb(35, 148, 20)" },
+                                { value: "Importações", color: "rgb(179, 15, 15)" },
+                            ]}
+                            fontSize={legendFontSize}
+                        />
+                    </div>
+                     
+                </div>
+                    ) : (
                 <div className="h-[400px]">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart
                             data={estatisticasAuxiliares.sazonalidade}
-                            margin={{ top: 10, right: 30, left: 20, bottom: 40 }}
+                            margin={{ top: 10, right: 12, left: 0, bottom: 40 }}
                         >
                             <CartesianGrid strokeDasharray="3 3" className="opacity-40" />
-                            <XAxis stroke="#E0E0E0" dataKey="mes" angle={-45} textAnchor="end" height={70} />
+                            <XAxis stroke="#E0E0E0" dataKey="mes" angle={-45} textAnchor="end" height={70} interval={intervalX}/>
                             <YAxis
                                 stroke="#E0E0E0"
                                 tickFormatter={formatarValor}
@@ -116,6 +238,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
+                )}
             </div>
         );
     };
@@ -126,7 +249,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
         const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
         return (
         <div className="w-full flex justify-center mt-1">
-              <ul className="flex flex-row gap-3">
+              <ul className="flex flex-col gap-1 sm:flex-row sm:gap-3 lg:flex-col lg:gap-1 2xl:flex-row 2xl:gap-3">
                 {payload?.map((entry, index) => (
                   <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
                     <span
@@ -153,7 +276,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart
                             data={dadosConcentracao}
-                            margin={{ top: 10, right: 30, left: 20, bottom: 40 }}
+                            margin={{ top: 10, right: 12, left: 0, bottom: 40 }}
                         >
                             <defs>
                                 <linearGradient id="exportGradient" x1="0" y1="0" x2="0" y2="1">
@@ -189,9 +312,11 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                             <Tooltip
                                 formatter={(value: number) => formatarHHI(value)}
                                 labelFormatter={(label) => `Período: ${label}`}
-                                labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
+                                labelStyle={{ color: '#1e40af', fontWeight: 'bold', fontSize: modalFontSizeHI }}
+                                itemStyle={{ fontSize: modalFontSizeHI }}
+
                             />
-                            <Legend content={<CustomLegend fontSize={16} />} />
+                            <Legend content={<CustomLegend fontSize={legendFontSize} />} wrapperStyle={{ width: '100%', display: 'flex', justifyContent: 'center' }}/>
 
                             <Area
                                 type="monotone"
@@ -214,9 +339,9 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                             />
 
                             {/* Faixas de referência */}
-                            <ReferenceLine y={0.15} stroke="#94a3b8" strokeDasharray="3 3" label="Desconcentrado" />
-                            <ReferenceLine y={0.25} stroke="#eab308" strokeDasharray="3 3" label="Moderado" />
-                            <ReferenceLine y={0.5} stroke="#dc2626" strokeDasharray="3 3" label="Alta concentração" />
+                            <ReferenceLine y={0.15} stroke="#94a3b8" strokeDasharray="3 3" label={{ value: "Desconcentrado", fill: " #ced4da" }} />
+                            <ReferenceLine y={0.25} stroke="#eab308" strokeDasharray="3 3" label={{ value: "Moderado", fill: " #ced4da" }} />
+                            <ReferenceLine y={0.5} stroke="#dc2626" strokeDasharray="3 3" label={{ value: "Alta concentração", fill: " #ced4da" }} />
                         </AreaChart>
 
                     </ResponsiveContainer>
@@ -291,40 +416,36 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
             <h2 className="text-xl font-semibold text-white mb-4">Análises Estatísticas Auxiliares</h2>
 
             {/* Tabs de navegação */}
-            <div className="border-b border-gray-200">
-                <nav className="grid grid-cols-2 sm:flex -mb-px">
+            <div className={`${isMobile ? " " : "border-b border-gray-200"}`}>
+                <nav className={`sm:flex -mb-px ${isMobile ? "flex-col space-y-2" : "grid grid-cols-2"}`}>
                     <button
                         onClick={() => trocarAba("sazonalidade")}
-                        className={`py-4 px-0 sm:px-2 md:px-6 font-medium text-xs md:text-sm ${abaAtiva === "sazonalidade"
-                            ? "border-b-2 border-blue-500 text-blue-600"
-                            : "text-white hover:text-gray-400 hover:border-gray-300"
+                        className={`mb-[1.5px] font-medium text-sm ${isMobile ? "px-3 py-[8.5px] shadow-md rounded-md w-full" : "py-4 px-0 sm:px-2 md:px-6"} ${abaAtiva === "sazonalidade"
+                            ? isMobile ? "text-white bg-indigo-950" : "border-b-2 border-blue-500 text-blue-600" : isMobile ? "bg-indigo-600/10 text-white" : "text-white hover:text-gray-400 hover:border-gray-300"
                             }`}
                     >
                         Sazonalidade
                     </button>
                     <button
                         onClick={() => trocarAba("concentracao_pais")}
-                        className={`py-4 px-0 sm:px-2 md:px-6 font-medium text-xs md:text-sm ${abaAtiva === "concentracao_pais"
-                            ? "border-b-2 border-blue-500 text-blue-600"
-                            : "text-white hover:text-gray-400 hover:border-gray-300"
+                        className={`mb-[1.5px] font-medium text-sm ${isMobile ? "px-3 py-[8.5px] shadow-md rounded-md w-full" : "py-4 px-0 sm:px-2 md:px-6"} ${abaAtiva === "concentracao_pais"
+                            ? isMobile ? "text-white bg-indigo-950" : "border-b-2 border-blue-500 text-blue-600" : isMobile ? "bg-indigo-600/10 text-white" : "text-white hover:text-gray-400 hover:border-gray-300"
                             }`}
                     >
                         Concentração por país
                     </button>
                     <button
                         onClick={() => trocarAba("concentracao_estado")}
-                        className={`py-4 px-0 sm:px-2 md:px-6 font-medium text-xs md:text-sm ${abaAtiva === "concentracao_estado"
-                            ? "border-b-2 border-blue-500 text-blue-600"
-                            : "text-white hover:text-gray-400 hover:border-gray-300"
+                            className={`mb-[1.5px] font-medium text-sm ${isMobile ? "px-3 py-[8.5px] shadow-md rounded-md w-full" : "py-4 px-0 sm:px-2 md:px-6"} ${abaAtiva === "concentracao_estado"
+                            ? isMobile ? "text-white bg-indigo-950" : "border-b-2 border-blue-500 text-blue-600" : isMobile ? "bg-indigo-600/10 text-white" : "text-white hover:text-gray-400 hover:border-gray-300"
                             }`}
                     >
                         Concentração por estado
                     </button>
                     <button
                         onClick={() => trocarAba("concentracao_ncm")}
-                        className={`py-4 px-0 sm:px-2 md:px-6 font-medium text-xs md:text-sm ${abaAtiva === "concentracao_ncm"
-                            ? "border-b-2 border-blue-500 text-blue-600"
-                            : "text-white hover:text-gray-400 hover:border-gray-300"
+                        className={`mb-[1.5px] font-medium text-sm ${isMobile ? "px-3 py-[8.5px] shadow-md rounded-md w-full" : "py-4 px-0 sm:px-2 md:px-6"} ${abaAtiva === "concentracao_ncm"
+                            ? isMobile ? "text-white bg-indigo-950" : "border-b-2 border-blue-500 text-blue-600" : isMobile ? "bg-indigo-600/10 text-white" : "text-white hover:text-gray-400 hover:border-gray-300"
                             }`}
                     >
                         Concentração por NCM

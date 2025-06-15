@@ -1,4 +1,4 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { Estado, Mercadoria, Pais, Sh4 } from "../../models/interfaces";
 import GraficoTendencias from "../graficos/GraficoTendencias";
 import GraficoTendenciasSh4 from "../graficos/GraficoTendenciasSh4";

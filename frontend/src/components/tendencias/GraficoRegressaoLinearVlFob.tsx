@@ -32,13 +32,15 @@ export function GraficoRegressaoLinearVlfob({ ncm, estado, pais }: Props) {
   const [intervalX, setIntervalX] = useState(23);
   const [strokeWidth, setStrokeWidth] = useState(2);
   const [legendFontSize, setLegendFontSize] = useState(16);
+  const [modalFontSize, setModalFontSize] = useState(14);
 
   useEffect(() => {
         const handleResize = () => {
+            setModalFontSize(window.innerWidth < 304 ? 8 : window.innerWidth < 328 ? 9 : window.innerWidth < 350 ? 10 : window.innerWidth < 364 ? 11 : window.innerWidth < 389 ? 12 : window.innerWidth < 408 ? 13 : 14);
             setFontSizeX(window.innerWidth < 387 ? 10 : window.innerWidth < 510 ? 11 : 12);
             setIntervalX(window.innerWidth < 315 ? 70 : window.innerWidth < 370 ? 42 : window.innerWidth < 482 ? 35 : 23);
             setStrokeWidth(window.innerWidth < 400 ? 1 : 2);
-            setLegendFontSize(window.innerWidth < 305 ? 10 : window.innerWidth < 640 ? 12 : 14);
+            setLegendFontSize(window.innerWidth < 265 ? 10 : window.innerWidth < 305 ? 11 : window.innerWidth < 640 ? 13 : 14);
         };
 
         handleResize(); // Executa no carregamento
@@ -134,9 +136,11 @@ export function GraficoRegressaoLinearVlfob({ ncm, estado, pais }: Props) {
             <Tooltip
               labelFormatter={(label) => `Data: ${formatarData(label as string)}`}
               formatter={(value: number) => `$ ${value.toLocaleString('pt-BR', { maximumFractionDigits: 2 })}`}
-              labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
+              labelStyle={{ color: '#1e40af', fontWeight: 'bold', fontSize: modalFontSize }}
+              itemStyle={{ fontSize: modalFontSize }}
+
             />
-            <Legend content={<CustomLegend fontSize={legendFontSize} />} />
+            <Legend content={<CustomLegend fontSize={legendFontSize} />} wrapperStyle={{ width: '100%', display: 'flex', justifyContent: 'center' }} />
             <ReferenceLine
               x="2025-05-01"
               stroke="red"

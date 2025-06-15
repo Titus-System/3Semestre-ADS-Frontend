@@ -30,13 +30,15 @@ export function GraficoCrescimentoMensalBalanca({ ncm, estado, pais }: Props) {
     const [strokeWidth, setStrokeWidth] = useState(2);
     const [intervalX, setIntervalX] = useState(23);
     const [legendFontSize, setLegendFontSize] = useState(14);
+    const [modalFontSize, setModalFontSize] = useState(14);
 
     useEffect(() => {
         const handleResize = () => {
+            setModalFontSize(window.innerWidth < 277 ? 11 : window.innerWidth < 300 ? 12 : window.innerWidth < 380 ? 13 : 14);
             setFontSizeX(window.innerWidth < 380 ? 10 : 11);
             setIntervalX(window.innerWidth < 365 ? 71 : window.innerWidth < 539 ? 47 : 23);
             setStrokeWidth(window.innerWidth < 400 ? 1 : 2);
-            setLegendFontSize(window.innerWidth < 305 ? 10 : window.innerWidth < 640 ? 12 : 14);
+            setLegendFontSize(window.innerWidth < 265 ? 10 : window.innerWidth < 305 ? 11 : window.innerWidth < 640 ? 13 : 14);
         };
 
         handleResize(); // Executa no carregamento
@@ -136,9 +138,10 @@ export function GraficoCrescimentoMensalBalanca({ ncm, estado, pais }: Props) {
                         <Tooltip
                             labelFormatter={(label) => `Data: ${formatarData(label as string)}`}
                             formatter={(value: any) => `${value.toFixed(2)}%`}
-                            labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }}
+                            labelStyle={{ color: ' #1e40af', fontWeight: 'bold', fontSize: modalFontSize }}
+                            itemStyle={{ fontSize: modalFontSize }}
                         />
-                        <Legend content={<CustomLegend fontSize={legendFontSize} />} />
+                        <Legend content={<CustomLegend fontSize={legendFontSize} />} wrapperStyle={{ width: '100%', display: 'flex', justifyContent: 'center' }} />
                         <ReferenceLine
                             x="2025-05-01"
                             stroke="red"
@@ -157,7 +160,7 @@ export function GraficoCrescimentoMensalBalanca({ ncm, estado, pais }: Props) {
                             type="monotone"
                             dataKey="crescimento"
                             stroke="rgb(124, 207, 255)"
-                            name="Crescimento (%)"
+                            name="Crescimento"
                             strokeWidth={strokeWidth} dot={{ r: 1 }}
                         />
                     </LineChart>

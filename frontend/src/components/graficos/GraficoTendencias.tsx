@@ -27,6 +27,32 @@ export default function GraficoTendencias({ ncm, sh4, estado, pais }: Props) {
     });
     const [lineKey, setLineKey] = useState<string>('vl_fob');
 
+    const [intervalX, setIntervalX] = useState(23);
+    const [strokeWidth, setStrokeWidth] = useState(2);
+    const [legendFontSize, setLegendFontSize] = useState(14);
+    const [fontSizeX, setFontSizeX] = useState(11);
+    const isSmallScreen = window.innerWidth < 947;
+    const [isSmallerScreen, setIsSmallerScreen] = useState(false);
+    const [turnToCol, setTurnToCol] = useState(false);
+    const [turnColVlFob, setTurnColVlFob] = useState(false);
+
+    useEffect(() => { 
+        const handleResize = () => {
+            setTurnColVlFob(window.innerWidth < 375)
+            setTurnToCol(window.innerWidth < 728);
+            setIsSmallerScreen(window.innerWidth < 332);
+            setFontSizeX(window.innerWidth < 387 ? 10 : 11);
+            setIntervalX(window.innerWidth < 365 ? 71 : window.innerWidth < 539 ? 47 : 23);
+            setStrokeWidth(window.innerWidth < 400 ? 1 : 2);
+            setLegendFontSize(window.innerWidth < 265 ? 10 : window.innerWidth < 305 ? 11 : window.innerWidth < 640 ? 13 : 14);
+        };
+
+        handleResize(); // Executa no carregamento
+        window.addEventListener("resize", handleResize); // Escuta mudanças de tamanho
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
 
     useEffect(() => {
         async function carregarDados() {
@@ -114,7 +140,7 @@ export default function GraficoTendencias({ ncm, sh4, estado, pais }: Props) {
     const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
     return (
     <div className="w-full flex justify-center mt-1">
-          <ul className="flex flex-row gap-3">
+          <ul className="flex gap-1 flex-col sm:flex-row sm:gap-3">
             {payload?.map((entry, index) => (
               <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
                 <span
@@ -132,7 +158,7 @@ export default function GraficoTendencias({ ncm, sh4, estado, pais }: Props) {
     return (
         <div className="bg-transparent rounded-lg p-4 w-full max-w-full overflow-x-auto">
             <div className="flex justify-between items-center mb-2">
-                <div className="flex space-x-2">
+                <div className={`flex ${turnColVlFob ? "flex-col w-full" : "flex-row"} gap-2`}>
                     <button
                         onClick={() => setExibicao('valor_fob')}
                         className={`px-4 py-1 rounded-md text-sm border transition ${exibicao == 'valor_fob'
@@ -163,12 +189,12 @@ export default function GraficoTendencias({ ncm, sh4, estado, pais }: Props) {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 my-6">
+            <div className={`grid ${turnToCol ? "grid-cols-1" : "grid-cols-3" } gap-4 my-6`}>
                 <div className="p-4 rounded-lg bg-blue-400/10 border border-blue-200/50 shadow-sm">
                     <h4 className="text-sm text-blue-200 font-medium flex items-center gap-1">
                         {exibicao === 'valor_agregado' ? 'Média de Exportação' : 'Total Exportado'}
                     </h4>
-                    <p className="text-xl font-semibold text-blue-600">
+                    <p className={`${isSmallerScreen ? "text-base" : isSmallScreen ? "text-lg" : "text-xl"} font-semibold text-blue-600`}>
                         {exibicao === 'kg_liquido' ? 'KG ' : 'US$ '}
                         {exibicao == 'kg_liquido' ? totalGeral?.kg_liquido_exp.toLocaleString() : ""}
                         {exibicao == 'valor_fob' ? totalGeral?.vl_fob_exp.toLocaleString() : ""}
@@ -180,7 +206,7 @@ export default function GraficoTendencias({ ncm, sh4, estado, pais }: Props) {
                     <h4 className="text-sm text-red-200 font-medium flex items-center gap-1">
                         {exibicao === 'valor_agregado' ? 'Média de Importação' : 'Total Importado'}
                     </h4>
-                    <p className="text-xl font-semibold text-red-600">
+                    <p className={`${isSmallerScreen ? "text-base" : isSmallScreen ? "text-lg" : "text-xl"} font-semibold text-red-600`}>
                         {exibicao === 'kg_liquido' ? 'KG ' : 'US$ '}
                         {exibicao == 'kg_liquido' ? totalGeral?.kg_liquido_imp.toLocaleString() : ""}
                         {exibicao == 'valor_fob' ? totalGeral?.vl_fob_imp.toLocaleString() : ""}
@@ -193,7 +219,7 @@ export default function GraficoTendencias({ ncm, sh4, estado, pais }: Props) {
                             Saldo
                         </h4>
                         {totalGeral && (
-                            <p className={`text-xl font-semibold ${totalGeral?.vl_fob_exp >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            <p className={`${isSmallerScreen ? "text-base" : isSmallScreen ? "text-lg" : "text-xl"} font-semibold ${totalGeral?.vl_fob_exp >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                                 {exibicao === 'kg_liquido' ? 'KG ' : 'US$ '}
                                 {exibicao == 'valor_fob' ? (totalGeral.vl_fob_exp - totalGeral?.vl_fob_imp).toLocaleString() : ""}
                                 {exibicao == 'kg_liquido' ? (totalGeral?.kg_liquido_exp - totalGeral?.vl_fob_imp).toLocaleString() : ""}
@@ -206,15 +232,15 @@ export default function GraficoTendencias({ ncm, sh4, estado, pais }: Props) {
             <ResponsiveContainer width="100%" height={400}>
                 <LineChart
                     data={dadosGrafico}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                    margin={{ top: 20, right: 15, left: 0, bottom: 5 }}
                 >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis
                         dataKey="data"
                         stroke="#E0E0E0"
                         tickFormatter={formatarData}
-                        interval={11}
-                        tick={{ fontSize: 11 }}
+                        interval={intervalX}
+                        tick={{ fontSize: fontSizeX }}
                     />
                     <YAxis
                         stroke="#E0E0E0"
@@ -227,14 +253,14 @@ export default function GraficoTendencias({ ncm, sh4, estado, pais }: Props) {
                         formatter={(value: number) => `${value?.toLocaleString('pt-BR')}`}
                         labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }}
                     />
-                    <Legend content={<CustomLegend fontSize={16} />} />
+                    <Legend content={<CustomLegend fontSize={legendFontSize} />} wrapperStyle={{ width: '100%', display: 'flex', justifyContent: 'center' }}/>
 
                     <Line
                         key={`${lineKey}_exp`}
                         type="monotone"
                         dataKey={`${lineKey}_exp`}
                         stroke={' #007bff'}
-                        strokeWidth={2}
+                        strokeWidth={strokeWidth}
                         dot={false}
                         name={'Exportação'}
                     />
@@ -244,7 +270,7 @@ export default function GraficoTendencias({ ncm, sh4, estado, pais }: Props) {
                         type="monotone"
                         dataKey={`${lineKey}_imp`}
                         stroke={'rgb(207, 9, 9)'}
-                        strokeWidth={2}
+                        strokeWidth={strokeWidth}
                         dot={false}
                         name={'Importação'}
                     />
@@ -253,7 +279,7 @@ export default function GraficoTendencias({ ncm, sh4, estado, pais }: Props) {
                             type="monotone"
                             dataKey={"balanca"}
                             stroke="rgb(170, 111, 22)"
-                            strokeWidth={2}
+                            strokeWidth={strokeWidth}
                             dot={false}
                             name="Balança Comercial"
                         />
@@ -268,8 +294,12 @@ export default function GraficoTendencias({ ncm, sh4, estado, pais }: Props) {
                             position: "top",
                             angle: 0,
                             fontSize: 12,
-                            fill: "red"
+                            fill: "red",
+                            fontWeight: 700
                         }}
+                        
+                        strokeWidth={2}
+
                     />
                 </LineChart>
             </ResponsiveContainer>
