@@ -1,4 +1,5 @@
 import Transacao from "../models/transacao";
+import { baseUrl } from "./serviceUtils";
 
 export async function busca_transacoes_por_ncm(
     ncm: number,
@@ -13,7 +14,7 @@ export async function busca_transacoes_por_ncm(
 ): Promise<Transacao[]> {
     try {
         // Constrói a URL com parâmetros de query
-        const url = new URL('http://localhost:5000/busca_transacoes_por_ncm');
+        const url = new URL(`${baseUrl}/busca_transacoes_por_ncm`);
 
         // Adiciona parâmetros obrigatórios
         url.searchParams.append('tipo', tipo);
@@ -72,8 +73,7 @@ export async function buscarRankingNcm(
 
 ) {
     try {
-        const baseUrl = import.meta.env.VITE_BACKEND_URL;
-        const url = new URL(`http://localhost:5000/ranking_ncm`);
+        const url = new URL(`${baseUrl}/ranking_ncm`);
         url.searchParams.append('tipo', tipo);
         url.searchParams.append('qtd', qtd.toString());
         // console.log("🔗 URL da requisição:", url.toString());
@@ -124,7 +124,6 @@ export async function buscarNcmHist(
     urfs: number[]
 ) {
     try {
-        const baseUrl = "http://localhost:5000";
         const url = new URL(`${baseUrl}/busca_ncm_hist`);
         url.searchParams.append('tipo', tipo);
 
@@ -177,7 +176,6 @@ export async function buscaNcmInfo(
     urfs: number[]
 ) {
     try {
-        const baseUrl = "http://localhost:5000";
         const url = new URL(`${baseUrl}/busca_por_ncm`);
 
         const appendListParams = (paramName: string, values?: number[]) => {
@@ -222,7 +220,6 @@ export async function buscaPorNcm(
     urfs?: number[]
 ) {
     try {
-        const baseUrl = "http://localhost:5000";
         const url = new URL(`${baseUrl}/busca_por_ncm`);
 
         const appendListParams = (paramName: string, values?: number[]) => {
@@ -261,7 +258,6 @@ export async function buscaPorNcm(
 
 export async function buscaNcmPorNome(nome: string) {
     try {
-        const baseUrl = "http://localhost:5000";
         const url = new URL(`${baseUrl}/pesquisa_ncm_por_nome`);
         url.searchParams.append('nome', nome);
 

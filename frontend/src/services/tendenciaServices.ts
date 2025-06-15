@@ -1,6 +1,7 @@
+import { baseUrl } from "./serviceUtils";
+
 export async function buscarTendenciaBalancaComercial(estado?: number | null, pais?: number | null, ncm?: number | null) {
     try {
-        const baseUrl = "http://localhost:5000";
         const url = new URL(`${baseUrl}/busca_tendencia_balanca_comercial`);
         if (ncm) {
             url.searchParams.append("ncm", ncm?.toString());
@@ -37,7 +38,6 @@ export async function buscarTendenciaBalancaComercial(estado?: number | null, pa
 
 export async function buscarTendenciaVlFob(tipo: "exp" | "imp", estado?: number | null, pais?: number | null, ncm?: number | null) {
     try {
-        const baseUrl = "http://localhost:5000";
         const url = new URL(`${baseUrl}/busca_tendencia_vlfob`);
         url.searchParams.append("tipo", tipo);
         if (ncm) {
@@ -75,7 +75,6 @@ export async function buscarTendenciaVlFob(tipo: "exp" | "imp", estado?: number 
 
 export async function buscarTendenciaVa(tipo: "exp" | "imp", estado?: number | null, pais?: number | null, ncm?: number | null) {
     try {
-        const baseUrl = "http://localhost:5000";
         const url = new URL(`${baseUrl}/busca_tendencia_va`);
         url.searchParams.append("tipo", tipo);
         if (ncm) {
@@ -112,7 +111,6 @@ export async function buscarTendenciaVa(tipo: "exp" | "imp", estado?: number | n
 
 async function baseBuscaEstatVlFob(tipo: "exp" | "imp", estado?: number | null, pais?: number | null, rota?: string, ncm?: number | null) {
     try {
-        const baseUrl = "http://localhost:5000";
         const url = new URL(`${baseUrl}/${rota}`);
         url.searchParams.append("tipo", tipo);
         if (estado) {
@@ -180,7 +178,6 @@ export async function buscarAnalisesEstatisticasAuxiliaresVlfob(ncm?: number | n
 
 export async function buscarTendenciaDashboard(estado?: number | null, pais?: number | null, ncm?: number | null, sh4?: string | null) {
     try {
-        const baseUrl = "http://localhost:5000";
         let rota = "busca_tendencias_dashboard"
         // sh4 ? rota = "/busca_tendencias_sh4" : rota = "/busca_tendencias_dashboard"
         const url = new URL(`${baseUrl}/${rota}`);

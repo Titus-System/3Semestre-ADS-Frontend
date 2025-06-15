@@ -1,3 +1,5 @@
+import { baseUrl } from "./serviceUtils";
+
 export async function buscaBalancaComercial(
     anos?: number[],
     estados?: number[],
@@ -5,8 +7,7 @@ export async function buscaBalancaComercial(
     paises?: number[],
 ) {
     try {
-        const baseUrl = "http://localhost:5000";
-        const url = new URL(`http://localhost:5000/busca_balanca_comercial`);
+        const url = new URL(`${baseUrl}/busca_balanca_comercial`);
         const appendListParams = (paramName: string, values?: number[]) => {
             values?.forEach(value => url.searchParams.append(paramName, value.toString()));
         };

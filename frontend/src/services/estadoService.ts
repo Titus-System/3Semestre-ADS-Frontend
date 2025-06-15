@@ -1,7 +1,7 @@
+import { baseUrl } from "./serviceUtils";
+
 export async function buscaEstadoPorNome(nome?:string|null){
     try {
-        const baseUrl = "http://localhost:5000";
-        
         const url = new URL(`${baseUrl}/pesquisa_estado_por_nome`);
         if(nome){
             url.searchParams.append('nome', nome);
@@ -41,8 +41,7 @@ export async function buscarRankingEstados(
     cresc: 0 | 1 = 0
 ){
     try {
-        const base_url = "http://localhost:5000";
-        const url = new URL(`${base_url}/ranking_estado`);
+        const url = new URL(`${baseUrl}/ranking_estado`);
         url.searchParams.append('qtd', qtd.toString());
         if (crit) {
             url.searchParams.append('crit', crit);
@@ -92,8 +91,7 @@ export async function buscarHistoricoEstado(
     urfs?: number[]
 ){
     try {
-        const base_url = "http://localhost:5000";
-        const url = new URL(`${base_url}/busca_estado_hist`);
+        const url = new URL(`${baseUrl}/busca_estado_hist`);
         url.searchParams.append('tipo', tipo);
 
         const appendListParams = (paramName: string, values?: number[]) => {
@@ -142,8 +140,7 @@ export async function busca_top_estados(
     cresc: 0 | 1 = 0,
     peso?: number
 ): Promise<any[]> {
-    const base_url = "http://localhost:5000";
-    const url = new URL(`${base_url}/ranking_estado`);
+    const url = new URL(`${baseUrl}/ranking_estado`);
     
     // Adicionando os parâmetros obrigatórios na URL
     url.searchParams.append("tipo", tipo);
@@ -202,8 +199,7 @@ export async function buscarRankingEstadosPorNcm(
     cresc?: boolean | null
 ){
     try {
-        const base_url = "http://localhost:5000";
-        const url = new URL(`${base_url}/ranking_estado`);
+        const url = new URL(`${baseUrl}/ranking_estado`);
         url.searchParams.append('tipo', tipo);
 
         ncm ? url.searchParams.append('ncm', ncm.toString()) : null;

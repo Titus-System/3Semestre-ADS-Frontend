@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { baseUrl } from './serviceUtils';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL: baseUrl,
   headers: {
     Accept: 'application/json',
   },
