@@ -114,7 +114,6 @@ export function GraficoCrescimentoMensalBalanca({ ncm, estado, pais }: Props) {
             >
                 Crescimento Mensal
             </h3>
-            {exibirModal && <ModalCrescimentoMensal onClose={() => setExibirModal(false)} />}
             <div className="h-[400px]">
 
                 <ResponsiveContainer width="100%" height="100%">
@@ -166,6 +165,7 @@ export function GraficoCrescimentoMensalBalanca({ ncm, estado, pais }: Props) {
                     </LineChart>
                 </ResponsiveContainer>
             </div>
+            {exibirModal && <ModalCrescimentoMensal onClose={() => setExibirModal(false)} />}
         </div>
     );
 }

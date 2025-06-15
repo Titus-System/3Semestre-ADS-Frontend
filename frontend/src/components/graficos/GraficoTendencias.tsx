@@ -35,9 +35,11 @@ export default function GraficoTendencias({ ncm, sh4, estado, pais }: Props) {
     const [isSmallerScreen, setIsSmallerScreen] = useState(false);
     const [turnToCol, setTurnToCol] = useState(false);
     const [turnColVlFob, setTurnColVlFob] = useState(false);
+    const [modalFontSize, setModalFontSize] = useState(14);
 
     useEffect(() => { 
         const handleResize = () => {
+            setModalFontSize(window.innerWidth < 291 ? 6 : window.innerWidth < 311 ? 7 : window.innerWidth < 331 ? 8 : window.innerWidth < 350 ? 9 : window.innerWidth < 369 ? 10 : window.innerWidth < 388 ? 11 : window.innerWidth < 428 ? 12 : 14);
             setTurnColVlFob(window.innerWidth < 375)
             setTurnToCol(window.innerWidth < 728);
             setIsSmallerScreen(window.innerWidth < 332);
@@ -251,7 +253,8 @@ export default function GraficoTendencias({ ncm, sh4, estado, pais }: Props) {
                     <Tooltip
                         labelFormatter={(label) => `${label}`}
                         formatter={(value: number) => `${value?.toLocaleString('pt-BR')}`}
-                        labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }}
+                        labelStyle={{ color: ' #1e40af', fontWeight: 'bold', fontSize: modalFontSize }}
+                        itemStyle={{ fontSize: modalFontSize }}
                     />
                     <Legend content={<CustomLegend fontSize={legendFontSize} />} wrapperStyle={{ width: '100%', display: 'flex', justifyContent: 'center' }}/>
 
