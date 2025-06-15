@@ -25,7 +25,6 @@ type Props = {
 
 export function GraficoVolatilidadeVlfob({ ncm, estado, pais }: Props) {
     const [volatilidadeExp, setVolatilidadeExp] = useState<any[]>([]);
-    const [volatilidadeImp, setVolatilidadeImp] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [fontSizeX, setFontSizeX] = useState(12);
     const [intervalX, setIntervalX] = useState(23);

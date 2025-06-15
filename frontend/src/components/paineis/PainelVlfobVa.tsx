@@ -2,7 +2,6 @@ import { useState } from "react";
 import GraficoBalancaComercial from "../graficos/GraficoBalancaComercial";
 import GraficoHistValorAgregado from "../graficos/GraficoHistValorAgregado";
 import { Estado, Mercadoria, Pais } from "../../models/interfaces";
-import GraficoHistGeral from "../graficos/GraficoHistGeral";
 
 type Props = {
     estado?: Estado | null,

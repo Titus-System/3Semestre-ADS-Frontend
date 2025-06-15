@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { Estado, Mercadoria, Pais } from "../../models/interfaces";
-import { buscarTendenciaVlFob } from "../../services/tendenciaServices";
-import { CartesianGrid, Legend, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis, LegendProps } from "recharts";
-import { formatarData } from "../../utils/formatarData";
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, LegendProps } from "recharts";
 import { formatarValor } from "../../utils/formatarValor";
 import Loading from "../loading";
 import { buscarHistoricoEstado } from "../../services/estadoService";
@@ -12,17 +10,6 @@ type Props = {
     estados: Estado[] | null;
     pais?: Pais | null;
     ncm?: Mercadoria | null;
-}
-
-interface HistoricoEstado {
-    "ano": number,
-    "id_estado": number,
-    "kg_liquido_total": number,
-    "mes": number,
-    "nome": string,
-    "sigla": string,
-    "valor_agregado_total": number,
-    "valor_fob_total": number
 }
 
 interface HistEstados {

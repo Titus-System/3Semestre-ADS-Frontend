@@ -1,5 +1,4 @@
 import logosemfundo from "../assets/logosemfundo_titus_system.png";
-import { FaEnvelope, FaGithub, FaInstagram } from "react-icons/fa";
 import { FaGlobe } from "react-icons/fa";
 import { MdContactMail } from "react-icons/md";
 import { FaGavel } from "react-icons/fa";

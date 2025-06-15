@@ -44,6 +44,7 @@ export default function InfoGeralNcm({ ncm, anos, tipo, estados, paises, transpo
             const info: ncmInfo[] = await buscaPorNcm([ncm]);
             setTotalGeral(info[0]);
             console.log("totalGeral: ", info)
+            console.log(tipo)
         }
     }
 

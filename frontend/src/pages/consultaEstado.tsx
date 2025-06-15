@@ -45,6 +45,10 @@ export default function ConsultaEstado() {
   const [exportadores, setExportadores] = useState<string[]>([]);
   const [importadores, setImportadores] = useState<string[]>([]);
 
+  console.log(`
+    ${exportados}, ${importados}, ${exportadores}, ${importadores}
+    `)
+
   const [dadosFiltrados, setDadosFiltrados] = useState<
     { estado: string; exportacao: number; importacao: number }[]
   >([]);

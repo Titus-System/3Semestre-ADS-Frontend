@@ -4,7 +4,7 @@ import Transacao from "../models/transacao";
 interface DetalhesTransacaoModalProps {
     isOpen: boolean;
     onClose: () => void;
-    transacao: Transacao; // Substitua por uma interface mais específica quando tiver os detalhes
+    transacao?: Transacao ; // Substitua por uma interface mais específica quando tiver os detalhes
 }
 
 export default function DetalhesTransacaoModal({ isOpen, onClose, transacao }: DetalhesTransacaoModalProps) {
