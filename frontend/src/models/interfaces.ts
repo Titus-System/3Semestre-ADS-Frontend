@@ -81,3 +81,8 @@ export interface Sh4 {
     id_sh4: string,
     descricao: string
 }
+
+export interface Urf {
+    id_urf: number,
+    nome: string
+}

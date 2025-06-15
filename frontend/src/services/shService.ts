@@ -1,11 +1,11 @@
+import { baseUrl } from "./serviceUtils";
+
 export async function buscaVlFobSh4(
     sh4: number[],
     anos?: number[],
     estados?: number[],
 ) {
     try {
-        const baseUrl = "http://localhost:5000";
-
         const url = new URL(`${baseUrl}/busca_vlfob_sh4`);
 
         const appendListParams = (paramName: string, values?: number[]) => {
@@ -44,8 +44,6 @@ export async function buscaVlFobSetores(
     paises?: number[]
 ) {
     try {
-        const baseUrl = "http://localhost:5000";
-
         const url = new URL(`${baseUrl}/busca_vlfob_setores`);
 
         const appendListParams = (paramName: string, values?: number[]) => {
@@ -80,8 +78,6 @@ export async function buscaVlFobSetores(
 
 export async function buscaSh4Info(sh4: string) {
     try {
-        const baseUrl = "http://localhost:5000";
-
         const url = new URL(`${baseUrl}/busca_sh4_info`);
         url.searchParams.append('sh4', sh4);
         const response = await fetch(url.toString(), {
@@ -108,8 +104,6 @@ export async function buscaSh4Info(sh4: string) {
 
 export async function buscaSh4PorNome(nome: string) {
     try {
-        const baseUrl = "http://localhost:5000";
-
         const url = new URL(`${baseUrl}/busca_sh4_por_nome`);
         url.searchParams.append('nome', nome);
         const response = await fetch(url.toString(), {
@@ -145,8 +139,7 @@ export async function buscaRankingSh4(
     cresc: 0 | 1 = 0
 ) {
     try {
-        const base_url = "http://localhost:5000";
-        const url = new URL(`http://localhost:5000/busca_ranking_sh4`);
+        const url = new URL(`${baseUrl}/busca_ranking_sh4`);
         url.searchParams.append('tipo', tipo);
         url.searchParams.append('qtd', qtd.toString());
 
@@ -196,8 +189,7 @@ export async function buscaHistSh4(
     anos?:number[]
 ) {
     try {
-        const base_url = "http://localhost:5000";
-        const url = new URL(`http://localhost:5000/busca_sh4_hist`);
+        const url = new URL(`${baseUrl}/busca_sh4_hist`);
         url.searchParams.append('tipo', tipo);
 
         const appendListParams = (paramName: string, values?: number[]|string[]) => {

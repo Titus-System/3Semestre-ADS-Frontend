@@ -1,4 +1,4 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { Estado, Mercadoria, Pais, Sh4 } from "../../models/interfaces";
 import GraficoTendencias from "../graficos/GraficoTendencias";
 import GraficoTendenciasSh4 from "../graficos/GraficoTendenciasSh4";
@@ -11,13 +11,6 @@ type Props = {
 }
 
 export default function PainelTendencias({ estado, pais, ncm, sh4 }: Props) {
-    const [exibicao, setExibicao] = useState<string>('valor_fob');
-    const [resumo, setResumo] = useState<any>(null);
-    const [dadosGrafico, setDadosGrafico] = useState<any[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-
-
-
     return (
         <div className="">
             {sh4 ? (

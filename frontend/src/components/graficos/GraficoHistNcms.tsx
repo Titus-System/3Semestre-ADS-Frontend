@@ -13,6 +13,7 @@ import {
     LegendProps
 } from "recharts";
 import { formatarValor } from "../../utils/formatarValor";
+import Loading from "../loading";
 
 type Props = {
     tipo: 'exp' | 'imp' | null
@@ -123,6 +124,7 @@ export default function GraficoHistNcms({ tipo, ncms, anos, estado, pais }: Prop
                         await callBuscarNcmHist(tipo, ncmsList, anos, pais ? pais.id_pais : null, estado ? estado.id_estado : null)
                     );
                     setHistNcmData(result);
+                    console.log("histNcmData: ", result)
                 } catch (error) {
                     console.error("Erro ao obter histNcm:", error);
                 }
@@ -154,38 +156,31 @@ export default function GraficoHistNcms({ tipo, ncms, anos, estado, pais }: Prop
     }) || [];
 
     const idsNcm = histNcmData?.[0]?.dados.map((ncm) => ncm.id_ncm) || [];
-
+    console.log("idsNcm: ", idsNcm)
 
     if (loading) {
         return (
-            <div className="p-6 rounded-lg shadow">
-                <div className="flex justify-center items-center h-64">
-                    <svg className="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                </div>
-            </div>
+            <Loading />
         );
     };
 
     const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
         return (
-        <div className="w-full flex justify-center mt-1">
-              <ul className="flex flex-row gap-3">
-                {payload?.map((entry, index) => (
-                  <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
-                    <span
-                      className="inline-block w-3 h-3 rounded-full mr-2"
-                      style={{ backgroundColor: entry.color }}
-                    />
-                    <span>{entry.value}</span>
-                  </li>
-                ))}
-              </ul>
+            <div className="w-full flex justify-center mt-1">
+                <ul className="flex flex-row gap-3">
+                    {payload?.map((entry, index) => (
+                        <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
+                            <span
+                                className="inline-block w-3 h-3 rounded-full mr-2"
+                                style={{ backgroundColor: entry.color }}
+                            />
+                            <span>{entry.value}</span>
+                        </li>
+                    ))}
+                </ul>
             </div>
-            );
-          };
+        );
+    };
 
     return (
         <div className="bg-transparent rounded p-4 w-full max-w-full overflow-x-auto">
@@ -229,7 +224,7 @@ export default function GraficoHistNcms({ tipo, ncms, anos, estado, pais }: Prop
                         stroke="#E0E0E0"
                         tickFormatter={formatarValor}
                         label={{ value: '$', angle: -90, position: 'insideLeft', offset: -10, stroke: "#E0E0E0" }}
-                        tick={{fontSize:11}}
+                        tick={{ fontSize: 11 }}
                     />
                     <Tooltip
                         labelFormatter={(label) => `${label}`}

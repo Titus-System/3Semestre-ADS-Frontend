@@ -1,7 +1,7 @@
+import { baseUrl } from "./serviceUtils";
+
 export async function buscaPaisPorNome(nome:string){
-    try {
-        const baseUrl = "http://localhost:5000";
-        
+    try {     
         const url = new URL(`${baseUrl}/pesquisa_pais_por_nome`);
         url.searchParams.append('nome', nome);
     
@@ -27,16 +27,14 @@ export async function buscaPaisPorNome(nome:string){
     }
 }
 
-export async function buscaInfoSetores(anos:number[]|null, pais:number|null, estado:string|null) {
+export async function buscaInfoSetores(anos:number[]|null, pais:number|null, estado:number|null) {
     try {
-        const baseUrl = "http://localhost:5000";
-        
         const url = new URL(`${baseUrl}/busca_info_setores`);
         if (pais) {
             url.searchParams.append('pais', pais.toString());
         }
         if(estado) {
-            url.searchParams.append('estado_sigla', estado);
+            url.searchParams.append('estado', estado.toString());
         }
         if(anos){
             const appendListParams = (paramName: string, values?: number[]) => {

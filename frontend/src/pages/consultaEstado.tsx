@@ -22,9 +22,9 @@ import PainelEstatisticasBalancaComercial from "../components/paineis/PainelEsta
 import "../index.css"
 
 // Extrai nomes dos estados
-const estados = (geoData as FeatureCollection).features.map(
-  (feature) => feature.properties?.Estado || "Desconhecido"
-);
+// const estados = (geoData as FeatureCollection).features.map(
+//   (feature) => feature.properties?.Estado || "Desconhecido"
+// );
 
 export default function ConsultaEstado() {
   const [loading, setLoading] = useState(true);
@@ -36,6 +36,7 @@ export default function ConsultaEstado() {
   const [estadoSelecionado, setEstadoSelecionado] = useState<string | null>(null);
   const [selectedPeriods, setSelectedPeriods] = useState<number[]>([]);
   const [dadosSetores, setDadosSetores] = useState<{ setor: string; exportacao: number; importacao: number }[]>([]);
+  const [modalFontSizeSetores, setModalFontSizeSetores] = useState(14);
 
   const geoJsonRef = useRef<LeafletGeoJSON | null>(null);
 
@@ -43,6 +44,10 @@ export default function ConsultaEstado() {
   const [importados, setImportados] = useState<string[]>([]);
   const [exportadores, setExportadores] = useState<string[]>([]);
   const [importadores, setImportadores] = useState<string[]>([]);
+
+  console.log(`
+    ${exportados}, ${importados}, ${exportadores}, ${importadores}
+    `)
 
   const [dadosFiltrados, setDadosFiltrados] = useState<
     { estado: string; exportacao: number; importacao: number }[]
@@ -97,6 +102,17 @@ export default function ConsultaEstado() {
 
     return { isSmallScreen, isSmallerScreen, isNormalScreen };
   }
+
+  useEffect(() => {
+    const handleResize = () => {
+      setModalFontSizeSetores(window.innerWidth < 500 ? 13 : 14);
+    };
+    
+    handleResize(); 
+    window.addEventListener("resize", handleResize);
+    
+    return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
   const anoMaisProximo = selectedPeriods.length > 0
     ? selectedPeriods.some((ano) => ano >= 2023)
@@ -417,10 +433,14 @@ export default function ConsultaEstado() {
     });
   };
 
-  const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
+  type CustomTooltipProps = TooltipProps<number, string> & {
+  fontSize: number;
+};
+
+  const CustomTooltip = ({ active, payload, fontSize }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     return (
-      <div className="flex flex-col gap-2 bg-white text-black p-2 rounded shadow-md border border-gray-300">
+      <div className="flex flex-col gap-2 bg-white text-black p-2 rounded shadow-md border border-gray-300" style={{ fontSize }}>
         {payload.map((entry, index) => {
           const name = entry.name;
           const value = entry.value;
@@ -673,7 +693,7 @@ export default function ConsultaEstado() {
                     <XAxis dataKey="setor" stroke="#E0E0E0" tick={{ fontSize: isSmallerScreen ? 0 : isSmallScreen ? 8 : 9, fill: "#ffffff" }} interval={0} />
                     <YAxis stroke="#E0E0E0" tick={{ fill: "#ffffff" }} domain={[0, 'dataMax']} allowDataOverflow={true} tickFormatter={formatarNumeroEixoY} minTickGap={15} interval="preserveStartEnd" />
 
-                    <Tooltip content={<CustomTooltip />} />
+                    <Tooltip content={<CustomTooltip fontSize={modalFontSizeSetores} />} />
                     <Bar dataKey="setor" fill="rgb(12, 10, 121)" name="Setor"/>
                     <Bar dataKey="exportacao" fill="rgb(35, 148, 20)" name="Exportações" radius={[4, 4, 0, 0]}/>
                     <Bar dataKey="importacao" fill="rgb(179, 15, 15)" name="Importações" radius={[4, 4, 0, 0]}/>

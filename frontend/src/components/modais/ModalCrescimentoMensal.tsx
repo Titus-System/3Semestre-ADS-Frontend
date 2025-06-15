@@ -1,7 +1,13 @@
 export default function ModalCrescimentoMensal({ onClose }: { onClose: () => void }) {
   return (
-    <div className="fixed inset-50 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-xl relative">
+    <div
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-xl relative"
+        onClick={(e) => e.stopPropagation()}
+      >
         <h2 className="text-2xl text-black font-semibold mb-4">📈 O que é Crescimento Mensal?</h2>
 
         <p className="mb-3 text-gray-700">
@@ -31,5 +37,5 @@ export default function ModalCrescimentoMensal({ onClose }: { onClose: () => voi
         </button>
       </div>
     </div>
-  )
+  );
 }

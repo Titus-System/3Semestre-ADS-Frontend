@@ -1,7 +1,7 @@
+import { baseUrl } from "./serviceUtils";
+
 export async function buscaPaisPorNome(nome:string){
     try {
-        const baseUrl = "http://localhost:5000";
-        
         const url = new URL(`${baseUrl}/pesquisa_pais_por_nome`);
         url.searchParams.append('nome', nome);
     
@@ -40,8 +40,7 @@ export async function buscarRankingPaises(
     cresc: 0 | 1 = 0
 ){
     try {
-        const base_url = "http://localhost:5000";
-        const url = new URL(`http://localhost:5000/ranking_pais`);
+        const url = new URL(`${baseUrl}/ranking_pais`);
         url.searchParams.append('tipo', tipo);
         url.searchParams.append('qtd', qtd.toString());
         // console.log("🔗 URL da requisição (país):", url.toString());
@@ -94,8 +93,7 @@ export async function buscarHistoricoPais(
     urfs?: number[]
 ){
     try {
-        const base_url = "http://localhost:5000";
-        const url = new URL(`${base_url}/busca_pais_hist`);
+        const url = new URL(`${baseUrl}/busca_pais_hist`);
         url.searchParams.append('tipo', tipo);
         const appendListParams = (paramName: string, values?: number[]) => {
             values?.forEach(value => url.searchParams.append(paramName, value.toString()));
@@ -140,8 +138,7 @@ export async function buscaPaisExpImpInfo(
     meses?: number[]
 ){
     try {
-        const base_url = "http://localhost:5000";
-        const url = new URL(`${base_url}/busca_pais_exp_imp_info`);
+        const url = new URL(`${baseUrl}/busca_pais_exp_imp_info`);
         const appendListParams = (paramName: string, values?: number[]) => {
             values?.forEach(value => url.searchParams.append(paramName, value.toString()));
         };

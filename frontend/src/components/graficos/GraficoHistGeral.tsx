@@ -1,6 +1,5 @@
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { formatarValor } from "../../utils/formatarValor";
-import { formatarData } from "../../utils/formatarData";
 import { useEffect, useState } from "react";
 import { buscaHistGeral } from "../../services/apiServices";
 import Loading from "../loading";

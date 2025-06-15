@@ -1,3 +1,5 @@
+import { baseUrl } from "./serviceUtils";
+
 async function buscaGeral(
     rota: string,
     tipo: "exp" | "imp",
@@ -9,7 +11,7 @@ async function buscaGeral(
     urfs?: number[]
 ){
     try {
-        const url = new URL(`http://localhost:5000/${rota}`);
+        const url = new URL(`${baseUrl}/${rota}`);
         url.searchParams.append('tipo', tipo);
         const appendListParams = (paramName: string, values?: number[]) => {
             values?.forEach(value => url.searchParams.append(paramName, value.toString()));

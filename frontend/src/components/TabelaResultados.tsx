@@ -1,12 +1,6 @@
 import { useState } from "react";
 import DetalhesTransacaoModal from "./DetalhesTransacaoModal";
-
-interface Transacao {
-    id_transacao: number;
-    id_pais: number;
-    ano: number;
-    [key: string]: string | number | boolean | null;
-}
+import Transacao from "../models/transacao";
 
 interface TabelaResultadosProps {
     transacoes: Transacao[];
@@ -54,7 +48,7 @@ export default function TabelaResultados({ transacoes, tipoProcesso }: TabelaRes
                 <DetalhesTransacaoModal
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
-                    transacao={selectedTransacao}
+                    transacao={selectedTransacao ? selectedTransacao : undefined}
                 />
             </div>
         </>

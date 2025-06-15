@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Estado, Mercadoria, Pais } from "../models/interfaces";
 import InputNcm from "../components/input/inputNcm";
 import InputEstado from "../components/input/inputEstado";

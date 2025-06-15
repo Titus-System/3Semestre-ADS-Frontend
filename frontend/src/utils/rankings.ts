@@ -68,7 +68,7 @@ export async function buscarDados(
     idPaisSelecionado: number | null,
     tipoSelecionado: string | null,
     cresc: boolean = false,
-    siglaEstadoSelecionado: string | null
+    siglaEstadoSelecionado: number | null
 ) {
     if (tipoSelecionado !== "exp" && tipoSelecionado !== "imp") {
         tipoSelecionado = null;

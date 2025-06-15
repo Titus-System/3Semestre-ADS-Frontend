@@ -8,11 +8,11 @@ import PainelEstatisticasBalancaComercial from "../components/paineis/PainelEsta
 import PainelEstatisticasVlfob from "../components/paineis/PainelEstatisticasVlfob"
 import InputNcm from "../components/input/inputNcm"
 import { Mercadoria, Sh4 } from "../models/interfaces"
-import PainelVlFobVa from "../components/paineis/PainelVlfobVa"
+// import PainelVlFobVa from "../components/paineis/PainelVlfobVa"
 import PainelSh4 from "../components/paineis/PainelSh4"
 import InputSh4 from "../components/input/InputSh4"
 import PainelTendencias from "../components/paineis/PainelTendencias"
-import InfoCardsNcm from "../components/ncm/InfoCardsNcm"
+// import InfoCardsNcm from "../components/ncm/InfoCardsNcm"
 
 interface Estado {
     id_estado: number
@@ -50,19 +50,21 @@ export default function Previsao() {
 
                 <div className="w-full lg:w-3/4 space-y-6">
                     <p className="text-white text-sm italic">* Previsões calculadas usando SARIMA</p>
-                    <div className="flex flex-col bg-white/10 border border-white/20 backdrop-blur rounded-2xl text-white shadow-lg min-h-screen p-4 sm:p-6 w-full space-y-12">
+                    <div className="flex flex-col bg-white/10 border border-white/20 backdrop-blur rounded-2xl text-white shadow-lg min-h-screen p-0 sm:p-6 w-full space-y-12">
                         <PainelTendencias
                             estado={estadoSelecionado}
                             pais={paisSelecionado}
                             ncm={mercadoria}
                         />
 
-                    <div className="flex flex-row gap-6">
+                    <div className="w-full">
                         <PainelEstatisticasVlfob
                             ncm={mercadoria?.id_ncm}
                             estado={estadoSelecionado?.id_estado}
                             pais={paisSelecionado?.id_pais}
                         />
+                        </div>
+                    <div className="w-full">
                         <PainelEstatisticasBalancaComercial
                             ncm={mercadoria?.id_ncm}
                             estado={estadoSelecionado?.id_estado}

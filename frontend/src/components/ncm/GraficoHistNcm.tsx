@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { NcmHist, RankingNcm } from "../../models/interfaces";
+import { NcmHist } from "../../models/interfaces";
 import { buscarNcmHist } from "../../services/ncmService";
 import {
     CartesianGrid,
@@ -126,7 +126,6 @@ export default function GraficoHistNcm({ tipo, ncm, anos, estado, pais, via, urf
     }, [ncm, tipo, anos, estado, pais, via, urf]);
 
 
-    const [mostrarAgregado, setMostrarAgregado] = useState(false);
     const [exibicao, setExibicao] = useState<string>('valor_fob')
 
     // Combinar exportação e importação por data
@@ -355,7 +354,7 @@ export default function GraficoHistNcm({ tipo, ncm, anos, estado, pais, via, urf
                         labelStyle={{ color: ' #1e40af', fontWeight: 'bold' }}
                     />
                     <Legend />
-                    {idsNcm.map((id, index) => (
+                    {idsNcm.map((id) => (
                         <Line
                             key={id}
                             type="monotone"
