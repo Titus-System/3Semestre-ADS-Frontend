@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Estado, Mercadoria, Pais } from "../../models/interfaces";
-import { buscarTendenciaVlFob } from "../../services/tendenciaServices";
+// import { buscarTendenciaVlFob } from "../../services/tendenciaServices";
 import { CartesianGrid, Legend, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis, LegendProps } from "recharts";
-import { formatarData } from "../../utils/formatarData";
+// import { formatarData } from "../../utils/formatarData";
 import { formatarValor } from "../../utils/formatarValor";
 import Loading from "../loading";
 import { buscarHistoricoEstado } from "../../services/estadoService";

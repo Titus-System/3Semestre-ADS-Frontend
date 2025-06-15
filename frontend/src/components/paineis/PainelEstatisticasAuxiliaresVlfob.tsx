@@ -264,7 +264,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
             );
           };
         return (
-            <div className="w-full  mt-6">
+            <div className="w-full mt-6">
                 <h3
                     className="text-lg font-medium mb-2 text-gray-300 cursor-pointer hover:underline"
                     onClick={() => setMostrarModalHhi(true)}
