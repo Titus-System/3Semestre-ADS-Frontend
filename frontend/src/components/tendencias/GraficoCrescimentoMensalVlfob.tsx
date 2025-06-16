@@ -123,7 +123,6 @@ export function GraficoCrescimentoMensalVlfob({ ncm, estado, pais }: Props) {
             >
                 Crescimento Mensal
             </h3>
-            {exibirModal && <ModalCrescimentoMensal onClose={() => setExibirModal(false)} />}
             <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={dados} margin={{ top: 20, right: 20, left: 0, bottom: 40 }}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -173,6 +172,7 @@ export function GraficoCrescimentoMensalVlfob({ ncm, estado, pais }: Props) {
                     />
                 </LineChart>
             </ResponsiveContainer>
+            {exibirModal && <ModalCrescimentoMensal onClose={() => setExibirModal(false)} />}
         </div>
     );
 }

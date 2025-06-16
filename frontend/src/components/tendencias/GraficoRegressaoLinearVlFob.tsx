@@ -114,7 +114,6 @@ export function GraficoRegressaoLinearVlfob({ ncm, estado, pais }: Props) {
       >
         Regressão Linear
       </h3>
-      {exibirModal && <ModalRegressaoLinear onClose={() => setExibirModal(false)} />}
       <div className="flex h-[400px]">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={dados} margin={{ top: 20, right: 20, left: 0, bottom: 40 }}>
@@ -160,6 +159,7 @@ export function GraficoRegressaoLinearVlfob({ ncm, estado, pais }: Props) {
           </LineChart>
         </ResponsiveContainer>
       </div>
+      {exibirModal && <ModalRegressaoLinear onClose={() => setExibirModal(false)} />}
     </div>
   );
 }

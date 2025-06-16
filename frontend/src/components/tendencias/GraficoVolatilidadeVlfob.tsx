@@ -120,7 +120,6 @@ export function GraficoVolatilidadeVlfob({ ncm, estado, pais }: Props) {
             >
                 Volatilidade
             </h3>
-            {exibirModal && <ModalVolatilidade onClose={() => setExibirModal(false)} />}
             <div className="h-[400px]">
                 <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={volatilidadeExp} margin={{ top: 20, right: 20, left: 0, bottom: 40 }}>
@@ -158,9 +157,8 @@ export function GraficoVolatilidadeVlfob({ ncm, estado, pais }: Props) {
                         <Line type="monotone" dataKey="volatilidade_imp" stroke="rgb(179, 15, 15)" name="Volatilidade Importação" strokeWidth={strokeWidth} dot={{ r: 1 }} />
                     </LineChart>
                 </ResponsiveContainer>
-
-
             </div>
+            {exibirModal && <ModalVolatilidade onClose={() => setExibirModal(false)} />}
         </div>
     );
 }

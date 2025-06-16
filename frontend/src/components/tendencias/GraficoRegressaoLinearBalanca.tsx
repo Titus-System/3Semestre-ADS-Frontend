@@ -95,7 +95,6 @@ export default function GraficoRegressaoLinearBalanca({ ncm, estado, pais }: Pro
             >
                 Regressão Linear
             </h3>
-            {exibirModal && <ModalRegressaoLinear onClose={() => setExibirModal(false)} />}
             <div className="h-[400px]">
                 <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={dados} margin={{ top: 20, right: 20, left: 0, bottom: 40 }}>
@@ -141,6 +140,7 @@ export default function GraficoRegressaoLinearBalanca({ ncm, estado, pais }: Pro
                     </LineChart>
                 </ResponsiveContainer>
             </div>
+            {exibirModal && <ModalRegressaoLinear onClose={() => setExibirModal(false)} />}
         </div>
     );
 }
