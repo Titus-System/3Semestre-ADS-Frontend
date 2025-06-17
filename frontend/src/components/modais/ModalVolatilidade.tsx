@@ -1,7 +1,37 @@
-export default function ModalVolatilidade({ onClose }: { onClose: () => void }) {
-  return (
-    <div className="fixed inset-50 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-xl relative">
+import { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
+
+type Props = {
+  onClose: () => void;
+};
+
+export default function ModalVolatilidade({ onClose }: Props) {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), 5);
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {clearTimeout(timer); document.body.style.overflow = originalOverflow;}
+  }, []);
+
+  const handleClose = () => {
+    setIsVisible(false);
+    setTimeout(onClose, 50); 
+  };
+
+  const modalContent = (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" onClick={handleClose}>
+      <div className={`bg-white p-6 rounded-2xl w-10/12 md:w-2/3 lg:w-3/6 max-h-[58vh] sm:max-h-[70vh] overflow-y-auto relative shadow-xl transform transition-all duration-200 ease-out ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"}`} 
+      onClick={(e) => e.stopPropagation()}>
+
+        <button
+          onClick={handleClose}
+          className="absolute top-2 right-2 text-gray-600 text-xl font-bold hover:text-black"
+        >
+          &times;
+        </button>
+
         <h2 className="text-2xl text-black font-semibold mb-4">⚡ O que é Volatilidade?</h2>
 
         <p className="mb-3 text-gray-700">
@@ -26,14 +56,10 @@ export default function ModalVolatilidade({ onClose }: { onClose: () => void }) 
           Quanto maior a volatilidade, mais os valores estão variando. Quanto menor, mais estáveis eles são.
         </p>
 
-        <button
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl"
-          onClick={onClose}
-          aria-label="Fechar modal"
-        >
-          &times;
-        </button>
       </div>
     </div>
   )
+
+  return ReactDOM.createPortal(modalContent, document.getElementById("modal-root")!);
+
 }

@@ -132,7 +132,6 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                 >
                     Sazonalidade Mensal
                 </h3>
-                {mostrarModalSazonalidade && <Sazonalidade onClose={() => setMostrarModalSazonalidade(false)} />}
                 {isSmallScreen ? (
                         <div className="relative">
                         <button
@@ -239,6 +238,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                     </ResponsiveContainer>
                 </div>
                 )}
+                {mostrarModalSazonalidade && <Sazonalidade onClose={() => setMostrarModalSazonalidade(false)} />}
             </div>
         );
     };
@@ -271,7 +271,6 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                 >
                     Índice de Concentração (HHI)
                 </h3>
-                {mostrarModalHhi && <Hhi onClose={() => setMostrarModalHhi(false)} />}
                 <div className="h-[400px]">
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart
@@ -345,6 +344,7 @@ export default function PainelEstatisticasAuxiliares({ ncm, estado, pais }: Prop
                         </AreaChart>
 
                     </ResponsiveContainer>
+                    {mostrarModalHhi && <Hhi onClose={() => setMostrarModalHhi(false)} />}
                 </div>
                 <div className="mt-4 flex flex-wrap gap-4 text-sm text-gray-600">
                     <div className="flex items-center">

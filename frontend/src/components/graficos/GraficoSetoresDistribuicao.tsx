@@ -26,11 +26,24 @@ function formataTitulo(tipo?: string | null, pais?: Pais | null, estado?: Estado
 }
 
 export default function GraficoSetoresDistribuicao({ tipo, anos, estado, pais }: Props) {
+    const [fontSizeTooltip, setFontSizeTooltip] = useState(14)
     const [dadosSetores, setDadosSetores] = useState<any>();
     const [mostrarAgregado, setMostrarAgregado] = useState(false);
     const [dataKey, setDataKey] = useState(tipo ? `valor_fob_${tipo}` : 'valor_fob_exp')
     const [titulo, setTitulo] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+    const handleResize = () => {
+        setFontSizeTooltip(window.innerWidth < 700 ? 12 : 14);
+    };
+
+    handleResize(); 
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
 
     useEffect(() => {
         const executarBusca = async () => {
@@ -100,7 +113,7 @@ export default function GraficoSetoresDistribuicao({ tipo, anos, estado, pais }:
             <ResponsiveContainer width="100%" height={400}>
                 <RadarChart data={dadosSetores} outerRadius="80%">
                     <PolarGrid />
-                    <PolarAngleAxis dataKey="setor" stroke="#E0E0E0" />
+                    <PolarAngleAxis dataKey="setor" stroke="#E0E0E0" tick={{ fontSize: fontSizeTooltip, fill: "#E0E0E0" }}/>
                     <PolarRadiusAxis
                         angle={30}
                         domain={[0, limiteSuperior]}

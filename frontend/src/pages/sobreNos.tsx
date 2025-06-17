@@ -169,8 +169,8 @@ export default function HomePage() {
             <FaGlobe className="text-white/50" size={28} /> Acesse nossas redes sociais
           </h2>
         <div className="mt-12 bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-xl text-center space-y-4 mb-64">
-          <p><span className="font-bold text-white">Email:</span> <a href="mailto: titussystemsenterprise@gmail.com" className="text-white/50 hover:underline hover:text-[#d72c38" target="_newtab">Titussystemsenterprise@gmail.com</a></p>
-          <p><span className="font-bold text-white">Instagram:</span> <a href="https://www.instagram.com/agatha_wei070/" className="text-white/50 hover:underline hover:text-[#d72c38" target="_blank">@Titus_systems</a></p>
+          <p><span className="font-bold text-white">Email:</span> <a href="https://mail.google.com/mail/?view=cm&fs=1&to=titussystemsenterprise@gmail.com" className="text-white/50 hover:underline hover:text-[#d72c38] break-words" target="_newtab">Titussystemsenterprise@gmail.com</a></p>
+          <p><span className="font-bold text-white">Instagram:</span> <a href="https://www.instagram.com/titus_systems/" className="text-white/50 hover:underline hover:text-[#d72c38" target="_blank">@titus_systems</a></p>
           <p><span className="font-bold text-white">GitHub:</span> <a href="https://github.com/Titus-System" className="text-white/50 hover:underline hover:text-[#d72c38" target="_blank">Titus Systems</a></p>
         </div>
 
