@@ -156,7 +156,7 @@ export default function GraficoRanking({ titulo, ranking, valor_agregado }: Prop
                         stroke="#E0E0E0"
                         dataKey={x_datakey}
                         tickFormatter={(value: string) => value.substring(0, 10)}
-                        tick={{ fontSize: 11, angle: -30, textAnchor: "end" }}
+                        tick={{ fontSize: 11, textAnchor: "end" }}
                         interval={0}
                         minTickGap={10}
                     />
