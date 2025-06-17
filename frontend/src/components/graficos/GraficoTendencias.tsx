@@ -41,7 +41,7 @@ export default function GraficoTendencias({ ncm, sh4, estado, pais }: Props) {
         const handleResize = () => {
             setModalFontSize(window.innerWidth < 291 ? 6 : window.innerWidth < 311 ? 7 : window.innerWidth < 331 ? 8 : window.innerWidth < 350 ? 9 : window.innerWidth < 369 ? 10 : window.innerWidth < 388 ? 11 : window.innerWidth < 428 ? 12 : 14);
             setTurnColVlFob(window.innerWidth < 375)
-            setTurnToCol(window.innerWidth < 728);
+            setTurnToCol(window.innerWidth < 843);
             setIsSmallerScreen(window.innerWidth < 332);
             setFontSizeX(window.innerWidth < 387 ? 10 : 11);
             setIntervalX(window.innerWidth < 365 ? 71 : window.innerWidth < 539 ? 47 : 23);

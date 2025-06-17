@@ -94,9 +94,25 @@ function formataTitulo(tipo?: string | null, pais?: Pais | null, ncm?: Mercadori
 
 
 export default function GraficoHistEstados({ tipo, estados, pais, ncm }: Props) {
+    const [intervalX, setIntervalX] = useState(23);
+    const [fontSizeX, setFontSizeX] = useState(14);
+    const [strokeWidth, setStrokeWidth] = useState(2.5);
     const [dados, setDados] = useState<any[]>();
     const [titulo, setTitulo] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    useEffect(() => { 
+        const handleResize = () => {
+            setIntervalX(window.innerWidth < 361 ? 120 : window.innerWidth < 421 ? 60 : window.innerWidth < 584 ? 41 : window.innerWidth < 836 ? 23 : 15);
+            setStrokeWidth(window.innerWidth < 470 ? 1.5 : 2.5);
+            setFontSizeX(window.innerWidth < 660 ? 13 : 14);
+        };
+
+        handleResize(); // Executa no carregamento
+        window.addEventListener("resize", handleResize); // Escuta mudanças de tamanho
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     useEffect(() => {
         const buscarDados = async () => {
@@ -133,8 +149,8 @@ export default function GraficoHistEstados({ tipo, estados, pais, ncm }: Props) 
 
     const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
         return (
-            <div className="w-full flex justify-center mt-1">
-                <ul className="flex flex-row gap-3">
+            <div className="w-full xl:flex grid justify-center mt-1">
+                  <ul className="xl:flex grid xl:flex-row grid-cols-3 gap-2 xl:gap-3">
                     {payload?.map((entry, index) => (
                         <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
                             <span
@@ -164,6 +180,7 @@ export default function GraficoHistEstados({ tipo, estados, pais, ncm }: Props) 
                         stroke="#E0E0E0"
                         tickFormatter={(value: string) => value.substring(0, 10)}
                         tick={{ fontSize: 11, }}
+                        interval={intervalX}
                     />
                     <YAxis
                         stroke="#E0E0E0"
@@ -177,7 +194,7 @@ export default function GraficoHistEstados({ tipo, estados, pais, ncm }: Props) 
                         labelClassName=''
                         labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
                     />
-                    <Legend content={<CustomLegend fontSize={16} />} />
+                    <Legend content={<CustomLegend fontSize={fontSizeX} />} wrapperStyle={{ width: '100%', display: 'flex', justifyContent: 'center' }}/>
                     {estadoSiglas.map((sigla: string, index: number) => (
                         <Line
                             key={sigla}
@@ -188,7 +205,7 @@ export default function GraficoHistEstados({ tipo, estados, pais, ncm }: Props) 
                                 index % 5
                                 ]
                             }
-                            strokeWidth={2.5}
+                            strokeWidth={strokeWidth}
                             dot={false}
                         />
                     ))}

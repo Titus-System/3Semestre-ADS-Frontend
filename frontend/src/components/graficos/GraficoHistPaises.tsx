@@ -25,7 +25,7 @@ interface HistPaises {
 }[];
 
 function formataTitulo(tipo?: string | null, estado?: Estado | null, ncm?: Mercadoria | null) {
-    let titulo = `Histórico dos países que ${estado ? estado.sigla : 'Brasil'} mais ${tipo ? `${tipo}portou` : 'exportou'}`
+    let titulo = `Histórico dos países que ${estado ? estado.sigla : 'Brasil'} mais ${tipo ? `${tipo}ortou` : 'exportou'}`
     if (ncm) { titulo = `${titulo} ${ncm.descricao}` }
     return titulo
 }
@@ -84,9 +84,25 @@ async function formatarDadosHist(dados: any[]): Promise<HistPaises[]> {
 
 
 export default function GraficoHistPais({ tipo, paises, ncm, estado, anos }: Props) {
+    const [intervalX, setIntervalX] = useState(23);
+    const [fontSizeX, setFontSizeX] = useState(14);
+    const [strokeWidth, setStrokeWidth] = useState(2.5);
     const [histPaisData, setHistPaisData] = useState<HistPaises[] | null>(null);
     const [titulo, setTitulo] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    useEffect(() => { 
+        const handleResize = () => {
+            setIntervalX(window.innerWidth < 361 ? 120 : window.innerWidth < 421 ? 60 : window.innerWidth < 584 ? 41 : window.innerWidth < 836 ? 23 : 15);
+            setStrokeWidth(window.innerWidth < 470 ? 1.5 : 2.5);
+            setFontSizeX(window.innerWidth < 660 ? 13 : 14);
+        };
+
+        handleResize(); // Executa no carregamento
+        window.addEventListener("resize", handleResize); // Escuta mudanças de tamanho
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     useEffect(() => {
         setIsLoading(true);
@@ -134,7 +150,7 @@ export default function GraficoHistPais({ tipo, paises, ncm, estado, anos }: Pro
     const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
         return (
             <div className="w-full flex justify-center mt-1">
-                <ul className="flex flex-row gap-3">
+                <ul className="flex flex-col xl:flex-row gap-0 xl:gap-3">
                     {payload?.map((entry, index) => (
                         <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
                             <span
@@ -155,15 +171,16 @@ export default function GraficoHistPais({ tipo, paises, ncm, estado, anos }: Pro
                 {titulo}
             </h3>
 
-            <ResponsiveContainer width="100%" height={400}>
+            <ResponsiveContainer width="100%" height={440}>
                 <LineChart
                     data={dadosGrafico}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                    margin={{ top: 6, right: 22, left: 17, bottom: 5 }}
                 >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="data"
                         stroke="#E0E0E0"
                         tickFormatter={(value: string) => value.substring(0, 10)}
+                        interval={intervalX}
                         tick={{ fontSize: 11, }}
                     />
                     <YAxis
@@ -178,7 +195,7 @@ export default function GraficoHistPais({ tipo, paises, ncm, estado, anos }: Pro
                         labelClassName=''
                         labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
                     />
-                    <Legend content={<CustomLegend fontSize={16} />} />
+                    <Legend content={<CustomLegend fontSize={fontSizeX} />} wrapperStyle={{ width: '100%', display: 'flex', justifyContent: 'center' }}/>
                     {paisNomes.map((nome_pais, index) => (
                         <Line
                             key={nome_pais}
@@ -189,7 +206,7 @@ export default function GraficoHistPais({ tipo, paises, ncm, estado, anos }: Pro
                                 index % 5
                                 ]
                             }
-                            strokeWidth={2.5}
+                            strokeWidth={strokeWidth}
                             dot={false}
                         />
                     ))}

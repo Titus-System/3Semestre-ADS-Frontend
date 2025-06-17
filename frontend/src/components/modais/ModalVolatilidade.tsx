@@ -22,7 +22,7 @@ export default function ModalVolatilidade({ onClose }: Props) {
 
   const modalContent = (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" onClick={handleClose}>
-      <div className={`bg-white p-6 rounded-2xl w-10/12 md:w-2/3 lg:w-3/6 max-h-[70vh] overflow-y-auto relative shadow-xl transform transition-all duration-200 ease-out ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"}`} 
+      <div className={`bg-white p-6 rounded-2xl w-10/12 md:w-2/3 lg:w-3/6 max-h-[58vh] sm:max-h-[70vh] overflow-y-auto relative shadow-xl transform transition-all duration-200 ease-out ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"}`} 
       onClick={(e) => e.stopPropagation()}>
 
         <button

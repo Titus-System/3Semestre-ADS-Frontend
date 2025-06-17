@@ -87,9 +87,25 @@ async function formatarDadosSh4Hist(dados: any[]): Promise<any[]> {
 
 
 export default function GraficoHistSh4({tipo, sh4s, anos, estado, pais}:Props) {
+    const [intervalX, setIntervalX] = useState(23);
+    const [fontSizeX, setFontSizeX] = useState(14);
+    const [strokeWidth, setStrokeWidth] = useState(2.5);
     const [histSh4Data, setHistSh4Data] = useState<any[] | null>(null);
     const [titulo, setTitulo] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
+
+    useEffect(() => { 
+        const handleResize = () => {
+            setIntervalX(window.innerWidth < 361 ? 120 : window.innerWidth < 421 ? 60 : window.innerWidth < 584 ? 41 : window.innerWidth < 836 ? 23 : 15);
+            setStrokeWidth(window.innerWidth < 470 ? 1.5 : 2.5);
+            setFontSizeX(window.innerWidth < 660 ? 13 : 14);
+        };
+
+        handleResize(); // Executa no carregamento
+        window.addEventListener("resize", handleResize); // Escuta mudanças de tamanho
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     useEffect(() => {
         setLoading(true);
@@ -144,8 +160,8 @@ export default function GraficoHistSh4({tipo, sh4s, anos, estado, pais}:Props) {
 
     const CustomLegend = ({ payload, fontSize }: LegendProps & { fontSize: number }) => {
             return (
-            <div className="w-full flex justify-center mt-1">
-                  <ul className="flex flex-row gap-3">
+            <div className="w-full xl:flex grid justify-center mt-1">
+                  <ul className="xl:flex grid xl:flex-row grid-cols-3 gap-2 xl:gap-3">
                     {payload?.map((entry, index) => (
                       <li key={`item-${index}`} className="flex items-center text-white" style={{ fontSize }}>
                         <span
@@ -190,13 +206,14 @@ export default function GraficoHistSh4({tipo, sh4s, anos, estado, pais}:Props) {
             <ResponsiveContainer width="100%" height={400}>
                 <LineChart
                     data={dadosGrafico}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                    margin={{ top: 20, right: 20, left: 17, bottom: 45 }}
                 >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="data"
                         stroke="#E0E0E0"
                         tickFormatter={(value: string) => value.substring(0, 10)}
                         tick={{ fontSize: 11, }}
+                        interval={intervalX}
                     />
                     <YAxis
                         stroke="#E0E0E0"
@@ -210,7 +227,7 @@ export default function GraficoHistSh4({tipo, sh4s, anos, estado, pais}:Props) {
                         labelClassName=''
                         labelStyle={{ color: '#1e40af', fontWeight: 'bold' }}
                     />
-                    <Legend content={<CustomLegend fontSize={16} />} />
+                    <Legend content={<CustomLegend fontSize={fontSizeX} />} wrapperStyle={{ width: '100%', display: 'flex', justifyContent: 'center' }}/>
                     {idsSh4.map((id:any, index:any) => (
                         <Line
                             key={id}
@@ -221,7 +238,7 @@ export default function GraficoHistSh4({tipo, sh4s, anos, estado, pais}:Props) {
                                 index % 5
                                 ]
                             }
-                            strokeWidth={2.5}
+                            strokeWidth={strokeWidth}
                             dot={false}
                         />
                     ))}
